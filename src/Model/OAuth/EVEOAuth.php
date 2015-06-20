@@ -86,6 +86,9 @@ class EVEOAuth
 										":scopes" => $scopes,
 										":tokenType" => $tokenType,
 									));
+        
+        // Login with CoreManager
+        $this->app->CoreManager->login($characterID);
 
 								// Create the auto login cookie
 								$this->app->setEncryptedCookie($this->config->getConfig("name", "cookies", "rena"), $uniqueID, time() + $this->config->getConfig("time", "cookies", (3600 * 24 * 30)), "/", $this->app->request->getHost(), $this->config->getConfig("ssl", "cookies", true), "true");
