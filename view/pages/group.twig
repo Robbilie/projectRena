@@ -1,0 +1,110 @@
+<div class="contentConti" id="groupConti">
+	<div class="card">
+		<div class="chead">
+			<h1 class="blue" id="groupName"></h1>
+		</div>
+	</div>
+	<div class="card">
+		<div class="chead">
+			<h2 class="blue">Permissions</h2>
+		</div>
+		<div id="permissionList" class="cbody">
+		</div>
+	</div>
+	<div class="card">
+		<div class="chead">
+			<h2 class="blue">Members</h2>
+		</div>
+		<div id="memberList" class="cbody">
+		</div>
+	</div>
+	<div class="card">
+		<div class="chead">
+			<h2 class="blue">Add Character</h2>
+		</div>
+		<div class="cbody paddedp">
+			<h4 id="addresponse"></h4>
+			<h4 class="mbn">Character ID</h4>
+			<input type="text" id="charId"/>
+			<div class="divider"></div>
+			<span class="btn" onclick="addCharacter();">Add</span>
+		</div>
+	</div>
+	<div style="display: none;">
+		<div id="permissionTemplate">
+			<div class="hover row"><input onchange="changePermission(this);" data-permissionid="{2}" data-groupid="{3}" type="checkbox" id="{1}Perm" {0} ><label for="{1}Perm">{1}</label></div>
+		</div>
+		<div id="memberTemplate">
+			<div class="hover row"><a href="#!/profile/{0}/" onclick="click(this);">{1}</a>{2}</div>
+		</div>
+	</div>
+</div>
+<label id="maxBtn" for="checkMaxed">+</label>
+<script type="text/javascript">
+	var groupScope = "default";
+	var groupCustom = 0;
+	var groupPermissions = 0;
+	groupJS();
+	function groupJS () {
+		ajax("/json/group/" + location.hash.split("/")[2] + "/", function (r) {
+			console.log(r);
+			$("#groupName").innerHTML = r.name + '<span class="fr">[' + (r.custom == 1 ? 'custom ' : '') + r.scope + ']</span>';
+			groupScope = r.scope;
+			groupCustom = r.custom;
+			groupPermissions = r.permissions;
+
+			loadPermissions();
+
+			loadMembers();
+
+			fadeOn($("#groupConti"), 1);
+		}, "json");
+	}
+
+	function loadPermissions () {
+		ajax("/json/permissions/" + groupScope + "/", function (s) {
+			console.log(s);
+			var tmpl = $("#permissionTemplate").innerHTML;
+			var el = $("#permissionList");
+			el.innerHTML = "";
+			for(var i = 0; i < s.length; i++)
+				el.innerHTML += tmpl.format((groupPermissions & Math.pow(2, s[i].id)) == Math.pow(2, s[i].id) ? 'checked="true"' : '', s[i].name, s[i].id, location.hash.split("/")[2]);
+		}, "json");
+	}
+
+	function loadMembers () {
+		ajax("/json/group/" + location.hash.split("/")[2] + "/members/", function (t) {
+			var tmpl = $("#memberTemplate").innerHTML;
+			var el = $("#memberList");
+			el.innerHTML = "";
+			for(var i = 0; i < t.length; i++)
+				el.innerHTML += tmpl.format(t[i].characterID, t[i].characterName, groupCustom == 1 ? '<span class="fr hover" onclick="removeCharacter(' + t[i]['characterID'] + ');">&times;</span>' : '');
+		}, "json");
+	}
+
+	function changePermission (el) {
+		ajax("/json/group/" + location.hash.split("/")[2] + "/" + (el.checked ? "add" : "remove") + "/permission/" + el.getAttribute("data-permissionid") + "/", function (r) {
+			console.log(r);
+			if(r.state == "error")
+				el.checked = !el.checked;
+		}, "json");
+	}
+
+	function removeCharacter (charid) {
+		ajax("/json/group/" + location.hash.split("/")[2] + "/remove/character/" + charid + "/", function (r) {
+			if(r.state == "success")
+				loadMembers();
+		}, "json");
+	}
+
+	function addCharacter () {
+		ajax("/json/group/" + location.hash.split("/")[2] + "/add/character/" + $("#charId").value + "/", function (r) {
+			if(r.state == "success") {
+				loadMembers();
+			} else {
+				$("#addresponse").innerHTML = "error";
+			}
+		}, "json");
+	}
+
+</script>
