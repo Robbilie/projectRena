@@ -12,3 +12,4 @@ phinx.yml
 .settings/
 .floo
 .flooignore
+public/css/webfonts/
