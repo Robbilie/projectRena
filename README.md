@@ -15,6 +15,8 @@ _http://chat.mibbit.com/?channel=%23esc&server=irc.coldfront.net_
 
 # LICENSE
 MIT, check LICENSE for more information
+(applies to code originated from Karbowiak's projectRena)
+All code written by me is proprietary for now, a fitting License will be included soon(tm)
 
 # Requirements
 - PHP 5.6 / HHVM 3.*
