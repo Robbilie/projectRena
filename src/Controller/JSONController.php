@@ -24,7 +24,7 @@ class JSONController
     }
 
     public function getStatus () {
-    	$user = null;
+    	$user = array();
     	if(isset($_SESSION['characterID']))
        		$user = $this->app->CoreManager->getCharacter($_SESSION['characterID'])->getCUser();
         $status = array(
@@ -59,7 +59,7 @@ class JSONController
     }
 
     public function getCharacter ($characterID) {
-        $character = null;
+        $character = array();
         if(isset($_SESSION['loggedin']))
             $character = $this->app->CoreManager->getCharacter($characterID);
         $this->app->response->headers->set('Content-Type', 'application/json');
@@ -187,7 +187,7 @@ class JSONController
     }
 
     public function getGroup ($groupID) {
-        $group = null;
+        $group = array();
         if(isset($_SESSION['loggedin']))
             $group = $this->app->CoreManager->getGroup(pow(2, $groupID));
         $this->app->response->headers->set('Content-Type', 'application/json');
@@ -317,7 +317,7 @@ class JSONController
     }
 
     public function getCorporation ($corporationID) {
-        $corp;
+        $corp = array();
         if(isset($_SESSION['loggedin'])) {
             $corp = $this->app->CoreManager->getCorporation($corporationID);
         }
@@ -336,7 +336,7 @@ class JSONController
     }
 
     public function getAlliance ($allianceID) {
-        $alliance;
+        $alliance = array();
         if(isset($_SESSION['loggedin'])) {
             $alliance = $this->app->CoreManager->getAlliance($allianceID);
         }
