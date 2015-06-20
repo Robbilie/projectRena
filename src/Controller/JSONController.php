@@ -24,9 +24,9 @@ class JSONController
     }
 
     public function getStatus () {
-    	$user = array();
-    	if(isset($_SESSION['characterID']))
-       		$user = $this->app->CoreManager->getCharacter($_SESSION['characterID'])->getCUser();
+        $user = array();
+        if(isset($_SESSION['characterID']))
+            $user = $this->app->CoreManager->getCharacter($_SESSION['characterID'])->getCUser();
         $status = array(
             "isLoggedin" => isset($_SESSION["loggedin"]) ? $_SESSION["loggedin"] : false,
             "isAdmin" => !is_null($user) && $user->isAdmin() ? true : false,
@@ -77,14 +77,14 @@ class JSONController
     public function switchCharacter ($characterID) {
         $resp = array("state" => "error");
         if(isset($_SESSION['loggedin'])) {
-	        $char = $this->app->CoreManager->getCharacter($characterID);
-	        if($char->getCUser()->getId() == $this->app->CoreManager->getCharacter($_SESSION['characterID'])->getCUser()->getId()) {
+            $char = $this->app->CoreManager->getCharacter($characterID);
+            if($char->getCUser()->getId() == $this->app->CoreManager->getCharacter($_SESSION['characterID'])->getCUser()->getId()) {
                 $this->app->CoreManager->createCharacter($char->getCharId());
                 $_SESSION["characterName"] = $char->getCharName();
                 $_SESSION["characterID"] = $char->getCharId();
                 $resp['state'] = "success";
-	        }
-	    }
+            }
+        }
         $this->app->response->headers->set('Content-Type', 'application/json');
         $this->app->response->body(json_encode($resp));
     }
@@ -92,37 +92,37 @@ class JSONController
     public function removeCharacter ($characterID) {
         $resp = array("state" => "error");
         if(isset($_SESSION['loggedin'])) {
-	        $char = $this->app->CoreManager->getCharacter($characterID);
-	        $inChar = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
-	        if($char->getUser() && $char->getCUser()->getId() == $inChar->getCUser()->getId() && $char->getId() != $inChar->getId()) {
-	          $char->setUser(null);
-	          $resp['state'] = "success";
-	        }
-	    }
+            $char = $this->app->CoreManager->getCharacter($characterID);
+            $inChar = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
+            if($char->getUser() && $char->getCUser()->getId() == $inChar->getCUser()->getId() && $char->getId() != $inChar->getId()) {
+              $char->setUser(null);
+              $resp['state'] = "success";
+            }
+        }
         $this->app->response->headers->set('Content-Type', 'application/json');
         $this->app->response->body(json_encode($resp));
     }
 
     public function getCharacterGroups ($characterID) {
-    	$groups = array();
+        $groups = array();
         if(isset($_SESSION['loggedin']))
-        	$groups = $this->app->CoreManager->getCharacter($characterID)->getGroupList();
+            $groups = $this->app->CoreManager->getCharacter($characterID)->getGroupList();
         $this->app->response->headers->set('Content-Type', 'application/json');
         $this->app->response->body(json_encode($groups));
     }
 
     // return the controltower visible to the character
     public function getControltowers () {
-    	$controlTower = array();
+        $controlTower = array();
         if(isset($_SESSION['loggedin'])) {
-        	$char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
-        	if($char->hasPermission("viewAllianceControltower")) {
-        		$controlTower = $char->getCCorporation()->getCAlliance()->getControltower();
-        	} else if($char->hasPermission("viewCorporationControltower")) {
-        		$controlTower = $char->getCCorporation()->getControltower();
-        	}
-	    }
-	    $this->app->response->headers->set('Content-Type', 'application/json');
+            $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
+            if($char->hasPermission("viewAllianceControltower")) {
+                $controlTower = $char->getCCorporation()->getCAlliance()->getControltower();
+            } else if($char->hasPermission("viewCorporationControltower")) {
+                $controlTower = $char->getCCorporation()->getControltower();
+            }
+        }
+        $this->app->response->headers->set('Content-Type', 'application/json');
         $this->app->response->body(json_encode($controlTower));
     }
 
@@ -378,18 +378,18 @@ class JSONController
                 "members" => array()
             );
         if(isset($_SESSION['loggedin'])) {
-			if(is_null($systemID))
-				$systemID = $this->app->CoreManager->getCharacterLocation($_SESSION['characterID']);
-			if(is_null($systemID))
-				$systemID = 30002489;
+            if(is_null($systemID))
+                $systemID = $this->app->CoreManager->getCharacterLocation($_SESSION['characterID']);
+            if(is_null($systemID))
+                $systemID = 30002489;
             // initial values
-			$solarSystem = $this->app->mapSolarSystems->getAllByID($systemID);
+            $solarSystem = $this->app->mapSolarSystems->getAllByID($systemID);
             $intel['state'] = 1;
             $intel['status'] = "Online";
             $intel['systemID'] = $solarSystem['solarSystemID'];
             $intel['systemName'] = $solarSystem['solarSystemName'];
-			$intel['regionID'] = $solarSystem['regionID'];
-			$intel['regionName'] = $this->app->mapRegions->getAllByID($solarSystem['regionID'])['regionName'];
+            $intel['regionID'] = $solarSystem['regionID'];
+            $intel['regionName'] = $this->app->mapRegions->getAllByID($solarSystem['regionID'])['regionName'];
         }
         $this->app->response->headers->set('Content-Type', 'application/json');
         $this->app->response->body(json_encode($intel));
