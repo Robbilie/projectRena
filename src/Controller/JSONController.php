@@ -366,7 +366,8 @@ class JSONController
         $this->app->response->body(json_encode($corporations));
     }
 
-    public function getSystemIntel ($systemID = null) {
+    public function getSystemIntel ($psystemID = null) {
+		$systemID = $psystemID;
         $intel = array(
                 "state" => 0,
                 "status" => "Offline",
@@ -378,6 +379,8 @@ class JSONController
                 "members" => array()
             );
         if(isset($_SESSION['loggedin'])) {
+			if(is_null($systemID) && isset($_SERVER['HTTP_EVE_TRUSTED']) && $_SERVER['HTTP_EVE_TRUSTED'] == "Yes")
+				$systemID = (int)$_SERVER['HTTP_EVE_SOLARSYSTEMID'];
             if(is_null($systemID))
                 $systemID = $this->app->CoreManager->getCharacterLocation($_SESSION['characterID']);
             if(is_null($systemID))
@@ -390,10 +393,57 @@ class JSONController
             $intel['systemName'] = $solarSystem['solarSystemName'];
             $intel['regionID'] = $solarSystem['regionID'];
             $intel['regionName'] = $this->app->mapRegions->getAllByID($solarSystem['regionID'])['regionName'];
-        }
+			$intel['member'] = $this->db->query("SELECT characterID,characterName,corporationID,allianceID FROM easTracker WHERE easTracker.locationID = :locationID AND easTracker.timestamp = (SELECT timestamp FROM easTracker as t WHERE t.characterID = easTracker.characterID ORDER BY t.timestamp DESC LIMIT 1)", array(":locationID" => $systemID));
+
+		}
         $this->app->response->headers->set('Content-Type', 'application/json');
         $this->app->response->body(json_encode($intel));
     }
+
+	public function setSystemIntel ($psystemID = null) {
+		$systemID = $psystemID;
+		$response = array("state" => "error", "msg" => "");
+		if(isset($_SESSION['loggedin'])) {
+			if(is_null($systemID) && isset($_SERVER['HTTP_EVE_TRUSTED']) && $_SERVER['HTTP_EVE_TRUSTED'] == "Yes")
+				$systemID = (int)$_SERVER['HTTP_EVE_SOLARSYSTEMID'];
+			if(is_null($systemID))
+				$systemID = $this->app->CoreManager->getCharacterLocation($_SESSION['characterID']);
+			if(is_null($systemID))
+				$systemID = 30002489;
+
+			$local = str_replace("%20", " ", $this->app->request->post('local'));
+			$local = explode(",", $local);
+
+			$apiids = $this->app->EVEEVECharacterID->getData($local)['result']['characters'];
+			$ids = array();
+			foreach ($apiids as $apiid)
+				array_push($ids, $apiid['characterID']);
+
+			$affs = $this->app->EVEEVECharacterAffiliation->getData($ids)['result']['characters'];
+			$sortedAffs = array();
+			foreach($affs as $aff)
+				$sortedAffs[$aff['characterID']] = $aff;
+
+			$charRows = $this->db->query("SELECT * FROM easTracker WHERE easTracker.locationID = :locationID AND easTracker.timestamp = (SELECT timestamp FROM easTracker as t WHERE t.characterID = easTracker.characterID ORDER BY t.timestamp DESC LIMIT 1)", array(":locationID" => $systemID));
+			$charIDs = array();
+			$charDat = array();
+			foreach($charRows as $charRow) {
+				array_push($charIDs, $charRow['characterID']);
+				$charDat[$charRow['characterID']] = $charRow;
+			}
+
+			$dif = array_diff($charIDs, $ids);
+			foreach($dif as $d)
+				$this->db->execute("INSERT INTO easTracker (locationID, submitterID, characterID, characterName, corporationID, allianceID, timestamp) VALUES (:locationID, :submitterID, :characterID, :characterName, :corporationID, :allianceID, :ts)", array(":locationID" => "null", ":submitterID" => $_SESSION['characterID'], ":characterID" => $charDat[$d]['characterID'], ":characterName" => $charDat[$d]['characterName'], ":corporationID" => $charDat[$d]['corporationID'], ":allianceID" => $charDat[$d]['allianceID'], ":ts" => time()));
+
+			foreach($ids as $id)
+				$this->db->execute("INSERT INTO easTracker (locationID, submitterID, characterID, characterName, corporationID, allianceID, timestamp) VALUES (:locationID, :submitterID, :characterID, :characterName, :corporationID, :allianceID, :ts)", array(":locationID" => $systemID, ":submitterID" => $_SESSION['characterID'], ":characterID" => $sortedAffs[$id]['characterID'], ":characterName" => $sortedAffs[$id]['characterName'], ":corporationID" => $sortedAffs[$id]['corporationID'], ":allianceID" => $sortedAffs[$id]['allianceID'], ":ts" => time()));
+
+			$response = array("state" => "success", "msg" => "");
+		}
+		$this->app->response->headers->set('Content-Type', 'application/json');
+		$this->app->response->body(json_encode($response));
+	}
 
     public function getRegionIntel ($regionID = null) {
         $intel = array();

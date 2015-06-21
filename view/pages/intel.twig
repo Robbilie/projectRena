@@ -4,13 +4,17 @@
 	</div>
 	<div id="intelContent" class="undernav">
 		<div id="intelSystem" class="hide">
-			<h1 id="intelStatus">[Offline]</h1>
+            <h1 id="intelStatus" class="intelText mbn">[Offline]</h1>
+            <h3 id="intelLocation" class="intelText mtn"></h3>
 			<div id="intelWarnings"></div>
 			<div id="intelMemberlist"></div>
 		</div>
 		<div id="intelRegion" class="hide"></div>
 	</div>
 	<div style="display: none;">
+        <div id="charTemplate">
+            <div class="hover row"><img src="https://image.eveonline.com/Character/{0}_32.jpg" alt="{1}"/><a href="#!/profile/{0}/" onclick="click(this);">{1}</a>{2}</div>
+        </div>
 	</div>
 </div>
 <div id="intelSettings">
@@ -55,13 +59,25 @@
 		cb();
 	}
 
+    var systemStatus = {};
 	function checkSystemStatus () {
 		if(location.hash.split("/")[1] != "intel") {
 			clearInterval(checkInt);
 			return;
 		}
 		ajax("/json/intel/system/" + (location.hash.split("/")[3] != "" ? location.hash.split("/")[3] : ""), function (r) {
-			console.log(r);
+			if(JSON.stringify(systemStatus) != JSON.stringify(r)) {
+                systemStatus = r;
+                $("#intelStatus").innerHTML = "[" + systemStatus.status + "]";
+                $("#intelLocation").innerHTML = systemStatus.regionName + " - " + systemStatus.systemName;
+
+                var tmpl = $("#charTemplate").innerHTML;
+                var el = $("#intelMemberlist");
+                el.innerHTML = "";
+                for(var i = 0; i < systemStatus.member.length; i++)
+                    el.innerHTML += tmpl.format(systemStatus.member[i].characterID, systemStatus.member[i].characterName, '');
+
+            }
 		}, "json");
 	}
 
@@ -89,6 +105,7 @@
 		submitIntel(dat);
 	}
 
+    var intelSystemID;
 	function submitIntel (dat) {
 		var req = new XMLHttpRequest();
 		req.onreadystatechange = function () {
@@ -97,8 +114,8 @@
 				submitting = false;
 			}
 		};
-		req.open("POST", "/json/intel/system/" + intelSystemID + "/", true);
+		req.open("POST", "/json/intel/system/" + (!intelSystemID ? "" : intelSystemID + "/"), true);
 		req.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-		req.send(encodeURI("member=" + dat.join(",")));
+		req.send(encodeURI("local=" + dat.join(",")));
 	}
 </script>

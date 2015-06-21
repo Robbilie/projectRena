@@ -113,8 +113,16 @@ $app->get('/json/intel/system/', function() use ($app){
     (new \ProjectRena\Controller\JSONController($app))->getSystemIntel();
 });
 
+$app->post('/json/intel/system/', function () use ($app){
+	(new \ProjectRena\Controller\JSONController($app))->setSystemIntel();
+});
+
 $app->get('/json/intel/system/:systemID/', function($systemID) use ($app){
     (new \ProjectRena\Controller\JSONController($app))->getSystemIntel($systemID);
+});
+
+$app->post('/json/intel/system/:systemID/', function ($systemID) use ($app){
+	(new \ProjectRena\Controller\JSONController($app))->setSystemIntel($systemID);
 });
 
 $app->get('/json/intel/region/', function() use ($app){
