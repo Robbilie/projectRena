@@ -68,6 +68,9 @@
 		ajax("/json/intel/system/" + (location.hash.split("/")[3] != "" ? location.hash.split("/")[3] : ""), function (r) {
 			if(JSON.stringify(systemStatus) != JSON.stringify(r)) {
                 systemStatus = r;
+
+                $("#intelConti").className = "contentConti intelStatus" + systemStatus;
+
                 $("#intelStatus").innerHTML = "[" + systemStatus.status + "]";
                 $("#intelLocation").innerHTML = systemStatus.regionName + " - " + systemStatus.systemName;
 

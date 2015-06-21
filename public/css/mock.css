@@ -910,3 +910,7 @@
 	#intelPasteArea {
 		min-height: 200px;
 	}
+    
+    #intelConti {
+        height: 100%;
+    }
