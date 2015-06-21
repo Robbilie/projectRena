@@ -13,7 +13,7 @@
 	</div>
 	<div style="display: none;">
         <div id="charTemplate">
-            <div class="hover row"><img src="https://image.eveonline.com/Character/{0}_32.jpg" alt="{1}"/><a href="#!/profile/{0}/" onclick="click(this);">{1}</a>{2}</div>
+            <div class="hover row {2}"><img src="https://image.eveonline.com/Character/{0}_32.jpg" alt="{1}"/><a href="#!/profile/{0}/" onclick="click(this);">{1}</a></div>
         </div>
 	</div>
 </div>
@@ -77,8 +77,8 @@
                 var tmpl = $("#charTemplate").innerHTML;
                 var el = $("#intelMemberlist");
                 el.innerHTML = "";
-                for(var i = 0; i < systemStatus.member.length; i++)
-                    el.innerHTML += tmpl.format(systemStatus.member[i].characterID, systemStatus.member[i].characterName, '');
+                for(var i = 0; i < systemStatus.members.length; i++)
+                    el.innerHTML += tmpl.format(systemStatus.members[i].characterID, systemStatus.members[i].characterName, systemStatus.members[i].standing + "Standing");
 
             }
 		}, "json");

@@ -13,4 +13,3 @@ phinx.yml
 .floo
 .flooignore
 public/css/webfonts/
-public/pull.php
