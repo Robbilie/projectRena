@@ -5,6 +5,11 @@ namespace ProjectRena\Lib;
 /**
  * Class Timer.
  */
+/**
+ * Class Timer
+ *
+ * @package ProjectRena\Lib
+ */
 class Timer
 {
 				/**
@@ -37,4 +42,9 @@ class Timer
 				{
 								return 1000 * (microtime(true) - $this->startTime);
 				}
+
+				/**
+				 *
+				 */
+				public function RunAsNew() {}
 }

@@ -23,22 +23,21 @@ class Pheal
 				 */
 				function __construct(RenaApp $app)
 				{
-								Config::getInstance()->http_method = 'curl';
-								// we get the config instance from the container
-								Config::getInstance()->http_user_agent = $app->baseConfig->getConfig('userAgent', 'site', 'API DataGetter from projectRena (karbowiak@gmail.com)');
+								Config::getInstance()->http_method = "curl";
+								Config::getInstance()->http_user_agent = $app->baseConfig->getConfig("userAgent", "site", "API DataGetter from projectRena (karbowiak@gmail.com)");
 								Config::getInstance()->http_post = false;
 								Config::getInstance()->http_keepalive = 10; // 10 seconds keep alive
 								Config::getInstance()->http_timeout = 30;
 								Config::getInstance()->cache = new \Pheal\Cache\RedisStorage(array(
-									'host'       => $app->baseConfig->getConfig('host', 'redis', '127.0.0.1'),
-									'port'       => $app->baseConfig->getConfig('port', 'redis', 6379),
-									'persistent' => true,
-									'auth'       => null,
-									'prefix'     => 'Pheal',
+									"host"       => $app->baseConfig->getConfig("host", "redis", "127.0.0.1"),
+									"port"       => $app->baseConfig->getConfig("port", "redis", 6379),
+									"persistent" => false,
+									"auth"       => null,
+									"prefix"     => "Pheal",
 								));
-								Config::getInstance()->log = new \ProjectRena\Lib\PhealLogger(); // Use the Rena Pheal Logger
+								Config::getInstance()->log = new \ProjectRena\Lib\PhealLogger();
 								Config::getInstance()->api_customkeys = true;
-								Config::getInstance()->api_base = $app->baseConfig->getConfig('apiServer', 'ccp', 'https://api.eveonline.com/');
+								Config::getInstance()->api_base = $app->baseConfig->getConfig("apiServer", "ccp", "https://api.eveonline.com/");
 				}
 
 				/**

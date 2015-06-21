@@ -18,7 +18,7 @@ class ApiKeys extends AbstractMigration
 				 */
 				public function up()
 				{
-								$apiKeys = $this->table('apiKeys');
+								$apiKeys = $this->table('apiKeys', array("engine" => "TokuDB"));
 								$apiKeys
 									->addColumn('keyID', 'string', array('limit' => 250))
 									->addColumn('vCode', 'string', array('limit' => 250))

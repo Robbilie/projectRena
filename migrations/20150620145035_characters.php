@@ -15,7 +15,7 @@ class Characters extends AbstractMigration
      */
     public function change()
     {
-        $users = $this->table('characters');
+        $users = $this->table('characters', array("engine" => "TokuDB"));
         $users
          ->addColumn("characterID", "integer", array("limit" => 16))
          ->addColumn("corporationID", "integer", array("limit" => 16))
@@ -25,9 +25,9 @@ class Characters extends AbstractMigration
          ->addColumn('dateAdded', 'datetime', array('default' => 'CURRENT_TIMESTAMP'))
          ->addColumn('lastUpdated', 'datetime', array('default' => '0000-00-00 00:00:00'))
          ->addIndex(array("characterID", "characterName"), array("unique" => true))
-         ->addIndex(array("characterID"))
          ->addIndex(array("corporationID"))
          ->addIndex(array("allianceID"))
+         ->addIndex(array("characterName"))
          ->save();
     }
 }

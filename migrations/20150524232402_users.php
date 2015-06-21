@@ -18,7 +18,7 @@ class users extends AbstractMigration
 				 */
 				public function up()
 				{
-								$users = $this->table("users");
+								$users = $this->table("users", array("engine" => "TokuDB"));
 								$users
 									->addColumn("characterName", "string", array("limit" => 128))
 									->addColumn("characterID", "integer", array("limit" => 11))

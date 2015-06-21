@@ -76,6 +76,7 @@ class CCPDataTask extends Command
 																}
 
 																$data = file_get_contents($cache . "/" . $file . ".sql");
+																$data = str_replace("ENGINE=InnoDB", "ENGINE=TokuDB", $data);
 																$dataParts = explode(";\n", $data);
 																foreach($dataParts as $qry)
 																{

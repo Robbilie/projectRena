@@ -2,9 +2,12 @@
 <?php
 use Slim\Views\Twig;
 
+// change to the dir Rena is in
+chdir(__DIR__);
+
 // Error display
-ini_set("display_errors", 1);
-error_reporting(E_ALL);
+ini_set("display_errors", 0);
+//error_reporting(E_ALL);
 
 // Load the autoloader
 if(file_exists(__DIR__ . "/vendor/autoload.php"))

@@ -25,7 +25,6 @@ $config['database'] = array(
 	'username'         => '',
 	'password'         => '',
 	'name'             => '',
-	'persistent'       => true,
 	'emulatePrepares'  => true,
 	'useBufferedQuery' => true,
 );

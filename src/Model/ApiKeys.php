@@ -9,23 +9,33 @@ use ProjectRena\RenaApp;
  */
 class ApiKeys
 {
+				/**
+				 * @var RenaApp
+				 */
 				protected $app;
+				/**
+				 * @var \ProjectRena\Lib\Db
+				 */
 				protected $db;
 
+				/**
+				 * @param RenaApp $app
+				 */
 				function __construct(RenaApp $app)
 				{
 								$this->app = $app;
 								$this->db = $app->Db;
 				}
 
+
 				/**
-				 * @param $apiKeyID
+				 * @param $apiKey
 				 * @param $vCode
 				 * @param null $userID
 				 *
 				 * @return bool|int|string
 				 */
-				public function addAPIKey($apiKey, $vCode, $userID = null)
+    public function addAPIKey($apiKey, $vCode, $userID = null)
 				{
 								return $this->db->execute('INSERT INTO apiKeys (keyID, vCode, userID) VALUES (:keyID, :vCode, :userID)', array(':keyID'  => $apiKey,
 								                                                                                                               ':vCode'  => $vCode,

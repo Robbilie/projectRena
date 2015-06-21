@@ -17,12 +17,21 @@ class Cache
 				private $redis;
 
 				/**
+				 * @var bool
+				 */
+				public $persistence = true;
+
+				/**
 				 * @param RenaApp $app
 				 */
 				function __construct(RenaApp $app)
 				{
 								$this->redis = new Redis();
-								$this->redis->pconnect($app->baseConfig->getConfig('host', 'redis', '127.0.0.1'), $app->baseConfig->getConfig('port', 'redis', 6379));
+
+								if(!$this->persistence)
+												$this->redis->connect($app->baseConfig->getConfig('host', 'redis', '127.0.0.1'), $app->baseConfig->getConfig('port', 'redis', 6379));
+								else
+												$this->redis->pconnect($app->baseConfig->getConfig('host', 'redis', '127.0.0.1'), $app->baseConfig->getConfig('port', 'redis', 6379));
 				}
 
 				/**

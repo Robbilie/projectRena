@@ -28,6 +28,8 @@ class CharacterAffiliation
 				}
 
 				/**
+				 * @param array $characterIDs
+				 *
 				 * @return mixed
 				 */
 				public function getData($characterIDs = array())

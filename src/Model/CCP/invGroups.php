@@ -1,5 +1,5 @@
 <?php
-namespace ProjectRena\Model\EVE;
+namespace ProjectRena\Model\CCP;
 
 use ProjectRena\RenaApp;
 
@@ -8,7 +8,7 @@ use ProjectRena\RenaApp;
  *
  * @package ProjectRena\Model\EVE
  */
-class dgmEffects
+class invGroups
 {
 				/**
 				 * @var RenaApp
@@ -29,22 +29,22 @@ class dgmEffects
 				}
 
 				/**
-				 * @param $effectID
+				 * @param $groupID
 				 *
 				 * @return array
 				 */
-				public function getAllByID($effectID)
+				public function getAllByID($groupID)
 				{
-								return $this->db->queryRow("SELECT * FROM dgmEffects WHERE effectID = :id", array(":id" => $effectID), 3600);
+								return $this->db->queryRow("SELECT * FROM invGroups WHERE groupID = :id", array(":id" => $groupID), 3600);
 				}
 
 				/**
-				 * @param $effectName
+				 * @param $groupName
 				 *
 				 * @return array
 				 */
-				public function getAllByName($effectName)
+				public function getAllByName($groupName)
 				{
-								return $this->db->queryRow("SELECT * FROM dgmEffects WHERE effectName = :name", array(":name" => $effectName), 3600);
+								return $this->db->queryRow("SELECT * FROM invGroups WHERE groupName = :name", array(":name" => $groupName), 3600);
 				}
 }

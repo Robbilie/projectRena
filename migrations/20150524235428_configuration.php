@@ -18,7 +18,7 @@ class configuration extends AbstractMigration
 				 */
 				public function up()
 				{
-								$configuration = $this->table('configuration');
+								$configuration = $this->table('configuration', array("engine" => "TokuDB"));
 								$configuration
 									->addColumn('key', 'string', array('limit' => 250))
 									->addColumn('value', 'string', array('limit' => 250))

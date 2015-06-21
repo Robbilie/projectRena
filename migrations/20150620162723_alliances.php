@@ -15,7 +15,7 @@ class Alliances extends AbstractMigration
      */
     public function change()
     {
-        $users = $this->table('alliances');
+        $users = $this->table('alliances', array("engine" => "TokuDB"));
         $users
          ->addColumn("allianceID", "integer", array("limit" => 16))
          ->addColumn("allianceName", "string", array("limit" => 128))
@@ -26,7 +26,7 @@ class Alliances extends AbstractMigration
          ->addColumn('dateAdded', 'datetime', array('default' => 'CURRENT_TIMESTAMP'))
          ->addColumn('lastUpdated', 'datetime', array('default' => '0000-00-00 00:00:00'))
          ->addIndex(array("allianceID", "allianceName"), array("unique" => true))
-         ->addIndex(array("allianceID"))
+         ->addIndex(array("allianceName"))
          ->save();
     }
 }

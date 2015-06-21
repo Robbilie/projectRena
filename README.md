@@ -23,6 +23,7 @@ All code written by me is proprietary for now, a fitting License will be include
 - NGINX
 - Linux
 - MariaDB 10+
+- TokuDB
 - Composer
 - cURL and PHP5-cURL
 - Redis and PHP5-Redis

@@ -14,7 +14,7 @@ class Storage extends AbstractMigration
 				 */
 				public function change()
 				{
-								$users = $this->table('storage');
+								$users = $this->table('storage', array("engine" => "TokuDB"));
 								$users
 									->addColumn('key', 'string', array('limit' => 255))
 									->addColumn('value', 'string', array('limit' => 255))
