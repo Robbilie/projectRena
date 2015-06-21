@@ -118,7 +118,6 @@
 			var authwin;
 			var loginurl = "{{ EVESSOURL|e('js') }}";
 
-			window.onload = function () { setTimeout(hashChange, 300); };
 			var $ = function (id, el) {
 				var c = el ? el : document; 
 				switch(id.substr(0,1)) {
@@ -133,6 +132,7 @@
 						break;
 				}
 			};
+			window.onload = function () { setTimeout(hashChange, 300); };
 			window.onhashchange = hashChange;
 
 			function click (elem) {
