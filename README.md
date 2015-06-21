@@ -10,8 +10,8 @@ Project Rena is in development and shouldn't be used by anyone!
 If you do use it, then good luck to you! ;)
 
 # Contact
-`#esc` on `irc.coldfront.net`
-_http://chat.mibbit.com/?channel=%23esc&server=irc.coldfront.net_
+`#eve-dev` on `irc.coldfront.net`
+_http://chat.mibbit.com/?channel=%23eve-dev&server=irc.coldfront.net_
 
 # LICENSE
 MIT, check LICENSE for more information
