@@ -133,6 +133,17 @@ $app->get('/json/intel/region/:regionID/', function($regionID) use ($app){
     (new \ProjectRena\Controller\JSONController($app))->getRegionIntel($regionID);
 });
 
+$app->get('/json/systemnames/:name', function ($name) use ($app){
+
+	$s = $app->Db->query("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemName LIKE :name", array(":name" => $name."%"));
+	$r = array();
+	foreach($s as $row)
+		array_push($r, $row['solarSystemName']);
+
+	$app->response->headers->set('Content-Type', 'application/json');
+	$app->response->body(json_encode($r));
+});
+
 
 
 /*

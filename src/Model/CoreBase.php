@@ -27,9 +27,10 @@ class CoreBase implements \JsonSerializable {
 	}
 
 	public function init ($cl) {
-		foreach ($this->data as $key => $value)
-			if(property_exists($cl, $key) && is_null($this->{$key}))
-				$this->{$key} = $value;
+		if(!is_null($this->data))
+			foreach ($this->data as $key => $value)
+				if(property_exists($cl, $key) && is_null($this->{$key}))
+					$this->{$key} = $value;
 	}
 
 	public function RunAsNew () {

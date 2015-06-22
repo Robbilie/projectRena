@@ -918,3 +918,51 @@
     .negativeStanding {
         background-color: rgba(255,0,0,.2);
     }
+
+    #intelTracker {
+        position: absolute;
+        bottom: 0px;
+        margin-left: 25px;
+        right: 0px;
+    }
+
+    #intelTracker:before {
+        content: " ";
+        position: absolute;
+        right: 100%;
+        margin-right: 5px;
+        top: 5px;
+        bottom: 5px;
+        width: 10px;
+        background-color: red;
+    }
+
+    #checkTracker:checked ~ #intelTracking {
+        display: none;
+    }
+
+    #checkTracker:checked ~ #intelTracker:before {
+        background-color: green;
+    }
+
+    .dropdowntf {
+        position: relative;
+    }
+
+    .dropdowntf .dropdown {
+        position: absolute;
+        top: 100%;
+        left: 3px;
+        right: 3px;
+        background-color: gainsboro;
+        box-shadow: 0px 0px 3px 0px black;
+        font-family: sans-serif;
+        font-size: small;
+        max-height: 200px;
+        overflow: auto;
+    }
+
+    .dropdown .hover.row {
+        padding: 2px;
+    }
+
