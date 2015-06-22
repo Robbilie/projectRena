@@ -55,7 +55,7 @@ class mapRegions
 				 */
 				public function getRegionNameByID($regionID)
 				{
-								return $this->db->queryField("SELECT regionName FROM mapRegions WHERE regionID = :id", "", array(":id" => $regionID), 3600);
+								return $this->db->queryField("SELECT regionName FROM mapRegions WHERE regionID = :id", "regionName", array(":id" => $regionID), 3600);
 				}
 
 				/**

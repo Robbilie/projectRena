@@ -243,6 +243,15 @@ $app->get('/about/', function() use ($app){
 $app->get('/structures/controltower/:towerID/', function($towerID) use ($app){
     $app->render("/pages/controltower.twig");
 });
+
+$app->get('/map/region/:regionID/', function($regionID) use ($app){
+    $app->response->headers->set('Content-Type', 'image/svg+xml');
+    $svg = file_get_contents("http://evemaps.dotlan.net/svg/".str_replace(" ", "_", $app->mapRegions->getRegionNameByID($regionID)).".svg");
+    $svg = explode('<g id="controls"', $svg)[0];
+    $svg .= '<script>function init (e) {} window.onload = function() { if(parent.mapLoaded) parent.mapLoaded(); }</script></svg>';
+    echo $svg;
+});
+
 /*
 
 $app->get('/structures/controltower/:towerID/', function($towerID) use ($app){
