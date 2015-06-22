@@ -79,3 +79,12 @@ $cli->command(new \Phinx\Console\Command\Status());
 $cli->command(new \Phinx\Console\Command\Test());
 
 $cli->run();
+
+function prompt($prompt, $default = "")
+{
+				echo "$prompt [$default] ";
+				$answer = trim(fgets(STDIN));
+				if(strlen($answer) == 0)
+								return $default == "yes" ? true : $default;
+				return $answer;
+}

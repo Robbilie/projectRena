@@ -22,8 +22,7 @@ All code written by me is proprietary for now, a fitting License will be include
 - PHP 5.6 / HHVM 3.*
 - NGINX
 - Linux
-- MariaDB 10+
-- TokuDB
+- MariaDB 10+ with TokuDB and Handlersocket
 - Composer
 - cURL and PHP5-cURL
 - Redis and PHP5-Redis

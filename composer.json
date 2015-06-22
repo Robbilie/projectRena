@@ -29,7 +29,8 @@
     "robmorgan/phinx": "~0.4.3",
     "cilex/cilex": "~1.1.0",
     "chrisboulton/php-resque": "~1.2.0",
-    "d11wtq/boris": "~1.0.10"
+    "d11wtq/boris": "~1.0.10",
+    "gossi/php-code-generator": "dev-master"
   },
   "autoload": {
     "psr-4": {

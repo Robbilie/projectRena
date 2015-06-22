@@ -4,6 +4,8 @@ namespace ProjectRena\Task;
 use Cilex\Command\Command;
 use ProjectRena\Lib;
 use ProjectRena\RenaApp;
+use Sami\Sami;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -20,7 +22,8 @@ class UpdateTask extends Command
 				 */
 				protected function configure()
 				{
-								$this->setName("update")->setDescription("Updates the project (Composer and RenaApp)")->addOption("composer", "o", InputOption::VALUE_NONE, "Skip updating composer");
+								$this->setName("update")
+												->setDescription("Updates the project (Composer and RenaApp)");
 				}
 
 				/**
@@ -32,22 +35,17 @@ class UpdateTask extends Command
 				protected function execute(InputInterface $input, OutputInterface $output)
 				{
 								$app = RenaApp::getInstance();
-								if(!$input->getOption("composer"))
+								// Check if composer is in the dir
+								if(!file_exists(__DIR__ . "/../../composer.phar"))
 								{
-												// Check if composer is in the dir
-												if(!file_exists(__DIR__ . "/../../composer.phar"))
-												{
-																$output->writeln("Composer doesn't exist, downloading it");
-																$composer = $app->cURL->getData("https://getcomposer.org/composer.phar", 0);
-																file_put_contents(__DIR__ . "/../../composer.phar", $composer);
-												}
-												exec("php " . __DIR__ . "/../../composer.phar update -o");
-												$output->writeln("Updating composer");
+												$output->writeln("Composer doesn't exist, downloading it");
+												$composer = $app->cURL->getData("https://getcomposer.org/composer.phar", 0);
+												file_put_contents(__DIR__ . "/../../composer.phar", $composer);
 								}
+								exec("php " . __DIR__ . "/../../composer.phar update -o");
+								$output->writeln("Updating composer");
 
 								// Update RenaApp
-								// Load everything else
-								// Paths to load files in
 								$load = array(
 									__DIR__ . "/../Lib/*.php",
 									__DIR__ . "/../Lib/*/*.php",
@@ -72,6 +70,7 @@ class UpdateTask extends Command
 								$php .= "}";
 								$output->writeln("Generating RenaApp");
 								file_put_contents(__DIR__ . "/../RenaApp.php", $php);
+
 								// Do more stuff (Clear cache?)
 				}
 

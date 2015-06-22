@@ -29,6 +29,7 @@ class Corporations extends AbstractMigration
          ->addIndex(array("corporationID", "corporationName"), array("unique" => true))
          ->addIndex(array("allianceID"))
          ->addIndex(array("corporationName"))
+         ->addIndex(array("lastUpdated"))
          ->save();
     }
 }

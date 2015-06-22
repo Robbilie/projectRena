@@ -65,7 +65,7 @@ class mapRegions
 				 */
 				public function getRegionIDByName($regionName)
 				{
-								return $this->db->queryField("SELECT regionID FROM mapRegions WHERE regionName = :name", "", array(":name" => $regionName), 3600);
+								return $this->db->queryField("SELECT regionID FROM mapRegions WHERE regionName = :name", "regionID", array(":name" => $regionName), 3600);
 				}
 
 				/**
@@ -75,7 +75,7 @@ class mapRegions
 				 */
 				public function getCoordinatesByID($regionID)
 				{
-								return $this->db->queryField("SELECT x, y, z, xMin, xMax, yMin, yMax, zMin, zMax, radius FROM mapRegions WHERE regionID = :id", "", array(":id" => $regionID), 3600);
+								return $this->db->queryRow("SELECT x, y, z, xMin, xMax, yMin, yMax, zMin, zMax, radius FROM mapRegions WHERE regionID = :id", array(":id" => $regionID), 3600);
 				}
 
 				/**
@@ -85,7 +85,7 @@ class mapRegions
 				 */
 				public function getCoordinatesByName($regionName)
 				{
-								return $this->db->queryField("SELECT x, y, z, xMin, xMax, yMin, yMax, zMin, zMax, radius FROM mapRegions WHERE regionName = :name", "", array(":name" => $regionName), 3600);
+								return $this->db->queryRow("SELECT x, y, z, xMin, xMax, yMin, yMax, zMin, zMax, radius FROM mapRegions WHERE regionName = :name", array(":name" => $regionName), 3600);
 				}
 
 				/**
@@ -95,7 +95,7 @@ class mapRegions
 				 */
 				public function getFactionIDByID($regionID)
 				{
-								return $this->db->queryField("SELECT factionID FROM mapRegions WHERE regionID = :id", "", array(":id" => $regionID), 3600);
+								return $this->db->queryField("SELECT factionID FROM mapRegions WHERE regionID = :id", "factionID", array(":id" => $regionID), 3600);
 				}
 
 				/**
@@ -105,7 +105,7 @@ class mapRegions
 				 */
 				public function getFactionIDByName($regionName)
 				{
-								return $this->db->queryField("SELECT factionID FROM mapRegions WHERE regionName = :name", "", array(":name" => $regionName), 3600);
+								return $this->db->queryField("SELECT factionID FROM mapRegions WHERE regionName = :name", "factionID", array(":name" => $regionName), 3600);
 				}
 
 }

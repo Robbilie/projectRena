@@ -2,11 +2,19 @@
 
 namespace ProjectRena\Task;
 
-use Cilex\Command\Command;
+use gossi\codegen\config\CodeFileGeneratorConfig;
+use gossi\codegen\generator\CodeFileGenerator;
+use gossi\codegen\model\PhpProperty;
 use ProjectRena\Lib;
+use Cilex\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use gossi\codegen\generator\CodeGenerator;
+use gossi\codegen\model\PhpClass;
+use gossi\codegen\model\PhpMethod;
+use gossi\codegen\model\PhpParameter;
 
 /**
  * Class GeneratorTask
@@ -15,12 +23,20 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class GeneratorTask extends Command
 {
+				private $description;
 				/**
 				 *
 				 */
 				protected function configure()
 				{
-								$this->setName('generator')->setDescription('Generates Controllers / Models / Libs / Tasks / Cronjobs / Resque Queues')->addArgument("name", InputOption::VALUE_REQUIRED, "Name of the Controller/Model/Lib ...")->addOption("controller", "c", InputOption::VALUE_NONE, "Create Controller")->addOption("model", "m", InputOption::VALUE_NONE, "Create Model")->addOption("libs", "l", InputOption::VALUE_NONE, "Create Lib")->addOption("task", "t", InputOption::VALUE_NONE, "Create Task")->addOption("cronjob", "j", InputOption::VALUE_NONE, "Create Cronjob")->addOption("resque", "r", InputOption::VALUE_NONE, "Create Resque Queue");
+								$this->setName('generator')
+									->setDescription('Generates Controllers / Models / Libs / Tasks / Cronjobs / Resque Queues')
+									->addOption("controller", "c", InputOption::VALUE_NONE, "Create Controller")
+									->addOption("model", "m", InputOption::VALUE_NONE, "Create Model")
+									->addOption("libs", "l", InputOption::VALUE_NONE, "Create Lib")
+									->addOption("task", "t", InputOption::VALUE_NONE, "Create Task")
+									->addOption("cronjob", "j", InputOption::VALUE_NONE, "Create Cronjob")
+									->addOption("resque", "r", InputOption::VALUE_NONE, "Create Resque Queue");
 				}
 
 				/**
@@ -31,7 +47,8 @@ class GeneratorTask extends Command
 				 */
 				protected function execute(InputInterface $input, OutputInterface $output)
 				{
-								$name = $input->getArgument("name");
+								$name = prompt("Name");
+								$this->description["description"] = prompt("Description");
 
 								if(!$name)
 								{
@@ -40,34 +57,22 @@ class GeneratorTask extends Command
 								}
 
 								if($input->getOption("controller"))
-								{
 												$this->controller($name, $output);
-								}
 
 								if($input->getOption("model"))
-								{
 												$this->model($name, $output);
-								}
 
 								if($input->getOption("libs"))
-								{
 												$this->libs($name, $output);
-								}
 
 								if($input->getOption("task"))
-								{
 												$this->task($name, $output);
-								}
 
 								if($input->getOption("cronjob"))
-								{
 												$this->cronjob($name, $output);
-								}
 
 								if($input->getOption("resque"))
-								{
 												$this->resque($name, $output);
-								}
 
 								$output->writeln("Please run update to update RenaApp and Composer");
 				}
@@ -87,28 +92,47 @@ class GeneratorTask extends Command
 								}
 
 								// Create controller
-								$controllerFile = <<<EOF
-<?php
+								$class = new PhpClass();
+								$class->setQualifiedName("ProjectRena\\Controller\\{$name}Controller")
+												->setDescription($this->description)
+												->setMethod(PhpMethod::create("__construct")
+																->addParameter(PhpParameter::create("app")
+																				->setType("RenaApp")
+																)
+																->setBody("\$this->app = \$app;\n\$this->db = \$app->Db;\n\$this->config = \$app->baseConfig;\n\$this->cache = \$app->Cache;\n\$this->curl = \$app->cURL;\n\$this->statsd = \$app->StatsD;\n\$this->log = \$app->Logging;")
+												)
+												->setProperty(PhpProperty::create("app")
+																->setVisibility("private")
+																->setDescription("The Slim Application")
+												)
+												->setProperty(PhpProperty::create("db")
+																->setVisibility("private")
+																->setDescription("The Database")
+												)
+												->setProperty(PhpProperty::create("config")
+																->setVisibility("private")
+																->setDescription("The baseConfig (config/config.php)")
+												)
+												->setProperty(PhpProperty::create("cache")
+																->setVisibility("private")
+																->setDescription("The Cache")
+												)
+												->setProperty(PhpProperty::create("curl")
+																->setVisibility("private")
+																->setDescription("cURL interface (getData / setData)")
+												)
+												->setProperty(PhpProperty::create("statsd")
+																->setVisibility("private")
+																->setDescription("StatsD for tracking stats")
+												)
+												->setProperty(PhpProperty::create("log")
+																->setVisibility("private")
+																->setDescription("The logger, outputs to logs/app.log")
+												)
+												->declareUse('ProjectRena\RenaApp');
 
-namespace ProjectRena\Controller;
-
-use ProjectRena\RenaApp;
-
-class {$name}Controller
-{
-
-    protected \$app;
-    function __construct(RenaApp \$app)
-    {
-        \$this->app = \$app;
-    }
-
-    public function index()
-    {
-        \$this->app->render('{$name}.twig');
-    }
-}
-EOF;
+								$generator = new CodeFileGenerator();
+								$code = $generator->generate($class);
 
 								// Create twig file
 								$twigFile = <<<EOF
@@ -120,7 +144,7 @@ EOF;
 EOF;
 
 								// Create files
-								file_put_contents($path, $controllerFile);
+								file_put_contents($path, $code);
 								file_put_contents(__DIR__ . "/../../view/{$name}.twig", $twigFile);
 
 								$output->writeln("Controller and twig file created: {$path}");
@@ -141,27 +165,48 @@ EOF;
 								}
 
 								// Create model
-								$modelFile = <<<EOF
-<?php
-namespace ProjectRena\Model;
+								$class = new PhpClass();
+								$class->setQualifiedName("ProjectRena\\Model\\{$name}")
+												->setDescription($this->description)
+												->setMethod(PhpMethod::create("__construct")
+																->addParameter(PhpParameter::create("app")
+																				->setType("RenaApp")
+																)
+																->setBody("\$this->app = \$app;\n\$this->db = \$app->Db;\n\$this->config = \$app->baseConfig;\n\$this->cache = \$app->Cache;\n\$this->curl = \$app->cURL;\n\$this->statsd = \$app->StatsD;\n\$this->log = \$app->Logging;")
+												)
+												->setProperty(PhpProperty::create("app")
+																->setVisibility("private")
+																->setDescription("The Slim Application")
+												)
+												->setProperty(PhpProperty::create("db")
+																->setVisibility("private")
+																->setDescription("The Database")
+												)
+												->setProperty(PhpProperty::create("config")
+																->setVisibility("private")
+																->setDescription("The baseConfig (config/config.php)")
+												)
+												->setProperty(PhpProperty::create("cache")
+																->setVisibility("private")
+																->setDescription("The Cache")
+												)
+												->setProperty(PhpProperty::create("curl")
+																->setVisibility("private")
+																->setDescription("cURL interface (getData / setData)")
+												)
+												->setProperty(PhpProperty::create("statsd")
+																->setVisibility("private")
+																->setDescription("StatsD for tracking stats")
+												)
+												->setProperty(PhpProperty::create("log")
+																->setVisibility("private")
+																->setDescription("The logger, outputs to logs/app.log")
+												)
+												->declareUse('ProjectRena\RenaApp');
 
-use ProjectRena\RenaApp;
-
-class {$name}
-{
-    private \$app;
-    private \$db;
-    private \$config;
-
-    function __construct(RenaApp \$app)
-    {
-        \$this->app = \$app;
-        \$this->db = \$this->app->Db;
-        \$this->config = \$this->app->baseConfig;
-    }
-}
-EOF;
-								file_put_contents($path, $modelFile);
+								$generator = new CodeFileGenerator();
+								$code = $generator->generate($class);
+								file_put_contents($path, $code);
 
 								$output->writeln("Model created: {$path}");
 				}
@@ -181,17 +226,48 @@ EOF;
 								}
 
 								// Create lib
-								$libFile = <<<EOF
-namespace ProjectRena\Lib;
+								$class = new PhpClass();
+								$class->setQualifiedName("ProjectRena\\Lib\\{$name}")
+												->setDescription($this->description)
+												->setMethod(PhpMethod::create("__construct")
+																->addParameter(PhpParameter::create("app")
+																				->setType("RenaApp")
+																)
+																->setBody("\$this->app = \$app;\n\$this->db = \$app->Db;\n\$this->config = \$app->baseConfig;\n\$this->cache = \$app->Cache;\n\$this->curl = \$app->cURL;\n\$this->statsd = \$app->StatsD;\n\$this->log = \$app->Logging;")
+												)
+												->setProperty(PhpProperty::create("app")
+																->setVisibility("private")
+																->setDescription("The Slim Application")
+												)
+												->setProperty(PhpProperty::create("db")
+																->setVisibility("private")
+																->setDescription("The Database")
+												)
+												->setProperty(PhpProperty::create("config")
+																->setVisibility("private")
+																->setDescription("The baseConfig (config/config.php)")
+												)
+												->setProperty(PhpProperty::create("cache")
+																->setVisibility("private")
+																->setDescription("The Cache")
+												)
+												->setProperty(PhpProperty::create("curl")
+																->setVisibility("private")
+																->setDescription("cURL interface (getData / setData)")
+												)
+												->setProperty(PhpProperty::create("statsd")
+																->setVisibility("private")
+																->setDescription("StatsD for tracking stats")
+												)
+												->setProperty(PhpProperty::create("log")
+																->setVisibility("private")
+																->setDescription("The logger, outputs to logs/app.log")
+												)
+												->declareUse('ProjectRena\RenaApp');
 
-class {$name}
-{
-    public function {$name}()
-    {
-    }
-}
-EOF;
-								file_put_contents($path, $libFile);
+								$generator = new CodeFileGenerator();
+								$code = $generator->generate($class);
+								file_put_contents($path, $code);
 
 								$output->writeln("Lib created: {$path}");
 				}
@@ -210,33 +286,25 @@ EOF;
 												return $output->writeln("Error, file already exists");
 								}
 
-								$taskFile = <<<EOF
-<?php
+								$class = new PhpClass();
+								$class->setQualifiedName("ProjectRena\\Task\\{$name}Task")
+												->setParentClassName("Command")
+												->setDescription($this->description)
+												->setMethod(PhpMethod::create("configure")
+																->setVisibility("protected")
+																->setBody("\$this->setName('$name')->setDescription('" . $this->description["description"] . "');")
+												)
+												->setMethod(PhpMethod::create("execute")
+																->setVisibility("protected")
+																->addParameter(PhpParameter::create("input")->setType("InputInterface"))
+																->addParameter(PhpParameter::create("output")->setType("OutputInterface"))
+																->setBody("//Init rena\n\$app = RenaApp::geTInstance();")
+												)
+												->declareUses('ProjectRena\RenaApp', 'Cilex\Command\Command', 'ProjectRena\Lib', 'Symfony\Component\Console\Input\InputInterface', 'Symfony\Component\Console\Output\OutputInterface');
 
-namespace ProjectRena\Task;
-
-use ProjectRena\Lib;
-use ProjectRena\RenaApp;
-use Cilex\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-
-class {$name}Task extends Command
-{
-    protected function configure()
-    {
-        \$this
-            ->setName('{$name}')
-            ->setDescription('Starts {$name}');
-    }
-
-    protected function execute(InputInterface \$input, OutputInterface \$output)
-    {
-    	\$app = RenaApp::getInstance();
-    }
-}
-EOF;
-								file_put_contents($path, $taskFile);
+								$generator = new CodeFileGenerator();
+								$code = $generator->generate($class);
+								file_put_contents($path, $code);
 
 								$output->writeln("Task created: {$path}");
 				}
@@ -255,28 +323,32 @@ EOF;
 												return $output->writeln("Error, file already exists");
 								}
 
-								$cronFile = <<<EOF
-<?php
+								$class = new PhpClass();
+								$class->setQualifiedName("ProjectRena\\Task\\Cronjobs\\{$name}Task")
+												->setDescription($this->description)
+												->setMethod(PhpMethod::create("getRunTimes")
+																->setVisibility("public")
+																->setStatic(true)
+																->setDescription("Defines how often the cronjob runs, every 1 second, every 60 seconds, every 86400 seconds, etc.")
+																->setBody("return 0; // Never runs")
+												)
+												->setMethod(PhpMethod::create("execute")
+																->setVisibility("public")
+																->setStatic(true)
+																->setDescription("Executes the cronjob task")
+																->addParameter(PhpParameter::create("pid"))
+																->addParameter(PhpParameter::create("md5"))
+																->addParameter(PhpParameter::create("db"))
+																->addParameter(PhpParameter::create("app")->setType("RenaApp"))
+																->setBody("exit(); // Keep this at the bottom, to make sure the fork exits")
+												)
+												->declareUse('ProjectRena\RenaApp');
 
-namespace ProjectRena\Task\Cronjobs;
+								$generator = new CodeFileGenerator();
+								$code = $generator->generate($class);
+								file_put_contents($path, $code);
 
-use ProjectRena\RenaApp;
-
-class {$name}Cronjob
-{
-    public static function getRunTimes()
-    {
-        return 1; // Runs every five seconds
-    }
-
-    public static function execute(\$pid, \$md5, \$db, RenaApp \$app)
-    {
-    }
-}
-EOF;
-								file_put_contents($path, $cronFile);
-
-								$output->writeln("Cronjob created: {$path}");
+        $output->writeln("Cronjob created: {$path}");
 				}
 
 				/**
@@ -293,33 +365,25 @@ EOF;
 												return $output->writeln("Error, file already exists");
 								}
 
-								$resqueFile = <<<EOF
-<?php
+								$class = new PhpClass();
+								$class->setQualifiedName("ProjectRena\\Task\\Resque\\{$name}Task")
+												->setDescription($this->description)
+												->setMethod(PhpMethod::create("setUp")
+																->setVisibility("public")
+																->setDescription("Sets up the task (Setup \$this->crap and such here)")
+												)
+												->setMethod(PhpMethod::create("perform")
+																->setVisibility("public")
+																->setDescription("Performs the task, can access all \$this->crap setup in setUp)")
+												)
+												->setMethod(PhpMethod::create("tearDown")
+																->setVisibility("public")
+																->setDescription("Tears the task down, unset \$this->crap and such")
+												);
 
-namespace ProjectRena\Task\Resque;
-
-use ProjectRena\RenaApp;
-
-class {$name}Resque
-{
-    public function setUp()
-    {
-    	\$app = RenaApp::getInstance();
-    }
-
-    public function perform()
-    {
-    	\$app = RenaApp::getInstance();
-    }
-
-    public function tearDown()
-    {
-    	\$app = RenaApp::getInstance();
-    }
-}
-
-EOF;
-								file_put_contents($path, $resqueFile);
+								$generator = new CodeFileGenerator();
+								$code = $generator->generate($class);
+								file_put_contents($path, $code);
 
 								$output->writeln("Resque Queue created: {$path}");
 				}
