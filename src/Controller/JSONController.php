@@ -559,4 +559,10 @@ class JSONController
         $this->app->response->headers->set('Content-Type', 'application/json');
         $this->app->response->body(json_encode($intel));
     }
+
+    public function getSystemNames ($name) {
+    	$systemRows = $this->db->query("SELECT solarSystemName as name, solarSystemID as data FROM mapSolarSystems WHERE solarSystemName LIKE :name", array(":name" => $name."%"));
+		$this->app->response->headers->set('Content-Type', 'application/json');
+		$this->app->response->body(json_encode($systemRows));
+    }
 }

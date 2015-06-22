@@ -40,7 +40,7 @@ class EVEOAuth
 				{
 								$requestURI = isset($_SERVER["REQUEST_URI"]) ? $_SERVER["REQUEST_URI"] : $this->app->request->getPath();
 
-								return "https://login.eveonline.com/oauth/authorize?response_type=code&redirect_uri=" . $this->app->request->getUrl() . $this->config->getConfig("callBack", "crestsso", "/login/eve/") . "&client_id=" . $this->config->getConfig("clientID", "crestsso") . "&scope=publicData" . "&state=" . $requestURI;
+								return "https://login.eveonline.com/oauth/authorize?response_type=code&redirect_uri=" . $this->app->request->getUrl() . $this->config->getConfig("callBack", "crestsso", "/login/eve/") . "&client_id=" . $this->config->getConfig("clientID", "crestsso") . "&scope=" . "&state=" . $requestURI;
 				}
 
 				/**

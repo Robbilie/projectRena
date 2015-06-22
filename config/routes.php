@@ -134,14 +134,7 @@ $app->get('/json/intel/region/:regionID/', function($regionID) use ($app){
 });
 
 $app->get('/json/systemnames/:name', function ($name) use ($app){
-
-	$s = $app->Db->query("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemName LIKE :name", array(":name" => $name."%"));
-	$r = array();
-	foreach($s as $row)
-		array_push($r, $row['solarSystemName']);
-
-	$app->response->headers->set('Content-Type', 'application/json');
-	$app->response->body(json_encode($r));
+    (new \ProjectRena\Controller\JSONController($app))->getSystemNames($name);
 });
 
 
@@ -176,6 +169,10 @@ $app->get('/intel/', function() use ($app){
 });
 
 $app->get('/intel/:intel/', function($intel) use ($app){
+    $app->render("/pages/intel.twig");
+});
+
+$app->get('/intel/:intel/:id/', function($intel, $id) use ($app){
     $app->render("/pages/intel.twig");
 });
 
