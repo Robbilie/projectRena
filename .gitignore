@@ -13,3 +13,4 @@ phinx.yml
 public/css/webfonts/
 public/pull.php
 view/
+cache/
