@@ -2,6 +2,7 @@ config.php
 vendor/
 composer.phar
 sami.phar
+phpunit.phar
 logs/app.log
 phinx.yml
 .phpintel/

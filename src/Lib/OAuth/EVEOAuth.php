@@ -76,7 +76,7 @@ class EVEOAuth
 								$uniqueID = uniqid("", true);
 
 								// Insert it all to the table
-								$this->app->Db->execute("INSERT IGNORE INTO users (characterName, characterID, characterOwnerHash, loginHash, accessToken, refreshToken, scopes, tokenType) VALUES (:characterName, :characterID, :characterOwnerHash, :loginHash, :accessToken, :refreshToken, :scopes, :tokenType)", array(
+								$this->app->Db->execute("INSERT INTO users (characterName, characterID, characterOwnerHash, loginHash, accessToken, refreshToken, scopes, tokenType) VALUES (:characterName, :characterID, :characterOwnerHash, :loginHash, :accessToken, :refreshToken, :scopes, :tokenType) ON DUPLICATE KEY UPDATE characterName = :characterName, characterID = :characterID, characterOwnerHash = :characterOwnerHash, loginHash = :loginHash, accessToken = :accessToken, refreshToken = :refreshToken, scopes = :scopes, tokenType = :tokenType", array(
 										":characterName" => $characterName,
 										":characterID" => $characterID,
 										":characterOwnerHash" => $characterOwnerHash,

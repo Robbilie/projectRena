@@ -1,13 +1,12 @@
 #!/usr/bin/env php
 <?php
-use Slim\Views\Twig;
 
 // change to the dir Rena is in
 chdir(__DIR__);
 
 // Error display
 ini_set("display_errors", 0);
-//error_reporting(E_ALL);
+error_reporting(E_ALL);
 
 // Load the autoloader
 if(file_exists(__DIR__ . "/vendor/autoload.php"))
@@ -33,10 +32,6 @@ $app = new \ProjectRena\RenaApp($config["slim"]);
 // Mock $app
 $app->environment = Slim\Environment::mock();
 
-// Prepare view
-$app->view(new Twig());
-$app->view->parserOptions = $config['twig'];
-
 // Load the lib/Model loader
 if(file_exists(__DIR__ . "/src/Loader.php"))
 {
@@ -44,13 +39,6 @@ if(file_exists(__DIR__ . "/src/Loader.php"))
 } else
 {
 				throw new Exception("Loader.php could not be found");
-}
-
-// load the additional configs
-$configFiles = glob(__DIR__ . "/config/*.php");
-foreach($configFiles as $configFile)
-{
-				require_once $configFile;
 }
 
 // Launch the CLI
@@ -80,6 +68,14 @@ $cli->command(new \Phinx\Console\Command\Test());
 
 $cli->run();
 
+/**
+	* CLI Prompter that gets an input and returns it
+	*
+	* @param $prompt
+	* @param string $default
+	*
+	* @return bool|string
+	*/
 function prompt($prompt, $default = "")
 {
 				echo "$prompt [$default] ";

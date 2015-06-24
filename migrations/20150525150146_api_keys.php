@@ -22,12 +22,12 @@ class ApiKeys extends AbstractMigration
 								$apiKeys
 									->addColumn('keyID', 'string', array('limit' => 250))
 									->addColumn('vCode', 'string', array('limit' => 250))
-									->addColumn('userID', 'integer', array('limit' => 11))
+									->addColumn('userID', 'integer', array('null' => true, 'limit' => 11))
 									->addColumn('errorCode', 'integer', array('limit' => 4))
 									->addColumn('accessMask', 'integer', array('limit' => 11))
 									->addColumn('dateAdded', 'datetime', array('default' => 'CURRENT_TIMESTAMP'))
 									->addColumn('lastValidation', 'datetime', array('default' => '0000-00-00 00:00:00'))
-									->addIndex(array('keyID'))
+									->addIndex(array('keyID'), array("unique" => true))
 									->addIndex(array('keyID', 'vCode'))
 									->addIndex(array('keyID', 'dateAdded'))
 									->save();

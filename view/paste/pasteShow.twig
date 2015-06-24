@@ -1,0 +1,44 @@
+{% extends 'base.twig' %}
+
+{% block content %}
+    <div class="container">
+        <div class="starter-template">
+        <h1>Pastebin Tool</h1>
+            <pre id="data" class="content-area" ondblclick="fnSelect('data');">{{ pasteData }}</pre>
+        <div>
+            <span class="text-muted">{{ pasteData|length }} characters<br />
+            <span class="text-muted">Created: {{ pasteCreated }}</span>
+        </div>
+    </div>
+{% endblock %}
+
+{% block css %}
+    <style>
+        .mono {
+            font-family: "Lucida Console", Monaco, monospace;
+        }
+    </style>
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript">
+        function fnSelect(objId) {
+            fnDeSelect();
+            if (document.selection) {
+                var range = document.body.createTextRange();
+                range.moveToElementText(document.getElementById(objId));
+                range.select();
+            }
+            else if (window.getSelection) {
+                var range = document.createRange();
+                range.selectNode(document.getElementById(objId));
+                window.getSelection().addRange(range);
+            }
+        }
+        function fnDeSelect() {
+            if (document.selection) document.selection.empty();
+            else if (window.getSelection)
+                window.getSelection().removeAllRanges();
+        }
+    </script>
+{% endblock %}

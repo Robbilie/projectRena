@@ -93,7 +93,7 @@ class characters
      * @param null $corporationID
      * @param null $allianceID
      * @param null $characterName
-     * @param null $history
+     * @param string $history
      */
     public function updateCharacterDetails(
      $characterID,
@@ -138,6 +138,9 @@ class characters
         }
     }
 
+    /**
+     * @param string $lastUpdated
+     */
     public function setLastUpdated($characterID, $lastUpdated)
     {
         if($lastUpdated)

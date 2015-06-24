@@ -1,0 +1,44 @@
+sudo: true
+language: php
+
+php:
+  - 5.6
+
+services:
+  - redis-server
+
+matrix:
+  allow_failures:
+    - php: 5.6
+  fast_finish: true
+
+before_script:
+  - sudo service mysql stop
+  - sudo mv /etc/mysql/my.cnf /etc/mysql/my.cnf.old
+  - export DEBIAN_FRONTEND=noninteractive
+  - sudo apt-get install python-software-properties
+  - sudo apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xcbcb082a1bb943db
+  - sudo add-apt-repository 'deb http://ftp.osuosl.org/pub/mariadb/repo/10.0/ubuntu precise main'
+  - sudo apt-get update -y
+  - sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" -q -y install mariadb-server
+  - mysql -uroot -e 'INSTALL SONAME "ha_tokudb"';
+  - mysql -uroot -e 'create database rena;'
+  - wget http://getcomposer.org/composer.phar
+  - php composer.phar install --dev --no-interaction -o
+  - ls -alh
+  - cp tests/config.php config/config.php
+  - cat config/config.php
+  - cp tests/phinx.yml .
+  - cat phinx.yml
+  - phpenv config-add tests/phpsettings.ini
+  - php vendor/bin/phinx migrate
+  - php vendor/bin/phinx status
+
+script:
+  - phpunit --coverage-clover=coverage.clover --bootstrap tests/init.php tests/*
+  - php tests/coverageChecker.php tests/coverage.clover 75
+
+after_script:
+  - cd tests
+  - wget https://scrutinizer-ci.com/ocular.phar
+  - php ocular.phar code-coverage:upload --format=php-clover coverage.clover

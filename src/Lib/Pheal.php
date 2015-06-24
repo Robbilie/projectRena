@@ -17,10 +17,8 @@ class Pheal
 				protected $app;
 
 				/**
-				 * @param RenaApp $app
-				 *
-				 * @return Pheal
-				 */
+					* @param RenaApp $app
+					*/
 				function __construct(RenaApp $app)
 				{
 								Config::getInstance()->http_method = "curl";

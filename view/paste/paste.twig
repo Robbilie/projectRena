@@ -1,0 +1,45 @@
+{% extends 'base.twig' %}
+
+{% block content %}
+    {% if error %}
+        <div class="container" name="errorMessages">
+            <p class="alert alert-danger">{{ error }}</p>
+        </div>
+    {% endif %}
+
+    <div class="container">
+        <div class="starter-template">
+            <h1>Pastebin Tool</h1>
+
+            <p class="lead">
+
+            <form method="POST">
+                <fieldset>
+                    <div class="form-group">
+                        <textarea id="paste" name="paste" class="form-control mono" rows="10"></textarea><br/>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <select name="timeout" class="selectpicker">
+                            <option value="600">10 Minutes</option>
+                            <option value="3600">1 Hour</option>
+                            <option value="86400">1 Day</option>
+                            <option value="0">Never</option>
+                        </select>
+                </fieldset>
+            </form>
+            </p>
+        </div>
+    </div>
+{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.7.2/css/bootstrap-select.min.css">
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript"
+            src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.7.2/js/bootstrap-select.min.js"></script>
+    <script type="text/javascript">
+        $('.selectpicker').selectpicker();
+    </script>
+
+{% endblock %}

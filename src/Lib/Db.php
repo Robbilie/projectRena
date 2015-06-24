@@ -75,7 +75,7 @@ class Db
 								} catch(Exception $e)
 								{
 												$logMessage = 'Unable to connect to the database: ' . $e->getMessage();
-												$this->logger->log("DEBUG", $logMessage);
+												$this->app->Logging->log("DEBUG", $logMessage);
 												throw new Exception($logMessage);
 								}
 				}
@@ -300,7 +300,7 @@ class Db
 												$query = str_replace($k, "'" . $v . "'", $query);
 								}
 								$uri = isset($_SERVER['REQUEST_URI']) ? "Query page: https://$baseAddr" . $_SERVER['REQUEST_URI'] . "\n" : '';
-								$this->logger->log('INFO', ($duration != 0 ? number_format($duration / 1000, 3) . 's ' : '') . " Query: \n$query;\n$uri");
+								$this->app->Logging->log('INFO', ($duration != 0 ? number_format($duration / 1000, 3) . 's ' : '') . " Query: \n$query;\n$uri");
 				}
 
 				/**

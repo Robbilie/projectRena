@@ -147,4 +147,6 @@ class SessionHandler implements SessionHandlerInterface
 
 								return true;
 				}
+
+				public function RunAsNew() {}
 }

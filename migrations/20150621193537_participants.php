@@ -64,7 +64,7 @@ class Participants extends AbstractMigration
          ->addIndex(array("totalValue", "killID"))
          ->save();
 
-        // MOAR INDEXES
+        // Clustered indexes in tokudb take up A LOT of space.. Old DB table was ~70GB (~70GB on disk), now it's +200GB, tho it only takes up ~60GB on disk
         $this->execute("SET tokudb_create_index_online=ON");
         if(!$participants->hasIndex("killID"))
             $this->execute("CREATE INDEX killID ON participants (killID) CLUSTERING=YES");

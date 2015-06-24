@@ -1,6 +1,14 @@
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/EVE-KILL/projectRena/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/EVE-KILL/projectRena/)
-[![Scrutinizer Coverage](https://scrutinizer-ci.com/g/EVE-KILL/projectRena/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/EVE-KILL/projectRena/)
 [![Scrutinizer Build](https://scrutinizer-ci.com/g/EVE-KILL/projectRena/badges/build.png?b=master)](https://scrutinizer-ci.com/g/EVE-KILL/projectRena/)
+[![Build Status](https://travis-ci.org/EVE-KILL/projectRena.svg?branch=master)](https://travis-ci.org/EVE-KILL/projectRena)
+[![Code Coverage](https://scrutinizer-ci.com/g/EVE-KILL/projectRena/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/EVE-KILL/projectRena/?branch=master)
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/75374b67-bb51-4b3f-b00a-b14ea811058f/big.png)](https://insight.sensiolabs.com/projects/75374b67-bb51-4b3f-b00a-b14ea811058f)
+
+# Test coverage
+_http://eve-kill.github.io/projectRena/tests/_
+
+# Documentation
+_http://eve-kill.github.io/projectRena/api/_
 
 # Project Rena
 ProjectRena is a complete from the ground up rewrite of the backend for EVSCO/EVE-KILL

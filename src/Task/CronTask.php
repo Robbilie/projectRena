@@ -64,7 +64,7 @@ class CronTask extends Command
                     $md5 = md5($name);
 
                     // If the script is currently running, skip to the next script
-                    if($app->Cache->get($md5 . '_pid') != false)
+                    if($app->Cache->get($md5 . '_pid') !== false)
                     {
                         $pid = $app->Cache->get($md5 . '_pid');
                         $status = pcntl_waitpid($pid, $status, WNOHANG);
@@ -126,6 +126,6 @@ class CronTask extends Command
                 // Sleep for 500 milliseconds, so we don't go nuts with CPU
                 usleep(500000);
             }
-        } while($run == true);
+        } while($run === true);
     }
 }

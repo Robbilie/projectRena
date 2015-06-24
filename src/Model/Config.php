@@ -31,19 +31,6 @@ class Config
 				}
 
 				/**
-				 * @return array
-				 */
-				public function getAll()
-				{
-								global $config;
-								$dbConfig = $this->db->query('SELECT * FROM configuration');
-								$cfg = array_merge($config, $dbConfig);
-
-								// Return the entire config, both from the config file and from the db
-								return $cfg;
-				}
-
-				/**
 				 * @param $key
 				 * @param $value
 				 *
