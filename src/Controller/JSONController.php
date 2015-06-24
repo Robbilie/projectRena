@@ -398,6 +398,7 @@ class JSONController
     }
 
     public function getSystemIntel ($psystemID = null) {
+		$systemID = $psystemID;
         $intel = array(
                 "state" => 0,
                 "status" => "Offline",
@@ -409,6 +410,14 @@ class JSONController
                 "members" => array()
             );
         if(isset($_SESSION['loggedin'])) {
+
+			// set system id
+			if(is_null($systemID) && isset($_SERVER['HTTP_EVE_TRUSTED']) && $_SERVER['HTTP_EVE_TRUSTED'] == "Yes")
+				$systemID = (int)$_SERVER['HTTP_EVE_SOLARSYSTEMID'];
+			if(is_null($systemID))
+				$systemID = $this->app->CoreManager->getCharacterLocation($_SESSION['characterID']);
+			if(is_null($systemID) || $systemID == 0)
+				$systemID = 30002489;
 			
             if(isset($_GET['hash']) && $_GET['hash'] != "") {
                 $timeout = 15000000;
@@ -416,8 +425,50 @@ class JSONController
                 while($timeout > 0) {
 
                     session_start();
-                    $intel = $this->getSystemIntelArray($psystemID, $_SESSION['characterID']);
-                    session_write_close();
+					$charid = $_SESSION['characterID'];
+					session_write_close();
+
+                    $intel = $this->getSystemIntelArray($systemID, $charid);
+
+					$sysids = array();
+					array_push($sysids, $systemID);
+
+					$systemsDone = $this->db->query("SELECT fromSolarSystemID as id FROM mapSolarSystemJumps WHERE toSolarSystemID = :systemID", array(":systemID" => $systemID));
+					foreach($systemsDone as $systemDone) {
+						if(!in_array((int)$systemDone['id'], $sysids)) {
+							$oneIntel = $this->getSystemIntelArray((int)$systemDone['id'], $charid);
+							$oneIntel['distance'] = 1;
+
+							if($intel['state'] < 4 && $oneIntel['hostilecount'] > 0) {
+								$intel['state'] = 3;
+								$intel['status'] = "Attention...";
+							}
+
+							array_push($intel['neighbours'], $oneIntel);
+							array_push($sysids, (int)$systemDone['id']);
+
+							$systemsDtwo = $this->db->query("SELECT fromSolarSystemID as id FROM mapSolarSystemJumps WHERE toSolarSystemID = :systemID", array(":systemID" => (int)$systemDone['id']));
+							foreach($systemsDtwo as $systemDtwo) {
+								if(!in_array((int)$systemDtwo['id'], $sysids)) {
+									$twoIntel = $this->getSystemIntelArray((int)$systemDtwo['id'], $charid);
+									$twoIntel['distance'] = 2;
+
+									if($intel['state'] < 3 && $twoIntel['hostilecount'] > 0) {
+										$intel['state'] = 2;
+										$intel['status'] = "Wake Up...";
+									}
+
+									array_push($intel['neighbours'], $twoIntel);
+									array_push($sysids, (int)$systemDtwo['id']);
+								}
+							}
+						}
+					}
+
+					if($intel['hostilecount'] > 0) {
+						$intel['state'] = 4;
+						$intel['status'] = "Warning";
+					}
 
                     if(md5(json_encode($intel)) == $_GET['hash']) {
                         usleep($interval);
@@ -490,6 +541,7 @@ class JSONController
         $intel['systemName'] = $solarSystem['solarSystemName'];
         $intel['regionID'] = $solarSystem['regionID'];
         $intel['regionName'] = $this->app->mapRegions->getAllByID($solarSystem['regionID'])['regionName'];
+		$intel['hostilecount'] = 0;
 
         // get members
         $members = $this->db->query(
@@ -497,8 +549,11 @@ class JSONController
                 easTracker.locationID = :locationID AND
                 easTracker.timestamp =
                     (SELECT timestamp FROM easTracker as t WHERE
-                        t.characterID = easTracker.characterID ORDER BY t.timestamp DESC LIMIT 1) ORDER BY easTracker.characterName ASC",// LIMIT 100",
-            array(":locationID" => $systemID)
+                        t.characterID = easTracker.characterID ORDER BY t.timestamp DESC LIMIT 1) AND easTracker.timestamp > :ts ORDER BY easTracker.characterName ASC",// LIMIT 100",
+            array(
+				":locationID" => $systemID,
+				":ts" => time() - (60*60*24) // 0 if all should be intelled
+			)
         );
 
         if(count($members) <= 50) {
@@ -522,6 +577,9 @@ class JSONController
                     )
                 );
                 $member['standing'] = ($r == 0 && $char->getAlliId() != $member['allianceID']) ? "negative" : "positive";
+				if($r == 0 && $char->getAlliId() != $member['allianceID']) {
+					$intel['hostilecount']++;
+				}
             }
         } else {
             $intel['membertype'] = "alliances";
@@ -547,6 +605,9 @@ class JSONController
                     )
                 );
                 array_push($alliancesSorted, array("id" => $key, "name" => $this->app->CoreManager->getAlliance($key)->getName(), "count" => count($alliance), "standing" => ($r == 0 && $char->getAlliId() != $member['allianceID']) ? "negative" : "positive"));
+				if($r == 0 && $char->getAlliId() != $member['allianceID']) {
+					$intel['hostilecount'] += count($alliance);
+				}
             }
             $members = $alliancesSorted;
         }

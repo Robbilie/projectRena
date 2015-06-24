@@ -981,3 +981,15 @@
         overflow: auto;
     }
 
+    .intelStatus2 {
+        background-color: rgba(255,255,0,.2);
+    }
+
+    .intelStatus3 {
+        background-color: rgba(255,140,0,.2);
+    }
+
+    .intelStatus4 {
+        background-color: rgba(255,0,0,.2);
+    }
+

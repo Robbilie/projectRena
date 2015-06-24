@@ -48,7 +48,7 @@ class CoreCharacter extends CoreBase {
 		return $this->apiData;
 	}
 
-	public function getItems ($ck = null) {
+	public function getItems ($ck) {
 		if(is_null($this->items)) {
 			$this->items = array();
 			$itemRows = $this->db->query("SELECT ntItem.ownerID,ntItem.itemID,ntItem.typeID,ntItem.locationID,ntItem.quantity,ntItem.flag,ntLocation.name FROM ntItem LEFT JOIN ntLocation ON ntItem.itemID = ntLocation.itemID WHERE ntItem.ownerID = :characterID", array(":characterID" => $this->characterID));
@@ -62,7 +62,7 @@ class CoreCharacter extends CoreBase {
 		return $this->items;
 	}
 
-	public function getContainers ($ck = null) {
+	public function getContainers ($ck) {
 		if(is_null($this->containers)) {
 			$this->containers = array();
 			$containerRows = $this->db->query("SELECT ntItem.ownerID,ntItem.itemID,ntItem.typeID,ntItem.locationID,ntItem.quantity,ntItem.flag,ntLocation.name,ntLocation.x,ntLocation.y,ntLocation.z FROM ntItem,ntLocation WHERE ntItem.ownerID = :characterID AND ntLocation.itemID = ntItem.itemID", array(":characterID" => $this->characterID));
