@@ -18,15 +18,15 @@ class users extends AbstractMigration
 				 */
 				public function up()
 				{
-								$users = $this->table("users", array("engine" => "TokuDB"));
+								$users = $this->table("userstest", array("engine" => "TokuDB"));
 								$users
 									->addColumn("characterName", "string", array("limit" => 128))
 									->addColumn("characterID", "integer", array("limit" => 11))
 									->addColumn("characterOwnerHash", "string", array("limit" => 64))
 									->addColumn("loginHash", "string", array("limit" => 64))
 									->addColumn("accessToken", "string", array("limit" => 255))
-									->addColumn("refreshToken", "string", array("limit" => 255))
-									->addColumn("scopes", "string", array("limit" => 255))
+									->addColumn("refreshToken", "string", array("limit" => 255, "null" => true))
+									->addColumn("scopes", "string", array("limit" => 255, "null" => true))
 									->addColumn("tokenType", "string", array("limit" => 255))
 									->addColumn("created", "datetime", array("default" => "CURRENT_TIMESTAMP"))
 									->addColumn("updated", "datetime", array("null" => true))
