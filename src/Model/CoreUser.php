@@ -7,6 +7,7 @@ class CoreUser extends CoreBase {
 
 	protected $id;
 	protected $admin;
+	protected $authtoken;
 
 	protected $chars;
 
@@ -34,6 +35,10 @@ class CoreUser extends CoreBase {
 
 	public function getAdmin () {
 		return $this->admin;
+	}
+
+	public function getAuthToken () {
+		return $this->authtoken;
 	}
 
 }

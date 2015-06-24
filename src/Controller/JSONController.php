@@ -24,6 +24,36 @@ class JSONController
     }
 
     public function getStatus () {
+        $status;
+        
+        if(isset($_GET['hash']) && $_GET['hash'] != "") {
+            $timeout = 15000000;
+            $interval = 500000;
+            while($timeout > 0) {
+
+                session_start();
+                $status = $this->getStatusArray();
+                session_write_close();
+
+                if(md5(json_encode($status)) == $_GET['hash']) {
+                    usleep($interval);
+                } else {
+                    break;
+                }
+
+                $timeout -= $interval;
+
+            }
+        } else {
+            $status = $this->getStatusArray();
+            $status['newhash'] = md5(json_encode($status));
+        }
+
+        $this->app->response->headers->set('Content-Type', 'application/json');
+        $this->app->response->body(json_encode($status));
+    }
+
+    function getStatusArray () {
         $user = null;
         if(isset($_SESSION['characterID']))
             $user = $this->app->CoreManager->getCharacter($_SESSION['characterID'])->getCUser();
@@ -33,8 +63,7 @@ class JSONController
             "charname" => isset($_SESSION["characterName"]) ? $_SESSION["characterName"] : '',
             "charid" => isset($_SESSION["characterID"]) ? $_SESSION["characterID"] : 0
         );
-        $this->app->response->headers->set('Content-Type', 'application/json');
-        $this->app->response->body(json_encode($status));
+        return $status;
     }
 
     public function submitAPIKey ($keyID, $vCode) {
@@ -367,7 +396,6 @@ class JSONController
     }
 
     public function getSystemIntel ($psystemID = null) {
-		$systemID = $psystemID;
         $intel = array(
                 "state" => 0,
                 "status" => "Offline",
@@ -379,174 +407,269 @@ class JSONController
                 "members" => array()
             );
         if(isset($_SESSION['loggedin'])) {
-			// set system id
-			if(is_null($systemID) && isset($_SERVER['HTTP_EVE_TRUSTED']) && $_SERVER['HTTP_EVE_TRUSTED'] == "Yes")
-				$systemID = (int)$_SERVER['HTTP_EVE_SOLARSYSTEMID'];
-            if(is_null($systemID))
-                $systemID = $this->app->CoreManager->getCharacterLocation($_SESSION['characterID']);
-            if(is_null($systemID))
-                $systemID = 30002489;
+			
+            if(isset($_GET['hash']) && $_GET['hash'] != "") {
+                $timeout = 15000000;
+                $interval = 500000;
+                while($timeout > 0) {
 
-			$char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
+                    session_start();
+                    $intel = $this->getSystemIntelArray($psystemID, $_SESSION['characterID']);
+                    session_write_close();
 
-			// move character if not in system yet
-			if(isset($_SERVER['HTTP_EVE_TRUSTED']) && $_SERVER['HTTP_EVE_TRUSTED'] == "Yes") {
-				if((int)$_SERVER['HTTP_EVE_SOLARSYSTEMID'] != $this->app->CoreManager->getCharacterLocation($_SESSION['characterID']))
-					$this->db->execute(
-						"INSERT INTO easTracker
-							(locationID, submitterID, characterID, characterName, corporationID, allianceID, timestamp)
-						VALUES
-							(:locationID, :submitterID, :characterID, :characterName, :corporationID, :allianceID, :ts)",
-						array(
-							":locationID" => (int)$_SERVER['HTTP_EVE_SOLARSYSTEMID'],
-							":submitterID" => $_SESSION['characterID'],
-							":characterID" => $_SESSION['characterID'],
-							":characterName" => $char->getCharName(),
-							":corporationID" => $char->getCorpId(),
-							":allianceID" => $char->getAlliId(),
-							":ts" => time()
-						)
-					);
-			}
+                    if(md5(json_encode($intel)) == $_GET['hash']) {
+                        usleep($interval);
+                    } else {
+                        break;
+                    }
 
-            // initial values
-            $solarSystem = $this->app->mapSolarSystems->getAllByID($systemID);
-            $intel['state'] = 1;
-            $intel['status'] = "Online";
-            $intel['systemID'] = $solarSystem['solarSystemID'];
-            $intel['systemName'] = $solarSystem['solarSystemName'];
-            $intel['regionID'] = $solarSystem['regionID'];
-            $intel['regionName'] = $this->app->mapRegions->getAllByID($solarSystem['regionID'])['regionName'];
+                    $timeout -= $interval;
 
-			// get members
-			$members = $this->db->query(
-				"SELECT characterID,characterName,corporationID,allianceID FROM easTracker WHERE
-					easTracker.locationID = :locationID AND
-					easTracker.timestamp =
-						(SELECT timestamp FROM easTracker as t WHERE
-							t.characterID = easTracker.characterID ORDER BY t.timestamp DESC LIMIT 1) ORDER BY easTracker.characterName ASC",
-				array(":locationID" => $systemID)
-			);
-			foreach ($members as &$member) {
-				$r = $this->db->queryField(
-					"SELECT count(contactID) as cnt FROM ntContactList WHERE
-						ownerID = :ownerID AND
-						(
-							contactID = :characterID OR
-							contactID = :corporationID OR
-							contactID = :allianceID
-						) AND
-						standing > 0",
-					"cnt",
-					array(
-						":ownerID" => $char->getAlliId(),
-						":characterID" => $member['characterID'],
-						":corporationID" => $member['corporationID'],
-						":allianceID" => $member['allianceID']
-					)
-				);
-				$member['standing'] = ($r == 0 && $char->getAlliId() != $member['allianceID']) ? "negative" : "positive";
-			}
-			$intel['members'] = $members;
+                }
+            } else {
+                $intel = $this->getSystemIntelArray($psystemID, $_SESSION['characterID']);
+                $intel['newhash'] = md5(json_encode($intel));
+            }
+
 		}
         $this->app->response->headers->set('Content-Type', 'application/json');
         $this->app->response->body(json_encode($intel));
     }
 
+    function getSystemIntelArray ($psystemID = null, $characterID) {
+        $systemID = $psystemID;
+
+        $intel = array(
+            "state" => 0,
+            "status" => "Offline",
+            "systemID" => 0,
+            "systemName" => "",
+            "regionID" => 0,
+            "regionName" => 0,
+            "neighbours" => array(),
+            "members" => array()
+        );
+
+        // set system id
+        if(is_null($systemID) && isset($_SERVER['HTTP_EVE_TRUSTED']) && $_SERVER['HTTP_EVE_TRUSTED'] == "Yes")
+            $systemID = (int)$_SERVER['HTTP_EVE_SOLARSYSTEMID'];
+        if(is_null($systemID))
+            $systemID = $this->app->CoreManager->getCharacterLocation($characterID);
+        if(is_null($systemID) || $systemID == 0)
+            $systemID = 30002489;
+
+        $char = $this->app->CoreManager->getCharacter($characterID);
+
+        // move character if not in system yet
+        if(isset($_SERVER['HTTP_EVE_TRUSTED']) && $_SERVER['HTTP_EVE_TRUSTED'] == "Yes") {
+            if((int)$_SERVER['HTTP_EVE_SOLARSYSTEMID'] != $this->app->CoreManager->getCharacterLocation($characterID))
+                $this->db->execute(
+                    "INSERT INTO easTracker
+                        (locationID, submitterID, characterID, characterName, corporationID, allianceID, timestamp)
+                    VALUES
+                        (:locationID, :submitterID, :characterID, :characterName, :corporationID, :allianceID, :ts)",
+                    array(
+                        ":locationID" => (int)$_SERVER['HTTP_EVE_SOLARSYSTEMID'],
+                        ":submitterID" => $characterID,
+                        ":characterID" => $characterID,
+                        ":characterName" => $char->getCharName(),
+                        ":corporationID" => $char->getCorpId(),
+                        ":allianceID" => $char->getAlliId(),
+                        ":ts" => time()
+                    )
+                );
+        }
+
+        // initial values
+        $solarSystem = $this->app->mapSolarSystems->getAllByID($systemID);
+        $intel['state'] = 1;
+        $intel['status'] = "Online";
+        $intel['systemID'] = $solarSystem['solarSystemID'];
+        $intel['systemName'] = $solarSystem['solarSystemName'];
+        $intel['regionID'] = $solarSystem['regionID'];
+        $intel['regionName'] = $this->app->mapRegions->getAllByID($solarSystem['regionID'])['regionName'];
+
+        // get members
+        $members = $this->db->query(
+            "SELECT characterID as id,characterName as name,corporationID,allianceID FROM easTracker WHERE
+                easTracker.locationID = :locationID AND
+                easTracker.timestamp =
+                    (SELECT timestamp FROM easTracker as t WHERE
+                        t.characterID = easTracker.characterID ORDER BY t.timestamp DESC LIMIT 1) ORDER BY easTracker.characterName ASC",// LIMIT 100",
+            array(":locationID" => $systemID)
+        );
+
+        if(count($members) <= 50) {
+            $intel['membertype'] = "characters";
+            foreach ($members as &$member) {
+                $r = $this->db->queryField(
+                    "SELECT count(contactID) as cnt FROM ntContactList WHERE
+                        ownerID = :ownerID AND
+                        (
+                            contactID = :characterID OR
+                            contactID = :corporationID OR
+                            contactID = :allianceID
+                        ) AND
+                        standing > 0",
+                    "cnt",
+                    array(
+                        ":ownerID" => $char->getAlliId(),
+                        ":characterID" => $member['id'],
+                        ":corporationID" => $member['corporationID'],
+                        ":allianceID" => $member['allianceID']
+                    )
+                );
+                $member['standing'] = ($r == 0 && $char->getAlliId() != $member['allianceID']) ? "negative" : "positive";
+            }
+        } else {
+            $intel['membertype'] = "alliances";
+            $alliances = array();
+            foreach ($members as $member) {
+                if(is_null($alliances[$member['allianceID']]))
+                    $alliances[$member['allianceID']] = array();
+                array_push($alliances[$member['allianceID']], $member);
+            }
+            $alliancesSorted = array();
+            foreach ($alliances as $key => $alliance) {
+                $r = $this->db->queryField(
+                    "SELECT count(contactID) as cnt FROM ntContactList WHERE
+                        ownerID = :ownerID AND
+                        (
+                            contactID = :allianceID
+                        ) AND
+                        standing > 0",
+                    "cnt",
+                    array(
+                        ":ownerID" => $char->getAlliId(),
+                        ":allianceID" => $key
+                    )
+                );
+                array_push($alliancesSorted, array("id" => $key, "name" => $this->app->CoreManager->getAlliance($key)->getName(), "count" => count($alliance), "standing" => ($r == 0 && $char->getAlliId() != $member['allianceID']) ? "negative" : "positive"));
+            }
+            $members = $alliancesSorted;
+        }
+
+        $intel['members'] = $members;
+
+        return $intel;
+    }
+
 	public function setSystemIntel ($psystemID = null) {
-		$systemID = $psystemID;
-		$response = array("state" => "error", "msg" => "");
+        $response = array("state" => "error", "msg" => "");
+
+        // intel token auth
+        if(isset($_POST['authToken']) && $_POST['authToken'] != "" && isset($_POST['characterID']) && $_POST['characterID'] != "") {
+            $user = $this->app->CoreManager->getUserByToken($_POST['authToken']);
+            $char = $this->app->CoreManager->getCharacter($_POST['characterID']);
+            if($user && $char) {
+                if($char->getUser() == $user->getId()) {
+                    $_SESSION['loggedin'] = true;
+                    $_SESSION['characterID'] = $char->getCharId();
+                    $_SESSION['characterName'] = $char->getCharName();
+                } else {
+                    $response['msg'] = "char not on user";
+                }
+            } else {
+                $response['msg'] = "user or char not there";
+            }
+        } else {
+            $response['msg'] = "token or charid not set";
+        }
+
+        $systemID = $psystemID;
 		if(isset($_SESSION['loggedin'])) {
 			// set system id
 			if(is_null($systemID) && isset($_SERVER['HTTP_EVE_TRUSTED']) && $_SERVER['HTTP_EVE_TRUSTED'] == "Yes")
 				$systemID = (int)$_SERVER['HTTP_EVE_SOLARSYSTEMID'];
 			if(is_null($systemID))
 				$systemID = $this->app->CoreManager->getCharacterLocation($_SESSION['characterID']);
-			if(is_null($systemID))
+			if(is_null($systemID) || $systemID == 0)
 				$systemID = 30002489;
+            // local members
+            $local = str_replace("%20", " ", $this->app->request->post('local'));
+            $local = explode(",", $local);
 
-			// local members
-			$local = str_replace("%20", " ", $this->app->request->post('local'));
-			$local = explode(",", $local);
 
-			// get ids from api
-			$chunkedLocal = array_chunk($local, 100);
-			$idsFromAPI = array();
-			for($i = 0; $i < count($chunkedLocal); $i++)
-				$idsFromAPI = array_merge($idsFromAPI, $this->app->EVEEVECharacterID->getData($chunkedLocal[$i])['result']['characters']);
-			//$idsFromAPI = $this->app->EVEEVECharacterID->getData($local)['result']['characters'];
-			$idsFromAPISorted = array();
-			foreach ($idsFromAPI as $idFromAPI)
-				array_push($idsFromAPISorted, $idFromAPI['characterID']);
+            // get ids from api
+            $chunkedLocal = array_chunk($local, 100);
+            $idsFromAPI = array();
+            for($i = 0; $i < count($chunkedLocal); $i++) {
+                $idsFromAPI = array_merge($idsFromAPI, $this->app->EVEEVECharacterID->getData($chunkedLocal[$i])['result']['characters']);
+            }
 
-			// get affiliations from api
-			$chunkedIdsFromAPI = array_chunk($idsFromAPISorted, 250);
-			$affs = array();
-			for($i = 0; $i < count($chunkedIdsFromAPI); $i++)
-				$affs = array_merge($affs, $this->app->EVEEVECharacterAffiliation->getData($chunkedIdsFromAPI[$i])['result']['characters']);
-			//$affs = $this->app->EVEEVECharacterAffiliation->getData($idsFromAPISorted)['result']['characters'];
-			$affsSorted = array();
-			foreach($affs as $aff)
-				$affsSorted[$aff['characterID']] = $aff;
+            $idsFromAPISorted = array();
+            foreach ($idsFromAPI as $idFromAPI)
+                array_push($idsFromAPISorted, $idFromAPI['characterID']);
 
-			// get chars in system
-			$charRows = $this->db->query(
-				"SELECT * FROM easTracker WHERE
-					easTracker.locationID = :locationID AND
-					easTracker.timestamp =
-						(SELECT timestamp FROM easTracker as t WHERE
-							t.characterID = easTracker.characterID ORDER BY t.timestamp DESC LIMIT 1)",
-				array(":locationID" => $systemID)
-			);
+            // get affiliations from api
+            $chunkedIdsFromAPI = array_chunk($idsFromAPISorted, 100);
+            $affs = array();
+            for($i = 0; $i < count($chunkedIdsFromAPI); $i++) {
+                $affs = array_merge($affs, $this->app->EVEEVECharacterAffiliation->getData($chunkedIdsFromAPI[$i])['result']['characters']);
+            }
 
-			// get ids and data from in system
-			$charIDs = array();
-			$charDat = array();
-			foreach($charRows as $charRow) {
-				array_push($charIDs, $charRow['characterID']);
-				$charDat[$charRow['characterID']] = $charRow;
-			}
+            $affsSorted = array();
+            foreach($affs as $aff)
+                $affsSorted[$aff['characterID']] = $aff;
 
-			// get those not in system anymore
-			$dif = array_diff($charIDs, $idsFromAPISorted);
+            // get chars in system
+            $charRows = $this->db->query(
+                "SELECT * FROM easTracker WHERE
+                    easTracker.locationID = :locationID AND
+                    easTracker.timestamp =
+                        (SELECT timestamp FROM easTracker as t WHERE
+                            t.characterID = easTracker.characterID ORDER BY t.timestamp DESC LIMIT 1)",
+                array(":locationID" => $systemID)
+            );
 
-			// move old chars to null system
-			foreach($dif as $d)
-				$this->db->execute(
-					"INSERT INTO easTracker
-						(locationID, submitterID, characterID, characterName, corporationID, allianceID, timestamp)
-					VALUES
-						(:locationID, :submitterID, :characterID, :characterName, :corporationID, :allianceID, :ts)",
-					array(
-						":locationID" => "null",
-						":submitterID" => $_SESSION['characterID'],
-						":characterID" => $charDat[$d]['characterID'],
-						":characterName" => $charDat[$d]['characterName'],
-						":corporationID" => $charDat[$d]['corporationID'],
-						":allianceID" => $charDat[$d]['allianceID'],
-						":ts" => time()
-					)
-				);
+            // get ids and data from in system
+            $charIDs = array();
+            $charDat = array();
+            foreach($charRows as $charRow) {
+                array_push($charIDs, $charRow['characterID']);
+                $charDat[$charRow['characterID']] = $charRow;
+            }
 
-			// mover new chars into the system
-			foreach($idsFromAPISorted as $id)
-				$this->db->execute(
-					"INSERT INTO easTracker
-						(locationID, submitterID, characterID, characterName, corporationID, allianceID, timestamp)
-					VALUES
-						(:locationID, :submitterID, :characterID, :characterName, :corporationID, :allianceID, :ts)",
-					array(
-						":locationID" => $systemID,
-						":submitterID" => $_SESSION['characterID'],
-						":characterID" => $affsSorted[$id]['characterID'],
-						":characterName" => $affsSorted[$id]['characterName'],
-						":corporationID" => $affsSorted[$id]['corporationID'],
-						":allianceID" => $affsSorted[$id]['allianceID'],
-						":ts" => time()
-					)
-				);
+            // get those not in system anymore
+            $dif = array_diff($charIDs, $idsFromAPISorted);
 
-			$response = array("state" => "success", "msg" => "");
+            // move old chars to null system
+            foreach($dif as $d)
+                $this->db->execute(
+                    "INSERT INTO easTracker
+                        (locationID, submitterID, characterID, characterName, corporationID, allianceID, timestamp)
+                    VALUES
+                        (:locationID, :submitterID, :characterID, :characterName, :corporationID, :allianceID, :ts)",
+                    array(
+                        ":locationID" => "null",
+                        ":submitterID" => $_SESSION['characterID'],
+                        ":characterID" => $charDat[$d]['characterID'],
+                        ":characterName" => $charDat[$d]['characterName'],
+                        ":corporationID" => $charDat[$d]['corporationID'],
+                        ":allianceID" => $charDat[$d]['allianceID'],
+                        ":ts" => time()
+                    )
+                );
+
+            // mover new chars into the system
+            foreach($idsFromAPISorted as $id) {
+                $this->db->execute(
+                    "INSERT INTO easTracker
+                        (locationID, submitterID, characterID, characterName, corporationID, allianceID, timestamp)
+                    VALUES
+                        (:locationID, :submitterID, :characterID, :characterName, :corporationID, :allianceID, UNIX_TIMESTAMP(NOW()))",
+                    array(
+                        ":locationID" => $systemID,
+                        ":submitterID" => $_SESSION['characterID'],
+                        ":characterID" => $affsSorted[$id]['characterID'],
+                        ":characterName" => $affsSorted[$id]['characterName'],
+                        ":corporationID" => $affsSorted[$id]['corporationID'],
+                        ":allianceID" => $affsSorted[$id]['allianceID']
+                    )
+                );
+            }
+
+            $response = array("state" => "success", "msg" => "");
 		}
 		$this->app->response->headers->set('Content-Type', 'application/json');
 		$this->app->response->body(json_encode($response));

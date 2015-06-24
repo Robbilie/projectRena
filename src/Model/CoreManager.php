@@ -18,6 +18,9 @@ class CoreManager {
     public function login ($characterID) {
         $char = $this->createCharacter($characterID);
 
+        // temp fix, write logger...
+        $this->db->execute("INSERT INTO easLogs (type,data,timestamp) VALUES (:type, :data, :ts)", array(":type" => "login", "data" => $characterID, ":ts" => time()));
+
         if(isset($_SESSION['characterID'])) {
             $char->setUser($this->createCharacter($_SESSION['characterID'])->getUser());
         } else {
@@ -148,6 +151,19 @@ class CoreManager {
             if($user->getId() == $userID)
                 return $user;
         $userRow = $this->db->queryRow("SELECT * FROM easUsers WHERE id = :userID", array(":userID" => $userID));
+        if($userRow) {
+            $user = new CoreUser($this->app, $userRow);
+            array_push($this->users, $user);
+            return $user;
+        }
+        return null;
+    }
+
+    public function getUserByToken ($token) {
+        foreach ($this->users as $user)
+            if($user->getAuthToken() == $token)
+                return $user;
+        $userRow = $this->db->queryRow("SELECT * FROM easUsers WHERE authtoken IS NOT NULL AND authtoken = :authtoken", array(":authtoken" => $token));
         if($userRow) {
             $user = new CoreUser($this->app, $userRow);
             array_push($this->users, $user);
@@ -378,6 +394,17 @@ class CoreManager {
 
     public function getCharacterLocation ($characterID) {
         return $this->db->queryField("SELECT locationID FROM easTracker WHERE characterID = :characterID ORDER BY timestamp DESC LIMIT 1", "locationID", array(":characterID" => $characterID));
+    }
+
+    public function hashString ($str) {
+        $hash = 0; $i; $chr; $len;
+        if (strlen($str) == 0) return $hash;
+        for ($i = 0, $len = strlen($str); $i < $len; $i++) {
+            $chr = ord($str[$i]);
+            $hash = (($hash << 5) - $hash) + $chr;
+            $hash |= 0;
+        }
+        return (int) $hash;
     }
     
 }
