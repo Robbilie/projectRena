@@ -552,7 +552,7 @@ class JSONController
                         t.characterID = easTracker.characterID ORDER BY t.timestamp DESC LIMIT 1) AND easTracker.timestamp > :ts ORDER BY easTracker.characterName ASC",// LIMIT 100",
             array(
 				":locationID" => $systemID,
-				":ts" => time() - (60*60*24) // 0 if all should be intelled
+				":ts" => /*time() - (60*60*24)*/ 0 // 0 if all should be intelled
 			)
         );
 
