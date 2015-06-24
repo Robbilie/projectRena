@@ -195,15 +195,15 @@
                 }, 0);
             }
 
-            var coreStatus = {"isLoggedin":{% if LoggedIN == 1 %}true{% else %}false{% endif %},"isAdmin":false,"charname":"{{ characterName }}","charid":{{ characterID | default(0) }}};
-            //var statusInt = setTimeout(checkStatus, 60000);
+            //var coreStatus = {"isLoggedin":{% if LoggedIN == 1 %}true{% else %}false{% endif %},"isAdmin":false,"charname":"{{ characterName }}","charid":{{ characterID | default(0) }}};
+            var coreStatus = {};
 
             function checkStatus (cb, poll) {
                 ajax("/json/status/?hash=" +md5(JSON.stringify(coreStatus)), function (r) {
                     $("#checkLoggedin").checked = !(!r.isLoggedin);
                     if(r.isLoggedin) {
-                        if(r.isLoggedin != coreStatus.isLoggedin)
-                            hashChange();
+                        /*if(r.isLoggedin != coreStatus.isLoggedin)
+                            hashChange();*/
                         setLoggedinCard(r.charid, r.charname);
                     }
                     setTimeout(function () {

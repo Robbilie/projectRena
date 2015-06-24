@@ -219,7 +219,7 @@ class __TwigTemplate_101b70a1e77b6c7061e18e52db78798b2e2fad5d461a19a4787df21476d
                 }, 0);
             }
 
-            var coreStatus = {\"isLoggedin\":";
+            //var coreStatus = {\"isLoggedin\":";
         // line 198
         if (((isset($context["LoggedIN"]) ? $context["LoggedIN"] : null) == 1)) {
             echo "true";
@@ -231,14 +231,14 @@ class __TwigTemplate_101b70a1e77b6c7061e18e52db78798b2e2fad5d461a19a4787df21476d
         echo "\",\"charid\":";
         echo twig_escape_filter($this->env, ((array_key_exists("characterID", $context)) ? (_twig_default_filter((isset($context["characterID"]) ? $context["characterID"] : null), 0)) : (0)), "html", null, true);
         echo "};
-            //var statusInt = setTimeout(checkStatus, 60000);
+            var coreStatus = {};
 
             function checkStatus (cb, poll) {
                 ajax(\"/json/status/?hash=\" +md5(JSON.stringify(coreStatus)), function (r) {
                     \$(\"#checkLoggedin\").checked = !(!r.isLoggedin);
                     if(r.isLoggedin) {
-                        if(r.isLoggedin != coreStatus.isLoggedin)
-                            hashChange();
+                        /*if(r.isLoggedin != coreStatus.isLoggedin)
+                            hashChange();*/
                         setLoggedinCard(r.charid, r.charname);
                     }
                     setTimeout(function () {

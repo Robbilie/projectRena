@@ -15,10 +15,6 @@ class CorePermission extends CoreBase {
 		return $this->id;
 	}
 
-	public function getBit () {
-		return pow(2, $this->id);
-	}
-
 	public function getName () {
 		return $this->name;
 	}

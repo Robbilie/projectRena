@@ -13,16 +13,18 @@ class CoreCharacter extends CoreBase {
 	protected $corporationName;
 	protected $allianceID;
 	protected $allianceName;
+
 	protected $groups;
+	protected $cgroups;
 
 	protected $userObj;
 	protected $corp;
-	protected $groupList;
 
 	protected $items;
 	protected $containers;
 
 	protected $permissions;
+	protected $cpermissions;
 
 	protected $apiData;
 
@@ -40,16 +42,6 @@ class CoreCharacter extends CoreBase {
 		return $this->corp;
 	}
 
-	public function getGroupList () {
-		if(is_null($this->groupList)) {
-			$this->groupList = array();
-			$groupRows = $this->db->query("SELECT * FROM easGroups WHERE :groups & POWER(2, id) = POWER(2, id)", array(":groups" => $this->groups));
-			foreach ($groupRows as $groupRow)
-				array_push($this->groupList, new CoreGroup($this->app, $groupRow));
-		}
-		return $this->groupList;
-	}
-
 	public function getAPIData () {
 		if(is_null($this->apiData))
 			$this->apiData = $this->db->queryRow("SELECT * FROM ntCharacter WHERE id = :characterID", array(":characterID" => $this->characterID));
@@ -62,9 +54,8 @@ class CoreCharacter extends CoreBase {
 			$itemRows = $this->db->query("SELECT ntItem.ownerID,ntItem.itemID,ntItem.typeID,ntItem.locationID,ntItem.quantity,ntItem.flag,ntLocation.name FROM ntItem LEFT JOIN ntLocation ON ntItem.itemID = ntLocation.itemID WHERE ntItem.ownerID = :characterID", array(":characterID" => $this->characterID));
 			foreach ($itemRows as $itemRow) {
 				$item = new CoreItem($this->app, $itemRow);
-				if(!is_null($ck))
-					if(!$ck($item))
-						continue;
+				if(!is_null($ck) && !$ck($item))
+					continue;
 				array_push($this->items, $item);
 			}
 		}
@@ -77,9 +68,8 @@ class CoreCharacter extends CoreBase {
 			$containerRows = $this->db->query("SELECT ntItem.ownerID,ntItem.itemID,ntItem.typeID,ntItem.locationID,ntItem.quantity,ntItem.flag,ntLocation.name,ntLocation.x,ntLocation.y,ntLocation.z FROM ntItem,ntLocation WHERE ntItem.ownerID = :characterID AND ntLocation.itemID = ntItem.itemID", array(":characterID" => $this->characterID));
 			foreach ($containerRows as $containerRow) {
 				$container = new CoreContainer($this->app, $containerRow);
-				if(!is_null($ck))
-					if(!$ck($container))
-						continue;
+				if(!is_null($ck) && !$ck($container))
+					continue;
 				array_push($this->containers, $container);
 			}
 		}
@@ -88,23 +78,63 @@ class CoreCharacter extends CoreBase {
 
 	public function getPermissions () {
 		if(is_null($this->permissions)) {
-			$perms = 0;
-			$groups = $this->getGroupList();
-			foreach ($groups as $group) {
-				$perms |= $group->getPermissions();
-			}
-			$this->permissions = $perms;
+			$this->permissions = array();
+			$groups = $this->getCGroups();
+			foreach($groups as $group)
+				$this->permissions = array_merge($this->permissions, $group->getPermissions());
 		}
 		return $this->permissions;
 	}
 
+	public function getCPermissions () {
+		if(is_null($this->cpermissions)) {
+			$permissions = $this->getPermissions();
+			$this->cpermissions = array();
+			foreach ($permissions as $permission)
+				array_push($this->cpermissions, $this->app->CoreManager->getPermission($permission));
+		}
+		return $this->cpermissions;
+	}
+
 	public function hasPermission ($perm) {
 		if(is_int($perm)) {
-			return ($this->getPermissions() & $perm) == $perm;
+			return in_array($perm, $this->getPermissions());
 		} else if(is_string($perm)) {
 			$permission = $this->app->CoreManager->getPermission($perm);
-			return ($this->getPermissions() & $permission->getBit()) == $permission->getBit();
+			return in_array($permission->getId(), $this->getPermissions());
 		}
+	}
+
+	public function addToGroup ($id) {
+		if(!in_array($id, $this->getGroups())) {
+			$this->db->execute("INSERT INTO easGroupMembers (groupID, characterID) VALUES (:groupID, :characterID)", array(":groupID" => $id, ":characterID" => $this->characterID));
+		}
+	}
+
+	public function removeFromGroup ($id) {
+		if(in_array($id, $this->getGroups())) {
+			$this->db->execute("DELETE FROM easGroupMembers WHERE characterID = :characterID AND groupID = :groupID", array(":characterID" => $this->characterID, ":groupID" => $id));
+		}
+	}
+
+	public function getGroups () {
+		if(is_null($this->groups)) {
+			$groupRows = $this->db->query("SELECT groupID FROM easGroupMembers WHERE characterID = :characterID", array(":characterID" => $this->characterID));
+			$this->groups = array();
+			foreach ($groupRows as $groupRow)
+				array_push($this->groups, (int)$groupRow['groupID']);
+		}
+		return $this->groups;
+	}
+
+	public function getCGroups () {
+		if(is_null($this->cgroups)) {
+			$groups = $this->getGroups();
+			$this->cgroups = array();
+			foreach ($groups as $group)
+				array_push($this->cgroups, $this->app->CoreManager->getGroup($group));
+		}
+		return $this->cgroups;
 	}
 
 	// default
@@ -141,10 +171,6 @@ class CoreCharacter extends CoreBase {
 		return $this->allianceName;
 	}
 
-	public function getGroups () {
-		return $this->groups;
-	}
-
 	public function setUser ($user) {
 		$this->user = $user;
 		$this->db->execute("UPDATE easCharacters SET user = :user WHERE id = :id", array(":user" => $user, "id" => $this->getId()), true);
@@ -178,11 +204,6 @@ class CoreCharacter extends CoreBase {
 	public function setAlliName ($alliName) {
 		$this->allianceName = $alliName;
 		$this->db->execute("UPDATE easCharacters SET allianceName = :allianceName WHERE id = :id", array(":allianceName" => $alliName, "id" => $this->getId()), true);
-	}
-
-	public function setGroups ($groups) {
-		$this->groups = $groups;
-		$this->db->execute("UPDATE easCharacters SET groups = :groups WHERE id = :id", array(":groups" => $groups, "id" => $this->getId()), true);
 	}
 
 }

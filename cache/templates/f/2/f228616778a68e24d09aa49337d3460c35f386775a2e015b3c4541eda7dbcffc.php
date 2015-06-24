@@ -82,9 +82,9 @@ class __TwigTemplate_f228616778a68e24d09aa49337d3460c35f386775a2e015b3c4541eda7d
 \t\t\t\tif(r.owned[i].owner != null || (r.owned[i].owner == null && coreStatus.isAdmin))
 \t\t\t\t\tel1.innerHTML += tmpl.format(r.owned[i].id,(r.owned[i].custom == 1 ? '[custom] ' : '') + r.owned[i].name, \"\");
 \t\t\tfor(var i = 0; i < r.corporation.length; i++)
-\t\t\t\tel2.innerHTML += tmpl.format(r.corporation[i].id,(r.corporation[i].custom == 1 ? '[custom] ' : '') + r.corporation[i].name, '<span class=\"fr\">[' + ((r.groups & Math.pow(2, r.corporation[i].id)) == Math.pow(2, r.corporation[i].id) ? \"member\" : \"apply\") + ']</span>');
+\t\t\t\tel2.innerHTML += tmpl.format(r.corporation[i].id,(r.corporation[i].custom == 1 ? '[custom] ' : '') + r.corporation[i].name, '<span class=\"fr\">[' + ((r.groups.indexOf(parseInt(r.corporation[i].id)) >= 0) ? \"member\" : \"apply\") + ']</span>');
 \t\t\tfor(var i = 0; i < r.alliance.length; i++)
-\t\t\t\tel3.innerHTML += tmpl.format(r.alliance[i].id,(r.alliance[i].custom == 1 ? '[custom] ' : '') + r.alliance[i].name, '<span class=\"fr\">[' + ((r.groups & Math.pow(2, r.alliance[i].id)) == Math.pow(2, r.alliance[i].id) ? \"member\" : \"apply\") + ']</span>');
+\t\t\t\tel3.innerHTML += tmpl.format(r.alliance[i].id,(r.alliance[i].custom == 1 ? '[custom] ' : '') + r.alliance[i].name, '<span class=\"fr\">[' + ((r.groups.indexOf(parseInt(r.alliance[i].id)) >= 0) ? \"member\" : \"apply\") + ']</span>');
 
 \t\t\tfadeOn(\$(\"#groupsConti\"), 1);
 \t\t}, \"json\");

@@ -24,7 +24,7 @@ class JSONController
     }
 
     public function getStatus () {
-        $status;
+        $status = array();
         
         if(isset($_GET['hash']) && $_GET['hash'] != "") {
             $timeout = 15000000;
@@ -135,7 +135,7 @@ class JSONController
     public function getCharacterGroups ($characterID) {
         $groups = array();
         if(isset($_SESSION['loggedin']))
-            $groups = $this->app->CoreManager->getCharacter($characterID)->getGroupList();
+            $groups = $this->app->CoreManager->getCharacter($characterID)->getCGroups();
         $this->app->response->headers->set('Content-Type', 'application/json');
         $this->app->response->body(json_encode($groups));
     }
@@ -192,7 +192,7 @@ class JSONController
     }
 
     public function getGroups () {
-        $groups = array("owned" => array(), "corporation" => array(), "alliance" => array(), "groups" => 0);
+        $groups = array("owned" => array(), "corporation" => array(), "alliance" => array(), "groups" => array());
         if(isset($_SESSION['loggedin'])) {
             $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
             $groups['groups'] = $char->getGroups();
@@ -217,8 +217,10 @@ class JSONController
 
     public function getGroup ($groupID) {
         $group = array();
-        if(isset($_SESSION['loggedin']))
-            $group = $this->app->CoreManager->getGroup(pow(2, $groupID));
+        if(isset($_SESSION['loggedin'])) {
+			$group = $this->app->CoreManager->getGroup((int)$groupID);
+			$group->getPermissions();
+		}
         $this->app->response->headers->set('Content-Type', 'application/json');
         $this->app->response->body(json_encode($group));
     }
@@ -227,11 +229,11 @@ class JSONController
         $members = array();
         if(isset($_SESSION['loggedin'])) {
             $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
-            $group = $this->app->CoreManager->getGroup(pow(2, $groupID));
+            $group = $this->app->CoreManager->getGroup((int)$groupID);
             if(strpos($group->getScope(), "corporation") !== FALSE) {
-                $members = $char->getCCorporation()->getMemberList(function ($c) use ($group) { return ($c->getGroups() & $group->getBit()) == $group->getBit(); });
+                $members = $char->getCCorporation()->getMemberList(function ($c) use ($group) { return in_array($group->getId(), $c->getGroups()); });
             } else if(strpos($group->getScope(), "alliance") !== FALSE) {
-                $members = $char->getCCorporation()->getCAlliance()->getMemberList(function ($c) use ($group) { return ($c->getGroups() & $group->getBit()) == $group->getBit(); });
+                $members = $char->getCCorporation()->getCAlliance()->getMemberList(function ($c) use ($group) { return in_array($group->getId(), $c->getGroups()); });
             }
         }
         $this->app->response->headers->set('Content-Type', 'application/json');
@@ -250,10 +252,10 @@ class JSONController
         $resp = array("msg" => "", "state" => "error");
         if(isset($_SESSION['loggedin'])) {
             $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
-            $group = $this->app->CoreManager->getGroup(pow(2, $groupID));
-            if($group->hasPermission(pow(2, $permissionID))) {
+            $group = $this->app->CoreManager->getGroup((int)$groupID);
+            if($group->hasPermission($permissionID)) {
                 if($this->app->CoreManager->charHasGroupPrivs($char, $group)) {
-                    $group->removePermission(pow(2, $permissionID));
+                    $group->removePermission($permissionID);
                     $resp['state'] = "success";
                 } else {
                     $resp['msg'] = "You dont have permission to do this.";
@@ -270,10 +272,10 @@ class JSONController
         $resp = array("msg" => "", "state" => "error");
         if(isset($_SESSION['loggedin'])) {
             $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
-            $group = $this->app->CoreManager->getGroup(pow(2, $groupID));
-            $permission = $this->app->CoreManager->getPermission(pow(2, $permissionID));
+            $group = $this->app->CoreManager->getGroup((int)$groupID);
+            $permission = $this->app->CoreManager->getPermission((int)$permissionID);
             if($this->app->CoreManager->charHasGroupPrivs($char, $group)) {
-                $group->addPermission(pow(2, $permissionID));
+                $group->addPermission($permissionID);
                 $resp['state'] = "success";
             } else {
                 $resp['msg'] = "You dont have permission to do this.";
@@ -286,12 +288,12 @@ class JSONController
     public function removeCharacterFromGroup ($groupID, $characterID) {
         $resp = array("msg" => "", "state" => "error");
         if(isset($_SESSION['loggedin'])) {
-             $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
+            $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
             $otherchar = $this->app->CoreManager->getCharacter($characterID);
-            $group = $this->app->CoreManager->getGroup(pow(2, $groupID));
+            $group = $this->app->CoreManager->getGroup((int)$groupID);
             if($this->app->CoreManager->charCanAddCharToGroup($char, $otherchar, $group)) {
-                if(($otherchar->getGroups() & $group->getBit()) == $group->getBit()) {
-                    $otherchar->setGroups($otherchar->getGroups() - $group->getBit());
+                if(in_array($group->getId(), $otherchar->getGroups())) {
+                    $otherchar->removeFromGroup($group->getId());
                     $resp['state'] = "success";
                 } else {
                     $resp['msg'] = "Character not in Group.";
@@ -309,9 +311,9 @@ class JSONController
         if(isset($_SESSION['loggedin'])) {
             $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
             $otherchar = $this->app->CoreManager->getCharacter($characterID);
-            $group = $this->app->CoreManager->getGroup(pow(2, $groupID));
+            $group = $this->app->CoreManager->getGroup((int)$groupID);
             if($this->app->CoreManager->charCanAddCharToGroup($char, $otherchar, $group)) {
-                $otherchar->setGroups($otherchar->getGroups() | $group->getBit());
+                $otherchar->addToGroup($group->getId());
                 $resp['state'] = "success";
             } else {
                 $resp['msg'] = "You dont have permission to do this.";
@@ -683,9 +685,15 @@ class JSONController
         $this->app->response->body(json_encode($intel));
     }
 
-    public function getSystemNames ($name) {
-    	$systemRows = $this->db->query("SELECT solarSystemName as name, solarSystemID as data FROM mapSolarSystems WHERE solarSystemName LIKE :name", array(":name" => $name."%"));
+	public function getSystemNames ($name) {
+		$systemRows = $this->db->query("SELECT solarSystemName as name, solarSystemID as data FROM mapSolarSystems WHERE solarSystemName LIKE :name", array(":name" => $name."%"));
 		$this->app->response->headers->set('Content-Type', 'application/json');
 		$this->app->response->body(json_encode($systemRows));
-    }
+	}
+
+	public function getCharacterNames ($name) {
+		$characterRows = $this->db->query("SELECT characterName as name, characterID as data FROM easCharacters WHERE characterName LIKE :name", array(":name" => $name."%"));
+		$this->app->response->headers->set('Content-Type', 'application/json');
+		$this->app->response->body(json_encode($characterRows));
+	}
 }

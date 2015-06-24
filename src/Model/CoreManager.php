@@ -40,7 +40,7 @@ class CoreManager {
         $apiChar = (new \ProjectRena\Model\EVEApi\EVE\CharacterAffiliation($this->app))->getData([$characterID])["result"]["characters"][0];
         $charRow = $this->db->queryRow("SELECT * FROM easCharacters WHERE characterID = :characterID", array(":characterID" => $characterID));
         if(!$charRow) {
-            $this->db->execute("INSERT INTO easCharacters (characterID, characterName, corporationID, corporationName, allianceID, allianceName, groups) VALUE (:characterID, :characterName, :corporationID, :corporationName, :allianceID, :allianceName, 0)",
+            $this->db->execute("INSERT INTO easCharacters (characterID, characterName, corporationID, corporationName, allianceID, allianceName) VALUE (:characterID, :characterName, :corporationID, :corporationName, :allianceID, :allianceName)",
                 array(":characterID"        => $apiChar['characterID'],
                       ":characterName"      => $apiChar['characterName'],
                       ":corporationID"      => $apiChar['corporationID'],
@@ -56,7 +56,7 @@ class CoreManager {
             $vars = array('characterID' => 'CharId', 'characterName' => 'CharName', 'corporationID' => 'CorpId', 'corporationName' => 'CorpName', 'allianceID' => 'AlliId', 'allianceName' => 'AlliName');
             $char = new CoreCharacter($this->app, $charRow);
             $ch = $this->charChanged($char, $apiChar);
-            if($ch || $char->getGroups() == 0) {
+            if($ch || count($char->getGroups()) == 0) {
                 $this->setBaseGroups($char);
             }
         }
@@ -67,7 +67,7 @@ class CoreManager {
     public function getGroup ($grp) {
         foreach ($this->groups as $group) {
             if(is_int($grp)) {
-                if($group->getBit() == $grp)
+                if($group->getId() == $grp)
                     return $group;
             } else if(is_string($grp)) {
                 if($group->getName() == $grp)
@@ -76,7 +76,7 @@ class CoreManager {
         }
         $groupRow = array();
         if(is_int($grp)) {
-            $groupRow = $this->db->queryRow("SELECT * FROM easGroups WHERE id = :bi", array(":bi" => log($grp, 2)));
+            $groupRow = $this->db->queryRow("SELECT * FROM easGroups WHERE id = :bi", array(":bi" => $grp));
         } else if(is_string($grp)) {
             $groupRow = $this->db->queryRow("SELECT * FROM easGroups WHERE name = :bi", array(":bi" => $grp));
         }
@@ -92,7 +92,7 @@ class CoreManager {
         $groups = array();
         $groupRows = $this->db->query("SELECT id FROM easGroups WHERE scope = :scope", array(":scope" => $scope));
         foreach ($groupRows as $groupRow)
-            array_push($groups, $this->getGroup(pow(2, $groupRow['id'])));
+            array_push($groups, $this->getGroup($groupRow['id']));
         return $groups;
     }
 
@@ -100,7 +100,7 @@ class CoreManager {
         $groups = array();
         $groupRows = $this->db->query("SELECT id FROM easGroups WHERE owner = :owner OR owner IS NULL", array(":owner" => $owner));
         foreach ($groupRows as $groupRow)
-            array_push($groups, $this->getGroup(pow(2, $groupRow['id'])));
+            array_push($groups, $this->getGroup((int)$groupRow['id']));
         return $groups;
     }
 
@@ -108,7 +108,7 @@ class CoreManager {
         $groups = array();
         $groupRows = $this->db->query("SELECT id FROM easGroups WHERE (owner = :owner OR owner IS NULL) AND scope = :scope", array(":owner" => $owner, ":scope" => $scope));
         foreach ($groupRows as $groupRow)
-            array_push($groups, $this->getGroup(pow(2, $groupRow['id'])));
+            array_push($groups, $this->getGroup((int)$groupRow['id']));
         return $groups;
     }
 
@@ -116,7 +116,7 @@ class CoreManager {
     public function getPermission ($perm) {
         foreach ($this->permissions as $permission) {
             if(is_int($perm)) {
-                if($permission->getBit() == $perm)
+                if($permission->getId() == $perm)
                     return $permission;
             } else if(is_string($perm)) {
                 if($permission->getName() == $perm)
@@ -125,7 +125,7 @@ class CoreManager {
         }
         $permissionRow = array();
         if(is_int($perm)) {
-            $permissionRow = $this->db->queryRow("SELECT * FROM easPermissions WHERE id = :bi", array(":bi" => log($perm, 2)));
+            $permissionRow = $this->db->queryRow("SELECT * FROM easPermissions WHERE id = :bi", array(":bi" => $perm));
         } else if(is_string($perm)) {
             $permissionRow = $this->db->queryRow("SELECT * FROM easPermissions WHERE name = :bi", array(":bi" => $perm));
         }
@@ -141,7 +141,7 @@ class CoreManager {
         $permissions = array();
         $permissionRows = $this->db->query("SELECT id FROM easPermissions WHERE scope = :scope", array(":scope" => $scope));
         foreach ($permissionRows as $permissionRow)
-            array_push($permissions, $this->getPermission(pow(2, $permissionRow['id'])));
+            array_push($permissions, $this->getPermission((int)$permissionRow['id']));
         return $permissions;
     }
 
@@ -300,28 +300,28 @@ class CoreManager {
     }
 
     public function setBaseGroups ($char) {
-        $groups = 0;
+
         $allianceRow = $this->db->queryRow("SELECT * FROM easGroups WHERE name = :name", array(":name" => $char->getAlliName()));
         if($allianceRow) {
             $allianceGroup = new CoreGroup($this->app, $allianceRow);
-            $groups += $allianceGroup->getBit();
+            $char->addToGroup($allianceGroup->getId());
         } else {
             $allianceGroup = $this->createGroup($char->getAlliName(), "alliance", $char->getAlliId(), 0);
-            $groups += $allianceGroup->getBit();
+            $char->addToGroup($allianceGroup->getId());
         }
+
         $corporationRow = $this->db->queryRow("SELECT * FROM easGroups WHERE name = :name", array(":name" => $char->getCorpName()));
         if($corporationRow) {
             $corporationGroup = new CoreGroup($this->app, $corporationRow);
-            $groups += $corporationGroup->getBit();
+            $char->addToGroup($corporationGroup->getId());
         } else {
             $corporationGroup = $this->createGroup($char->getCorpName(), "corporation", $char->getCorpId(), 0);
-            $groups += $corporationGroup->getBit();
+            $char->addToGroup($corporationGroup->getId());
         }
-        $char->setGroups($groups);
     }
 
     public function createGroup ($groupName, $scope, $owner = null, $custom = 0) {
-        $id = $this->db->execute("INSERT INTO easGroups (name, permissions, scope, owner, custom) VALUES (:name, 0, :scope, :owner, :custom)", 
+        $id = $this->db->execute("INSERT INTO easGroups (name, scope, owner, custom) VALUES (:name, :scope, :owner, :custom)",
             array(
                 ":name" => $groupName, 
                 ":scope" => $scope, 
@@ -394,17 +394,6 @@ class CoreManager {
 
     public function getCharacterLocation ($characterID) {
         return $this->db->queryField("SELECT locationID FROM easTracker WHERE characterID = :characterID ORDER BY timestamp DESC LIMIT 1", "locationID", array(":characterID" => $characterID));
-    }
-
-    public function hashString ($str) {
-        $hash = 0; $i; $chr; $len;
-        if (strlen($str) == 0) return $hash;
-        for ($i = 0, $len = strlen($str); $i < $len; $i++) {
-            $chr = ord($str[$i]);
-            $hash = (($hash << 5) - $hash) + $chr;
-            $hash |= 0;
-        }
-        return (int) $hash;
     }
     
 }
