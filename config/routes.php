@@ -134,11 +134,11 @@ $app->get('/json/intel/region/:regionID/', function($regionID) use ($app){
 });
 
 $app->get('/json/systemnames/:name', function ($name) use ($app){
-	(new \ProjectRena\Controller\JSONController($app))->getSystemNames($name);
+	(new \ProjectRena\Controller\JSONController($app))->findSystemNames($name);
 });
 
 $app->get('/json/characternames/:name', function ($name) use ($app){
-	(new \ProjectRena\Controller\JSONController($app))->getCharacterNames($name);
+	(new \ProjectRena\Controller\JSONController($app))->findCharacterNames($name);
 });
 
 

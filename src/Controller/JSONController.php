@@ -685,13 +685,13 @@ class JSONController
         $this->app->response->body(json_encode($intel));
     }
 
-	public function getSystemNames ($name) {
+	public function findSystemNames ($name) {
 		$systemRows = $this->db->query("SELECT solarSystemName as name, solarSystemID as data FROM mapSolarSystems WHERE solarSystemName LIKE :name", array(":name" => $name."%"));
 		$this->app->response->headers->set('Content-Type', 'application/json');
 		$this->app->response->body(json_encode($systemRows));
 	}
 
-	public function getCharacterNames ($name) {
+	public function findCharacterNames ($name) {
 		$characterRows = $this->db->query("SELECT characterName as name, characterID as data FROM easCharacters WHERE characterName LIKE :name", array(":name" => $name."%"));
 		$this->app->response->headers->set('Content-Type', 'application/json');
 		$this->app->response->body(json_encode($characterRows));
