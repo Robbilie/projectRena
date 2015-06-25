@@ -218,9 +218,9 @@ class JSONController
     public function getGroup ($groupID) {
         $group = array();
         if(isset($_SESSION['loggedin'])) {
-			$group = $this->app->CoreManager->getGroup((int)$groupID);
-			$group->getPermissions();
-		}
+            $group = $this->app->CoreManager->getGroup((int)$groupID);
+            $group->getPermissions();
+        }
         $this->app->response->headers->set('Content-Type', 'application/json');
         $this->app->response->body(json_encode($group));
     }
@@ -398,7 +398,7 @@ class JSONController
     }
 
     public function getSystemIntel ($psystemID = null) {
-		$systemID = $psystemID;
+        $systemID = $psystemID;
         $intel = array(
                 "state" => 0,
                 "status" => "Offline",
@@ -411,64 +411,64 @@ class JSONController
             );
         if(isset($_SESSION['loggedin'])) {
 
-			// set system id
-			if(is_null($systemID) && isset($_SERVER['HTTP_EVE_TRUSTED']) && $_SERVER['HTTP_EVE_TRUSTED'] == "Yes")
-				$systemID = (int)$_SERVER['HTTP_EVE_SOLARSYSTEMID'];
-			if(is_null($systemID))
-				$systemID = $this->app->CoreManager->getCharacterLocation($_SESSION['characterID']);
-			if(is_null($systemID) || $systemID == 0)
-				$systemID = 30002489;
-			
+            // set system id
+            if(is_null($systemID) && isset($_SERVER['HTTP_EVE_TRUSTED']) && $_SERVER['HTTP_EVE_TRUSTED'] == "Yes")
+                $systemID = (int)$_SERVER['HTTP_EVE_SOLARSYSTEMID'];
+            if(is_null($systemID))
+                $systemID = $this->app->CoreManager->getCharacterLocation($_SESSION['characterID']);
+            if(is_null($systemID) || $systemID == 0)
+                $systemID = 30002489;
+            
             if(isset($_GET['hash']) && $_GET['hash'] != "") {
                 $timeout = 15000000;
                 $interval = 500000;
                 while($timeout > 0) {
 
                     session_start();
-					$charid = $_SESSION['characterID'];
-					session_write_close();
+                    $charid = $_SESSION['characterID'];
+                    session_write_close();
 
                     $intel = $this->getSystemIntelArray($systemID, $charid);
 
-					$sysids = array();
-					array_push($sysids, $systemID);
+                    $sysids = array();
+                    array_push($sysids, $systemID);
 
-					$systemsDone = $this->db->query("SELECT fromSolarSystemID as id FROM mapSolarSystemJumps WHERE toSolarSystemID = :systemID", array(":systemID" => $systemID));
-					foreach($systemsDone as $systemDone) {
-						if(!in_array((int)$systemDone['id'], $sysids)) {
-							$oneIntel = $this->getSystemIntelArray((int)$systemDone['id'], $charid);
-							$oneIntel['distance'] = 1;
+                    $systemsDone = $this->db->query("SELECT fromSolarSystemID as id FROM mapSolarSystemJumps WHERE toSolarSystemID = :systemID", array(":systemID" => $systemID));
+                    foreach($systemsDone as $systemDone) {
+                        if(!in_array((int)$systemDone['id'], $sysids)) {
+                            $oneIntel = $this->getSystemIntelArray((int)$systemDone['id'], $charid);
+                            $oneIntel['distance'] = 1;
 
-							if($intel['state'] < 4 && $oneIntel['hostilecount'] > 0) {
-								$intel['state'] = 3;
-								$intel['status'] = "Attention...";
-							}
+                            if($intel['state'] < 4 && $oneIntel['hostilecount'] > 0) {
+                                $intel['state'] = 3;
+                                $intel['status'] = "Attention...";
+                            }
 
-							array_push($intel['neighbours'], $oneIntel);
-							array_push($sysids, (int)$systemDone['id']);
+                            array_push($intel['neighbours'], $oneIntel);
+                            array_push($sysids, (int)$systemDone['id']);
 
-							$systemsDtwo = $this->db->query("SELECT fromSolarSystemID as id FROM mapSolarSystemJumps WHERE toSolarSystemID = :systemID", array(":systemID" => (int)$systemDone['id']));
-							foreach($systemsDtwo as $systemDtwo) {
-								if(!in_array((int)$systemDtwo['id'], $sysids)) {
-									$twoIntel = $this->getSystemIntelArray((int)$systemDtwo['id'], $charid);
-									$twoIntel['distance'] = 2;
+                            $systemsDtwo = $this->db->query("SELECT fromSolarSystemID as id FROM mapSolarSystemJumps WHERE toSolarSystemID = :systemID", array(":systemID" => (int)$systemDone['id']));
+                            foreach($systemsDtwo as $systemDtwo) {
+                                if(!in_array((int)$systemDtwo['id'], $sysids)) {
+                                    $twoIntel = $this->getSystemIntelArray((int)$systemDtwo['id'], $charid);
+                                    $twoIntel['distance'] = 2;
 
-									if($intel['state'] < 3 && $twoIntel['hostilecount'] > 0) {
-										$intel['state'] = 2;
-										$intel['status'] = "Wake Up...";
-									}
+                                    if($intel['state'] < 3 && $twoIntel['hostilecount'] > 0) {
+                                        $intel['state'] = 2;
+                                        $intel['status'] = "Wake Up...";
+                                    }
 
-									array_push($intel['neighbours'], $twoIntel);
-									array_push($sysids, (int)$systemDtwo['id']);
-								}
-							}
-						}
-					}
+                                    array_push($intel['neighbours'], $twoIntel);
+                                    array_push($sysids, (int)$systemDtwo['id']);
+                                }
+                            }
+                        }
+                    }
 
-					if($intel['hostilecount'] > 0) {
-						$intel['state'] = 4;
-						$intel['status'] = "Warning";
-					}
+                    if($intel['hostilecount'] > 0) {
+                        $intel['state'] = 4;
+                        $intel['status'] = "Warning";
+                    }
 
                     if(md5(json_encode($intel)) == $_GET['hash']) {
                         usleep($interval);
@@ -484,7 +484,7 @@ class JSONController
                 $intel['newhash'] = md5(json_encode($intel));
             }
 
-		}
+        }
         $this->app->response->headers->set('Content-Type', 'application/json');
         $this->app->response->body(json_encode($intel));
     }
@@ -541,7 +541,7 @@ class JSONController
         $intel['systemName'] = $solarSystem['solarSystemName'];
         $intel['regionID'] = $solarSystem['regionID'];
         $intel['regionName'] = $this->app->mapRegions->getAllByID($solarSystem['regionID'])['regionName'];
-		$intel['hostilecount'] = 0;
+        $intel['hostilecount'] = 0;
 
         // get members
         $members = $this->db->query(
@@ -551,9 +551,9 @@ class JSONController
                     (SELECT timestamp FROM easTracker as t WHERE
                         t.characterID = easTracker.characterID ORDER BY t.timestamp DESC LIMIT 1) AND easTracker.timestamp > :ts ORDER BY easTracker.characterName ASC",// LIMIT 100",
             array(
-				":locationID" => $systemID,
-				":ts" => /*time() - (60*60*24)*/ 0 // 0 if all should be intelled
-			)
+                ":locationID" => $systemID,
+                ":ts" => /*time() - (60*60*24)*/ 0 // 0 if all should be intelled
+            )
         );
 
         if(count($members) <= 50) {
@@ -577,9 +577,9 @@ class JSONController
                     )
                 );
                 $member['standing'] = ($r == 0 && $char->getAlliId() != $member['allianceID']) ? "negative" : "positive";
-				if($r == 0 && $char->getAlliId() != $member['allianceID']) {
-					$intel['hostilecount']++;
-				}
+                if($r == 0 && $char->getAlliId() != $member['allianceID']) {
+                    $intel['hostilecount']++;
+                }
             }
         } else {
             $intel['membertype'] = "alliances";
@@ -605,9 +605,9 @@ class JSONController
                     )
                 );
                 array_push($alliancesSorted, array("id" => $key, "name" => $this->app->CoreManager->getAlliance($key)->getName(), "count" => count($alliance), "standing" => ($r == 0 && $char->getAlliId() != $member['allianceID']) ? "negative" : "positive"));
-				if($r == 0 && $char->getAlliId() != $member['allianceID']) {
-					$intel['hostilecount'] += count($alliance);
-				}
+                if($r == 0 && $char->getAlliId() != $member['allianceID']) {
+                    $intel['hostilecount'] += count($alliance);
+                }
             }
             $members = $alliancesSorted;
         }
@@ -617,7 +617,7 @@ class JSONController
         return $intel;
     }
 
-	public function setSystemIntel ($psystemID = null) {
+    public function setSystemIntel ($psystemID = null) {
         $response = array("state" => "error", "msg" => "");
 
         // intel token auth
@@ -640,14 +640,14 @@ class JSONController
         }
 
         $systemID = $psystemID;
-		if(isset($_SESSION['loggedin'])) {
-			// set system id
-			if(is_null($systemID) && isset($_SERVER['HTTP_EVE_TRUSTED']) && $_SERVER['HTTP_EVE_TRUSTED'] == "Yes")
-				$systemID = (int)$_SERVER['HTTP_EVE_SOLARSYSTEMID'];
-			if(is_null($systemID))
-				$systemID = $this->app->CoreManager->getCharacterLocation($_SESSION['characterID']);
-			if(is_null($systemID) || $systemID == 0)
-				$systemID = 30002489;
+        if(isset($_SESSION['loggedin'])) {
+            // set system id
+            if(is_null($systemID) && isset($_SERVER['HTTP_EVE_TRUSTED']) && $_SERVER['HTTP_EVE_TRUSTED'] == "Yes")
+                $systemID = (int)$_SERVER['HTTP_EVE_SOLARSYSTEMID'];
+            if(is_null($systemID))
+                $systemID = $this->app->CoreManager->getCharacterLocation($_SESSION['characterID']);
+            if(is_null($systemID) || $systemID == 0)
+                $systemID = 30002489;
             // local members
             $local = str_replace("%20", " ", $this->app->request->post('local'));
             $local = explode(",", $local);
@@ -733,28 +733,148 @@ class JSONController
             }
 
             $response = array("state" => "success", "msg" => "");
-		}
-		$this->app->response->headers->set('Content-Type', 'application/json');
-		$this->app->response->body(json_encode($response));
-	}
+        }
+        $this->app->response->headers->set('Content-Type', 'application/json');
+        $this->app->response->body(json_encode($response));
+    }
 
-    public function getRegionIntel ($regionID = null) {
+    public function getRegionIntel ($pregionID = null) {
+        $regionID = $pregionID;
         $intel = array();
         if(isset($_SESSION['loggedin'])) {
+
+            // set system id
+            if(is_null($regionID) && isset($_SERVER['HTTP_EVE_TRUSTED']) && $_SERVER['HTTP_EVE_TRUSTED'] == "Yes")
+                $regionID = (int)$_SERVER['HTTP_EVE_REGIONID'];
+            if(is_null($regionID))
+                $regionID = $this->app->mapSolarSystems->getAllByID($this->app->CoreManager->getCharacterLocation($characterID))['regionID'];
+            if(is_null($regionID) || $regionID == 0)
+                $regionID = 10000029;
+            
+            if(isset($_GET['hash']) && $_GET['hash'] != "") {
+                $timeout = 15000000;
+                $interval = 500000;
+                while($timeout > 0) {
+
+                    session_start();
+                    $charid = $_SESSION['characterID'];
+                    session_write_close();
+
+                    $intel = $this->getRegionIntelArray($regionID, $charid);
+
+
+                    if(md5(json_encode($intel)) == $_GET['hash']) {
+                        usleep($interval);
+                    } else {
+                        break;
+                    }
+
+                    $timeout -= $interval;
+
+                }
+            } else {
+                $intel = $this->getRegionIntelArray($regionID, $_SESSION['characterID']);
+                $intel['newhash'] = md5(json_encode($intel));
+            }
+
         }
         $this->app->response->headers->set('Content-Type', 'application/json');
         $this->app->response->body(json_encode($intel));
     }
 
-	public function findSystemNames ($name) {
-		$systemRows = $this->db->query("SELECT solarSystemName as name, solarSystemID as data FROM mapSolarSystems WHERE solarSystemName LIKE :name", array(":name" => $name."%"));
-		$this->app->response->headers->set('Content-Type', 'application/json');
-		$this->app->response->body(json_encode($systemRows));
-	}
+    function getRegionIntelArrayOld ($pregionID = null, $characterID) {
+        $regionID = $pregionID;
 
-	public function findCharacterNames ($name) {
-		$characterRows = $this->db->query("SELECT characterName as name, characterID as data FROM easCharacters WHERE characterName LIKE :name", array(":name" => $name."%"));
-		$this->app->response->headers->set('Content-Type', 'application/json');
-		$this->app->response->body(json_encode($characterRows));
-	}
+        $intel = array();
+
+        // set system id
+        if(is_null($regionID) && isset($_SERVER['HTTP_EVE_TRUSTED']) && $_SERVER['HTTP_EVE_TRUSTED'] == "Yes")
+            $regionID = (int)$_SERVER['HTTP_EVE_REGIONID'];
+        if(is_null($regionID))
+            $regionID = $this->app->mapSolarSystems->getAllByID($this->app->CoreManager->getCharacterLocation($characterID))['regionID'];
+        if(is_null($regionID) || $regionID == 0)
+            $regionID = 10000029;
+
+        $char = $this->app->CoreManager->getCharacter($characterID);
+
+        $systemRows = $this->db->query("SELECT solarSystemID as id FROM mapSolarSystems WHERE regionID = :regionID", array(":regionID" => $regionID));
+        foreach ($systemRows as $systemRow) {
+            $tmparr = $this->getSystemIntelArray($systemRow['id'], $characterID);
+            array_push($intel, array("systemID" => $tmparr['systemID'], "hostilecount" => $tmparr['hostilecount']));
+        }
+
+        return $intel;
+    }
+
+    function getRegionIntelArray ($pregionID = null, $characterID) {
+        $regionID = $pregionID;
+
+        $intel = array();
+
+        // set system id
+        if(is_null($regionID) && isset($_SERVER['HTTP_EVE_TRUSTED']) && $_SERVER['HTTP_EVE_TRUSTED'] == "Yes")
+            $regionID = (int)$_SERVER['HTTP_EVE_REGIONID'];
+        if(is_null($regionID))
+            $regionID = $this->app->mapSolarSystems->getAllByID($this->app->CoreManager->getCharacterLocation($characterID))['regionID'];
+        if(is_null($regionID) || $regionID == 0)
+            $regionID = 10000029;
+
+        $char = $this->app->CoreManager->getCharacter($characterID);
+
+        $systemRows = $this->db->query("SELECT solarSystemID as id FROM mapSolarSystems WHERE regionID = :regionID", array(":regionID" => $regionID));
+        foreach ($systemRows as $systemRow) {
+            $sys = array("systemID" => $systemRow['id'], "hostilecount" => 0);
+            // get members
+            $members = $this->db->query(
+                "SELECT characterID as id,characterName as name,corporationID,allianceID FROM easTracker WHERE
+                    easTracker.locationID = :locationID AND
+                    easTracker.timestamp =
+                        (SELECT timestamp FROM easTracker as t WHERE
+                            t.characterID = easTracker.characterID ORDER BY t.timestamp DESC LIMIT 1) AND easTracker.timestamp > :ts ORDER BY easTracker.characterName ASC",// LIMIT 100",
+                array(
+                    ":locationID" => $systemRow['id'],
+                    ":ts" => /*time() - (60*60*24)*/ 0 // 0 if all should be intelled
+                )
+            );
+            foreach ($members as &$member) {
+                $r = $this->db->queryField(
+                    "SELECT count(contactID) as cnt FROM ntContactList WHERE
+                        ownerID = :ownerID AND
+                        (
+                            contactID = :characterID OR
+                            contactID = :corporationID OR
+                            contactID = :allianceID
+                        ) AND
+                        standing > 0",
+                    "cnt",
+                    array(
+                        ":ownerID" => $char->getAlliId(),
+                        ":characterID" => $member['id'],
+                        ":corporationID" => $member['corporationID'],
+                        ":allianceID" => $member['allianceID']
+                    )
+                );
+                if($r == 0 && $char->getAlliId() != $member['allianceID']) {
+                    $sys['hostilecount']++;
+                }
+            }
+            array_push($intel, $sys);
+        }
+
+        return $intel;
+    }
+
+
+
+    public function findSystemNames ($name) {
+        $systemRows = $this->db->query("SELECT solarSystemName as name, solarSystemID as data FROM mapSolarSystems WHERE solarSystemName LIKE :name", array(":name" => $name."%"));
+        $this->app->response->headers->set('Content-Type', 'application/json');
+        $this->app->response->body(json_encode($systemRows));
+    }
+
+    public function findCharacterNames ($name) {
+        $characterRows = $this->db->query("SELECT characterName as name, characterID as data FROM easCharacters WHERE characterName LIKE :name", array(":name" => $name."%"));
+        $this->app->response->headers->set('Content-Type', 'application/json');
+        $this->app->response->body(json_encode($characterRows));
+    }
 }
