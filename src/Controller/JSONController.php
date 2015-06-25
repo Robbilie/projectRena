@@ -545,7 +545,7 @@ class JSONController
 
         // get members
         $members = $this->db->query(
-            "SELECT characterID as id,characterName as name,corporationID,allianceID FROM easTracker WHERE
+            "SELECT characterID as id,characterName as name,corporationID,allianceID,submitterID FROM easTracker WHERE
                 easTracker.locationID = :locationID AND
                 easTracker.timestamp =
                     (SELECT timestamp FROM easTracker as t WHERE
@@ -559,6 +559,7 @@ class JSONController
         if(count($members) <= 50) {
             $intel['membertype'] = "characters";
             foreach ($members as &$member) {
+                if($this->haveStandings($characterID, $member['submitterID']) <= 0) continue;
                 $r = $this->db->queryField(
                     "SELECT count(contactID) as cnt FROM ntContactList WHERE
                         ownerID = :ownerID AND
@@ -585,6 +586,7 @@ class JSONController
             $intel['membertype'] = "alliances";
             $alliances = array();
             foreach ($members as $member) {
+                if($this->haveStandings($characterID, $member['submitterID']) <= 0) continue;
                 if(is_null($alliances[$member['allianceID']]))
                     $alliances[$member['allianceID']] = array();
                 array_push($alliances[$member['allianceID']], $member);
@@ -652,6 +654,9 @@ class JSONController
             $local = str_replace("%20", " ", $this->app->request->post('local'));
             $local = explode(",", $local);
 
+            $charid = $_SESSION['characterID'];
+            session_write_close();
+
 
             // get ids from api
             $chunkedLocal = array_chunk($local, 100);
@@ -705,7 +710,7 @@ class JSONController
                         (:locationID, :submitterID, :characterID, :characterName, :corporationID, :allianceID, :ts)",
                     array(
                         ":locationID" => "null",
-                        ":submitterID" => $_SESSION['characterID'],
+                        ":submitterID" => $charid,
                         ":characterID" => $charDat[$d]['characterID'],
                         ":characterName" => $charDat[$d]['characterName'],
                         ":corporationID" => $charDat[$d]['corporationID'],
@@ -723,7 +728,7 @@ class JSONController
                         (:locationID, :submitterID, :characterID, :characterName, :corporationID, :allianceID, UNIX_TIMESTAMP(NOW()))",
                     array(
                         ":locationID" => $systemID,
-                        ":submitterID" => $_SESSION['characterID'],
+                        ":submitterID" => $charid,
                         ":characterID" => $affsSorted[$id]['characterID'],
                         ":characterName" => $affsSorted[$id]['characterName'],
                         ":corporationID" => $affsSorted[$id]['corporationID'],
@@ -876,5 +881,32 @@ class JSONController
         $characterRows = $this->db->query("SELECT characterName as name, characterID as data FROM easCharacters WHERE characterName LIKE :name", array(":name" => $name."%"));
         $this->app->response->headers->set('Content-Type', 'application/json');
         $this->app->response->body(json_encode($characterRows));
+    }
+
+    public function haveStandings ($charOneID, $charTwoID) {
+        $charOne = $this->app->CoreManager->getCharacter($charOneID);
+        $charTwo = $this->app->CoreManager->getCharacter($charTwoID);
+        $r = $this->db->queryField(
+            "SELECT count(contactID) as cnt FROM ntContactList WHERE
+                ownerID = :ownerID AND
+                (
+                    contactID = :characterID OR
+                    contactID = :corporationID OR
+                    contactID = :allianceID
+                ) AND
+                standing > 0",
+            "cnt",
+            array(
+                ":ownerID" => $charTwo->getAlliId(),
+                ":characterID" => $charOneID,
+                ":corporationID" => $charOne->getCorpId(),
+                ":allianceID" => $charOne->getAlliId()
+            )
+        );
+        if($r == 0 && $charOne->getAlliId() != $charTwo->getAlliId()) {
+            return 0;
+        } else {
+            return 1;
+        }
     }
 }
