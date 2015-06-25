@@ -110,27 +110,27 @@ $app->get('/json/corporation/:corporationID/container/:containerID/', function($
 });
 
 $app->get('/json/intel/system/', function() use ($app){
-    (new \ProjectRena\Controller\JSONController($app))->getSystemIntel();
+    (new \ProjectRena\Controller\IntelController($app))->getSystemIntel();
 });
 
 $app->post('/json/intel/system/', function () use ($app){
-	(new \ProjectRena\Controller\JSONController($app))->setSystemIntel();
+	(new \ProjectRena\Controller\IntelController($app))->setSystemIntel();
 });
 
 $app->get('/json/intel/system/:systemID/', function($systemID) use ($app){
-    (new \ProjectRena\Controller\JSONController($app))->getSystemIntel($systemID);
+    (new \ProjectRena\Controller\IntelController($app))->getSystemIntel($systemID);
 });
 
 $app->post('/json/intel/system/:systemID/', function ($systemID) use ($app){
-	(new \ProjectRena\Controller\JSONController($app))->setSystemIntel($systemID);
+	(new \ProjectRena\Controller\IntelController($app))->setSystemIntel($systemID);
 });
 
 $app->get('/json/intel/region/', function() use ($app){
-    (new \ProjectRena\Controller\JSONController($app))->getRegionIntel();
+    (new \ProjectRena\Controller\IntelController($app))->getRegionIntel();
 });
 
 $app->get('/json/intel/region/:regionID/', function($regionID) use ($app){
-    (new \ProjectRena\Controller\JSONController($app))->getRegionIntel($regionID);
+    (new \ProjectRena\Controller\IntelController($app))->getRegionIntel($regionID);
 });
 
 $app->get('/json/systemnames/:name', function ($name) use ($app){
