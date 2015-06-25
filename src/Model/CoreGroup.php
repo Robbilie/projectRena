@@ -14,6 +14,8 @@ class CoreGroup extends CoreBase {
 	protected $cowner;
 	protected $permissions;
 	protected $cpermissions;
+	protected $characters;
+	protected $ccharacters;
 
 	// custom
 
@@ -37,24 +39,70 @@ class CoreGroup extends CoreBase {
 		return $this->cpermissions;
 	}
 
-	public function addPermission ($id) {
-		if(!in_array($id, $this->getPermissions())) {
-			$this->db->execute("INSERT INTO easGroupPermissions (groupID, permissionID) VALUES (:groupID, :permissionID)", array(":groupID" => $this->id, ":permissionID" => $id));
-			$this->permissions = null;
-			$this->cpermissions = null;
+	public function addPermission ($permissionID) {
+		if(!in_array($permissionID, $this->getPermissions())) {
+			$this->db->execute("INSERT INTO easGroupPermissions (groupID, permissionID) VALUES (:groupID, :permissionID)", array(":groupID" => $this->id, ":permissionID" => $permissionID));
+			$this->resetPermissions();
 		}
 	}
 
-	public function removePermission ($id) {
-		if(in_array($id, $this->getPermissions())) {
-			$this->db->execute("DELETE FROM easGroupPermissions WHERE permissionID = :permissionID AND groupID = :groupID", array(":permissionID" => $id, ":groupID" => $this->id));
-			$this->permissions = null;
-			$this->cpermissions = null;
+	public function removePermission ($permissionID) {
+		if(in_array($permissionID, $this->getPermissions())) {
+			$this->db->execute("DELETE FROM easGroupPermissions WHERE permissionID = :permissionID AND groupID = :groupID", array(":permissionID" => $permissionID, ":groupID" => $this->id));
+			$this->resetPermissions();
 		}
+	}
+
+	public function resetPermissions () {
+		$this->permissions = null;
+		$this->cpermissions = null;
 	}
 
 	public function hasPermission ($permissionID) {
 		return in_array($permissionID, $this->getPermissions());
+	}
+
+	public function getCharacters () {
+		if(is_null($this->characters)) {
+			$characterRows = $this->db->query("SELECT characterID FROM easGroupMembers WHERE groupID = :groupID", array(":groupID" => $this->id));
+			$this->characters = array();
+			foreach ($characterRows as $characterRow)
+				array_push($this->characters, (int)$characterRow['characterID']);
+		}
+		return $this->characters;
+	}
+
+	public function getCCharacters () {
+		if(is_null($this->ccharacters)) {
+			$characters = $this->getCharacters();
+			$this->ccharacters = array();
+			foreach ($characters as $character)
+				array_push($this->ccharacters, $this->app->CoreManager->getCharacter($character));
+		}
+		return $this->ccharacters;
+	}
+
+	public function addCharacter ($characterID) {
+		if(!in_array($characterID, $this->getCharacters())) {
+			$this->db->execute("INSERT INTO easGroupMembers (groupID, characterID) VALUES (:groupID, :characterID)", array(":groupID" => $this->id, ":characterID" => $characterID));
+			$this->resetCharacters();
+			$character = $this->app->CoreManager->getCharacter($characterID);
+			$character->resetGroups();
+		}
+	}
+
+	public function removeCharacter ($characterID) {
+		if(in_array($characterID, $this->getCharacters())) {
+			$this->db->execute("DELETE FROM easGroupMembers WHERE characterID = :characterID AND groupID = :groupID", array(":characterID" => $characterID, ":groupID" => $this->id));
+			$this->resetCharacters();
+			$character = $this->app->CoreManager->getCharacter($characterID);
+			$character->resetGroups();
+		}
+	}
+
+	public function resetCharacters () {
+		$this->characters = null;
+		$this->ccharacters = null;
 	}
 
 	public function isCustom () {

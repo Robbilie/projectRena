@@ -96,28 +96,17 @@ class CoreCharacter extends CoreBase {
 		return $this->cpermissions;
 	}
 
+	public function resetPermissions () {
+		$this->permissions = null;
+		$this->cpermissions = null;
+	}
+
 	public function hasPermission ($perm) {
 		if(is_int($perm)) {
 			return in_array($perm, $this->getPermissions());
 		} else if(is_string($perm)) {
 			$permission = $this->app->CoreManager->getPermission($perm);
 			return in_array($permission->getId(), $this->getPermissions());
-		}
-	}
-
-	public function addToGroup ($id) {
-		if(!in_array($id, $this->getGroups())) {
-			$this->db->execute("INSERT INTO easGroupMembers (groupID, characterID) VALUES (:groupID, :characterID)", array(":groupID" => $id, ":characterID" => $this->characterID));
-			$this->groups = null;
-			$this->cgroups = null;
-		}
-	}
-
-	public function removeFromGroup ($id) {
-		if(in_array($id, $this->getGroups())) {
-			$this->db->execute("DELETE FROM easGroupMembers WHERE characterID = :characterID AND groupID = :groupID", array(":characterID" => $this->characterID, ":groupID" => $id));
-			$this->groups = null;
-			$this->cgroups = null;
 		}
 	}
 
@@ -139,6 +128,12 @@ class CoreCharacter extends CoreBase {
 				array_push($this->cgroups, $this->app->CoreManager->getGroup($group));
 		}
 		return $this->cgroups;
+	}
+
+	public function resetGroups () {
+		$this->groups = null;
+		$this->cgroups = null;
+		$this->resetPermissions();
 	}
 
 	// default

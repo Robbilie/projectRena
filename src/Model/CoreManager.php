@@ -201,7 +201,7 @@ class CoreManager {
         $corporationRow = $this->db->queryRow("SELECT * FROM ntCorporation WHERE id = :corporationID", array(":corporationID" => $corporationID));
         if($corporationRow) {
             $corp = new CoreCorporation($this->app, $corporationRow);
-            array_push($this->corps, $corp); 
+            array_push($this->corps, $corp);
             return $corp;
         }
         return null;
@@ -302,35 +302,35 @@ class CoreManager {
     public function setBaseGroups ($char) {
 
         // remove old groups
-        $oldgroups = $char->getGroups();
+        $oldgroups = $char->getCGroups();
         for($i = 0; $i < count($oldgroups); $i++)
-            $char->removeFromGroup($oldgroups[$i]);
+          $oldgroups[i]->removeCharacter($char->getCharId());
 
         // add to new groups
         $allianceRow = $this->db->queryRow("SELECT * FROM easGroups WHERE name = :name", array(":name" => $char->getAlliName()));
         if($allianceRow) {
             $allianceGroup = new CoreGroup($this->app, $allianceRow);
-            $char->addToGroup($allianceGroup->getId());
+            $allianceGroup->addCharacter($char->getCharId());
         } else {
             $allianceGroup = $this->createGroup($char->getAlliName(), "alliance", $char->getAlliId(), 0);
-            $char->addToGroup($allianceGroup->getId());
+            $allianceGroup->addCharacter($char->getCharId());
         }
 
         $corporationRow = $this->db->queryRow("SELECT * FROM easGroups WHERE name = :name", array(":name" => $char->getCorpName()));
         if($corporationRow) {
             $corporationGroup = new CoreGroup($this->app, $corporationRow);
-            $char->addToGroup($corporationGroup->getId());
+            $corporationGroup->addCharacter($char->getCharId());
         } else {
             $corporationGroup = $this->createGroup($char->getCorpName(), "corporation", $char->getCorpId(), 0);
-            $char->addToGroup($corporationGroup->getId());
+            $corporationGroup->addCharacter($char->getCharId());
         }
     }
 
     public function createGroup ($groupName, $scope, $owner = null, $custom = 0) {
         $id = $this->db->execute("INSERT INTO easGroups (name, scope, owner, custom) VALUES (:name, :scope, :owner, :custom)",
             array(
-                ":name" => $groupName, 
-                ":scope" => $scope, 
+                ":name" => $groupName,
+                ":scope" => $scope,
                 ":owner" => $owner,
                 ":custom" => $custom), true);
         return new CoreGroup($this->app, $this->db->queryRow("SELECT * FROM easGroups WHERE id = :id", array(":id" => $id)));
@@ -358,7 +358,7 @@ class CoreManager {
         ) {
             return true;
         }
-        return false; 
+        return false;
     }
 
     public function charCanAddCharToGroup ($char, $otherchar, $group) {
@@ -401,5 +401,5 @@ class CoreManager {
     public function getCharacterLocation ($characterID) {
         return $this->db->queryField("SELECT locationID FROM easTracker WHERE characterID = :characterID ORDER BY timestamp DESC LIMIT 1", "locationID", array(":characterID" => $characterID));
     }
-    
+
 }

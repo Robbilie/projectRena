@@ -25,7 +25,7 @@ class JSONController
 
     public function getStatus () {
         $status = array();
-        
+
         if(isset($_GET['hash']) && $_GET['hash'] != "") {
             $timeout = 15000000;
             $interval = 500000;
@@ -164,7 +164,7 @@ class JSONController
             if($item)
                 $resp['name'] = $item->getName();
             if(
-                ($corp->getId() == $char->getCorpId() && $char->hasPermission("viewCorporationAssets")) || 
+                ($corp->getId() == $char->getCorpId() && $char->hasPermission("viewCorporationAssets")) ||
                 ($corp->getAlliance() == $char->getAlliId() && $char->hasPermission("viewAllianceAssets"))
             ) {
                 $resp['list'] = $corp->getItems(function ($i) use ($containerID) { return $i->getLocationId() == $containerID; });
@@ -228,13 +228,8 @@ class JSONController
     public function getGroupMembers ($groupID) {
         $members = array();
         if(isset($_SESSION['loggedin'])) {
-            $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
             $group = $this->app->CoreManager->getGroup((int)$groupID);
-            if(strpos($group->getScope(), "corporation") !== FALSE) {
-                $members = $char->getCCorporation()->getMemberList(function ($c) use ($group) { return in_array($group->getId(), $c->getGroups()); });
-            } else if(strpos($group->getScope(), "alliance") !== FALSE) {
-                $members = $char->getCCorporation()->getCAlliance()->getMemberList(function ($c) use ($group) { return in_array($group->getId(), $c->getGroups()); });
-            }
+            $members = $group->getCCharacters();
         }
         $this->app->response->headers->set('Content-Type', 'application/json');
         $this->app->response->body(json_encode($members));
@@ -293,7 +288,7 @@ class JSONController
             $group = $this->app->CoreManager->getGroup((int)$groupID);
             if($this->app->CoreManager->charCanAddCharToGroup($char, $otherchar, $group)) {
                 if(in_array($group->getId(), $otherchar->getGroups())) {
-                    $otherchar->removeFromGroup($group->getId());
+                    $group->removeCharacter($otherchar->getCharId());
                     $resp['state'] = "success";
                 } else {
                     $resp['msg'] = "Character not in Group.";
@@ -313,7 +308,7 @@ class JSONController
             $otherchar = $this->app->CoreManager->getCharacter($characterID);
             $group = $this->app->CoreManager->getGroup((int)$groupID);
             if($this->app->CoreManager->charCanAddCharToGroup($char, $otherchar, $group)) {
-                $otherchar->addToGroup($group->getId());
+                $group->addCharacter($otherchar->getCharId());
                 $resp['state'] = "success";
             } else {
                 $resp['msg'] = "You dont have permission to do this.";
