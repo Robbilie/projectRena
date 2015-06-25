@@ -193,6 +193,14 @@ class CoreManager {
         return null;
     }
 
+    public function getFleetParticipant ($fleetparticipant) {
+      $character = $this->getCharacter($fleetparticipant['characterID']);
+      $characterData = $character->getData();
+      $characterData['confirmed'] = $fleetparticipant['confirmed'];
+      $cfleetparticipant = new CoreFleetParticipant($characterData);
+      return $cfleetparticipant;
+    }
+
     protected $corps = array();
     public function getCorporation ($corporationID) {
         foreach ($this->corps as $corp)

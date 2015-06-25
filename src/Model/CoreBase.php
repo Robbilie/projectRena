@@ -18,7 +18,7 @@ class CoreBase implements \JsonSerializable {
 		$this->config = $this->app->baseConfig;
 
 		$this->data = $data;
-		
+
 		$this->init($this);
 	}
 
@@ -35,6 +35,10 @@ class CoreBase implements \JsonSerializable {
 
 	public function RunAsNew () {
 
+	}
+
+	public function getData () {
+		return $this->data;
 	}
 
 }
