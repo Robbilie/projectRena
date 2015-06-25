@@ -301,6 +301,12 @@ class CoreManager {
 
     public function setBaseGroups ($char) {
 
+        // remove old groups
+        $oldgroups = $char->getGroups();
+        for($i = 0; $i < count($oldgroups); $i++)
+            $char->removeFromGroup($oldgroups[$i]);
+
+        // add to new groups
         $allianceRow = $this->db->queryRow("SELECT * FROM easGroups WHERE name = :name", array(":name" => $char->getAlliName()));
         if($allianceRow) {
             $allianceGroup = new CoreGroup($this->app, $allianceRow);

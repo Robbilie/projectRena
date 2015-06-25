@@ -108,12 +108,14 @@ class CoreCharacter extends CoreBase {
 	public function addToGroup ($id) {
 		if(!in_array($id, $this->getGroups())) {
 			$this->db->execute("INSERT INTO easGroupMembers (groupID, characterID) VALUES (:groupID, :characterID)", array(":groupID" => $id, ":characterID" => $this->characterID));
+			$this->groups = null;
 		}
 	}
 
 	public function removeFromGroup ($id) {
 		if(in_array($id, $this->getGroups())) {
 			$this->db->execute("DELETE FROM easGroupMembers WHERE characterID = :characterID AND groupID = :groupID", array(":characterID" => $this->characterID, ":groupID" => $id));
+			$this->groups = null;
 		}
 	}
 
