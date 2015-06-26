@@ -5,6 +5,7 @@ use Cilex\Command\Command;
 use ProjectRena\Lib;
 use ProjectRena\RenaApp;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -20,6 +21,8 @@ class UpdateTask extends Command
 				protected function configure()
 				{
 								$this->setName("update")
+												->addOption("composer", "c", InputOption::VALUE_NONE, "Run Composer Update")
+												->addOption("unittest", "u", InputOption::VALUE_NONE, "Run Unit Test")
 												->setDescription("Updates the project (Composer and RenaApp)");
 				}
 
@@ -32,29 +35,37 @@ class UpdateTask extends Command
 				protected function execute(InputInterface $input, OutputInterface $output)
 				{
 								$app = RenaApp::getInstance();
-								// Check if composer is in the dir
-								if(!file_exists(__DIR__ . "/../../composer.phar"))
-								{
-												$output->writeln("Composer doesn't exist, downloading it");
-												$composer = $app->cURL->getData("https://getcomposer.org/composer.phar", 0);
-												file_put_contents(__DIR__ . "/../../composer.phar", $composer);
-								}
-								$output->writeln("Updating composer");
-								exec("php " . __DIR__ . "/../../composer.phar update -o");
 
-								// Check if phpunit.phar is in the dir
-								if(!file_exists(__DIR__ . "/../../phpunit.phar"))
+								if($input->getOption("composer"))
 								{
-												$output->writeln("PHPUnit doesn't exist, downloading it");
-												$composer = $app->cURL->getData("https://phar.phpunit.de/phpunit.phar", 0);
-												file_put_contents(__DIR__ . "/../../phpunit.phar", $composer);
+												// Check if composer is in the dir
+												if(!file_exists(__DIR__ . "/../../composer.phar"))
+												{
+																$output->writeln("Composer doesn't exist, downloading it");
+																$composer = $app->cURL->getData("https://getcomposer.org/composer.phar", 0);
+																file_put_contents(__DIR__ . "/../../composer.phar", $composer);
+												}
+												$output->writeln("Updating composer");
+												exec("php " . __DIR__ . "/../../composer.phar update -o");
 								}
-								$output->writeln("Running unit tests");
-								exec("php " . __DIR__ . "/../../phpunit.phar --coverage-html=/storage/www/projectRenaDocs/tests/ --bootstrap=" . __DIR__ . "/../../tests/init.php " . __DIR__ . "/../../tests/*");
-								chdir("/storage/www/projectRenaDocs/");
-								exec("git add *");
-								exec("git commit -m 'Update tests'");
-								exec("git push");
+
+								if($input->getOption("unittest"))
+								{
+												// Check if phpunit.phar is in the dir
+												if(!file_exists(__DIR__ . "/../../phpunit.phar"))
+												{
+																$output->writeln("PHPUnit doesn't exist, downloading it");
+																$composer = $app->cURL->getData("https://phar.phpunit.de/phpunit.phar", 0);
+																file_put_contents(__DIR__ . "/../../phpunit.phar", $composer);
+												}
+												$output->writeln("Running unit tests");
+												chdir(__DIR__ . "/../../tests");
+												exec("php ../phpunit.phar --coverage-html=/storage/www/projectRenaDocs/tests/ --bootstrap=init.php .");
+												chdir("/storage/www/projectRenaDocs/");
+												exec("git add *");
+												exec("git commit -m 'Update tests'");
+												exec("git push");
+								}
 
 								// Update RenaApp
 								$load = array(
