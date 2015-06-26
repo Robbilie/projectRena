@@ -17,6 +17,9 @@ class CoreCharacter extends CoreBase {
 	protected $groups;
 	protected $cgroups;
 
+	protected $fleets;
+	protected $cfleets;
+
 	protected $userObj;
 	protected $corp;
 
@@ -134,6 +137,31 @@ class CoreCharacter extends CoreBase {
 		$this->groups = null;
 		$this->cgroups = null;
 		$this->resetPermissions();
+	}
+
+	public function getFleets () {
+		if(is_null($this->fleets)) {
+			$fleetRows = $this->db->query("SELECT fleetID FROM easFleetParticipants WHERE characterID = :characterID", array(":characterID" => $this->characterID));
+			$this->fleets = array();
+			foreach ($fleetRows as $fleetRow)
+				array_push($this->fleets, $fleetRow['fleetID']);
+		}
+		return $this->fleets;
+	}
+
+	public function getCFleets () {
+		if(is_null($this->cfleets)) {
+			$fleets = $this->getFleets();
+			$this->cfleets = array();
+			foreach ($fleets as $fleet)
+				array_push($this->cfleets, $this->app->CoreManager->getFleet($fleet));
+		}
+		return $this->cfleets;
+	}
+
+	public function resetFleets () {
+		$this->fleets = null;
+		$this->cfleets = null;
 	}
 
 	// default
