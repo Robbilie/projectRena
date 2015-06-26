@@ -195,6 +195,7 @@ class JSONController
         $groups = array("owned" => array(), "corporation" => array(), "alliance" => array(), "groups" => array());
         if(isset($_SESSION['loggedin'])) {
             $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
+			$groups['cancreate'] = $char->hasPermission("createGroup");
             $groups['groups'] = $char->getGroups();
             // corp group if ceo and corp scoped groups
             if($char->getCCorporation()->getCeoCharacterId() == $char->getCharId()) {

@@ -102,6 +102,7 @@ class CoreCharacter extends CoreBase {
 	}
 
 	public function hasPermission ($perm) {
+		if($this->getCUser()->isAdmin()) return true;
 		if(is_int($perm)) {
 			return in_array($perm, $this->getPermissions());
 		} else if(is_string($perm)) {

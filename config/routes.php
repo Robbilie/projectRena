@@ -272,6 +272,19 @@ $app->get('/map/region/:regionID/', function($regionID) use ($app){
     echo $svg;
 });
 
+$app->get('/fleets/', function() use ($app){
+	$app->render("/pages/fleets.twig");
+});
+
+$app->get('/fleet/:fleetID/', function($fleetID) use ($app){
+	$app->render("/pages/fleet.twig");
+});
+
+$app->get('/fleets/confirm/:hash/', function($hash) use ($app){
+	$app->render("/pages/fleetsconfirm.twig");
+});
+
+
 /*
 
 $app->get('/structures/controltower/:towerID/', function($towerID) use ($app){
