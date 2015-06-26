@@ -195,9 +195,10 @@ class CoreManager {
 
     public function getFleetParticipant ($fleetparticipant) {
       $character = $this->getCharacter($fleetparticipant['characterID']);
+		if(is_null($character)) return null;
       $characterData = $character->getData();
       $characterData['confirmed'] = $fleetparticipant['confirmed'];
-      $cfleetparticipant = new CoreFleetParticipant($characterData);
+      $cfleetparticipant = new CoreFleetParticipant($this->app, $characterData);
       return $cfleetparticipant;
     }
 
@@ -221,14 +222,14 @@ class CoreManager {
           return $fleet;
       $fleetRow = $this->db->queryRow("SELECT * FROM easFleets WHERE hash = :hash", array(":hash" => $hash));
       if($fleetRow) {
-        $fleet = new CoreFleet($fleetRow);
+        $fleet = new CoreFleet($this->app, $fleetRow);
         array_push($this->fleets, $fleet);
         return $fleet;
       }
       return null;
     }
 
-    public function createFleet ($name, $comment, $creator, $expiresin) {
+    public function createFleet ($name, $comment, $creator, $expiresin, $participants) {
       $id = $this->db->execute("INSERT INTO easFleets (name, comment, creator, time, expires, hash) VALUES (:name, :comment, :creator, :time, :expires, :hash)",
         array(
           ":name" => $name,
@@ -236,10 +237,33 @@ class CoreManager {
           ":creator" => $creator,
           ":time" => time(),
           ":expires" => time() + (60*60*$expiresin),
-          ":hash" => md5($creator.$name.$comment.$time."ghjkljz8fu98z3ppi3r3p82p9ief")
-        )
+          ":hash" => md5($creator.$name.$comment.time()."ghjkljz8fu98z3ppi3r3p82p9ief")
+        ), true
       );
-      $this->db->execute("INSERT INTO easFleetParticipants (fleetID, characterID, confirmed) VALUE (:fleetID, :characterID, 1)", array(":fleetID" => $id, ":characterID" => $creator));
+		var_dump(time()." : ".(time() + (60*60*$expiresin))." : ".(60*60*$expiresin));
+
+		// participants
+		$participantsArr = str_replace("%20", " ", $participants);
+		$participantsArr = explode(",", $participantsArr);
+
+		$chunkedParticipants = array_chunk($participantsArr, 100);
+		$idsFromAPI = array();
+		for($i = 0; $i < count($chunkedParticipants); $i++) {
+			$idsFromAPI = array_merge($idsFromAPI, $this->app->EVEEVECharacterID->getData($chunkedParticipants[$i])['result']['characters']);
+		}
+
+		$idsFromAPISorted = array();
+		foreach ($idsFromAPI as $idFromAPI)
+			array_push($idsFromAPISorted, (int)$idFromAPI['characterID']);
+
+		for($i = 0; $i < count($idsFromAPISorted); $i++)
+			$this->db->execute("INSERT INTO easFleetParticipants (fleetID, characterID, confirmed) VALUE (:fleetID, :characterID, 0)", array(":fleetID" => $id, ":characterID" => $idsFromAPISorted[$i]));
+
+		if(in_array($creator, $idsFromAPISorted)) {
+			$this->db->execute("UPDATE easFleetParticipants SET confirmed = 1 WHERE fleetID = :fleetID AND characterID = :characterID", array(":fleetID" => $id, ":characterID" => $creator));
+		} else {
+			$this->db->execute("INSERT INTO easFleetParticipants (fleetID, characterID, confirmed) VALUE (:fleetID, :characterID, 1)", array(":fleetID" => $id, ":characterID" => $creator));
+		}
       return $this->getFleet($id);
     }
 
