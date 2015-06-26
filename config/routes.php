@@ -141,6 +141,22 @@ $app->get('/json/characternames/:name', function ($name) use ($app){
 	(new \ProjectRena\Controller\JSONController($app))->findCharacterNames($name);
 });
 
+$app->get('/json/fleets/', function () use ($app){
+	(new \ProjectRena\Controller\FleetsController($app))->getFleets();
+});
+
+$app->post('/json/fleets/create/', function () use ($app){
+	(new \ProjectRena\Controller\FleetsController($app))->createFleet();
+});
+
+$app->get('/json/fleet/:fleetID/', function ($fleetID) use ($app){
+	(new \ProjectRena\Controller\FleetsController($app))->getFleet($fleetID);
+});
+
+$app->get('/json/fleets/confirm/:hash/', function ($hash) use ($app){
+	(new \ProjectRena\Controller\FleetsController($app))->confirmFleet($hash);
+});
+
 
 
 /*
