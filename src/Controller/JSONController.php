@@ -253,7 +253,7 @@ class JSONController
                     $group->removePermission($permissionID);
                     $resp['state'] = "success";
                 } else {
-                    $resp['msg'] = "You dont have permission to do this.";
+                    $resp['msg'] = "You are not permitted to do this.";
                 }
             } else {
                 $resp['msg'] = "Group does not have Permission.";
@@ -273,7 +273,7 @@ class JSONController
                 $group->addPermission($permissionID);
                 $resp['state'] = "success";
             } else {
-                $resp['msg'] = "You dont have permission to do this.";
+                $resp['msg'] = "You are not permitted to do this.";
             }
         }
         $this->app->response->headers->set('Content-Type', 'application/json');
@@ -294,7 +294,7 @@ class JSONController
                     $resp['msg'] = "Character not in Group.";
                 }
             } else {
-                $resp['msg'] = "You dont have permission to do this.";
+                $resp['msg'] = "You are not permitted to do this.";
             }
         }
         $this->app->response->headers->set('Content-Type', 'application/json');
@@ -311,7 +311,7 @@ class JSONController
                 $group->addCharacter($otherchar->getCharId());
                 $resp['state'] = "success";
             } else {
-                $resp['msg'] = "You dont have permission to do this.";
+                $resp['msg'] = "You are not permitted to do this.";
             }
         }
         $this->app->response->headers->set('Content-Type', 'application/json');
@@ -335,7 +335,7 @@ class JSONController
                     $resp['msg'] = "Name cant be blank.";
                 }
             } else {
-                $resp['msg'] = "You dont have permission to do this.";
+                $resp['msg'] = "You are not permitted to do this.";
             }
         }
         $this->app->response->headers->set('Content-Type', 'application/json');

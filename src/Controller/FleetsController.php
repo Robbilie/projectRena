@@ -67,10 +67,17 @@ class IntelController
     public function createFleet () {
       $resp = array("state" => "error", "msg" => "");
       if(isset($_SESSION['loggedin'])) {
+        $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
+        if($char->hasPermission("createFleet")) {
           $fleet = $this->app->CoreManager->createFleet($_POST['name'], $_POST['comment'], $_SESSION['characterID'], $_POST['expiresin']);
           if(!is_null($fleet)) {
             $resp['state'] = "success";
+          } else {
+            $resp['msg'] = "Something went wrong.";
           }
+        } else {
+          $resp['msg'] = "You are not permitted to do this.";
+        }
       }
       $this->app->response->headers->set('Content-Type', 'application/json');
       $this->app->response->body(json_encode($resp));
