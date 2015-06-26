@@ -23,6 +23,7 @@ class JSONController
         $this->config = $this->app->baseConfig;
     }
 
+    // longpolled status, normal status if no hash specified
     public function getStatus () {
         $status = array();
 
@@ -53,6 +54,7 @@ class JSONController
         $this->app->response->body(json_encode($status));
     }
 
+    // generate the status array
     function getStatusArray () {
         $user = null;
         if(isset($_SESSION['characterID']))
@@ -66,6 +68,7 @@ class JSONController
         return $status;
     }
 
+    // save api key to the db after check
     public function submitAPIKey ($keyID, $vCode) {
         $rep = array("msg" => "", "state" => "error");
         if(isset($_SESSION['loggedin'])) {
@@ -87,6 +90,7 @@ class JSONController
         $this->app->response->body(json_encode($resp));
     }
 
+    // return a character
     public function getCharacter ($characterID) {
         $character = array();
         if(isset($_SESSION['loggedin']))
@@ -95,6 +99,7 @@ class JSONController
         $this->app->response->body(json_encode($character));
     }
 
+    // return characters associated to user
     public function getCharacters () {
         $characters = array();
         if(isset($_SESSION['loggedin']))
@@ -103,6 +108,7 @@ class JSONController
         $this->app->response->body(json_encode($characters));
     }
 
+    // switch to a different character on user
     public function switchCharacter ($characterID) {
         $resp = array("state" => "error");
         if(isset($_SESSION['loggedin'])) {
@@ -118,6 +124,7 @@ class JSONController
         $this->app->response->body(json_encode($resp));
     }
 
+    // remove character bound to user
     public function removeCharacter ($characterID) {
         $resp = array("state" => "error");
         if(isset($_SESSION['loggedin'])) {
@@ -132,6 +139,7 @@ class JSONController
         $this->app->response->body(json_encode($resp));
     }
 
+    // get the groups a character is in
     public function getCharacterGroups ($characterID) {
         $groups = array();
         if(isset($_SESSION['loggedin']))
@@ -155,6 +163,7 @@ class JSONController
         $this->app->response->body(json_encode($controlTower));
     }
 
+    // get content of a container owned by a corporation
     public function getCorporationContents ($corporationID, $containerID) {
         $resp = array("name" => "", "list" => array());
         if(isset($_SESSION['loggedin'])) {
@@ -175,6 +184,7 @@ class JSONController
 
     }
 
+    // return a controltower
     public function getControltower ($towerID) {
         $resp = array("name" => "", "moonname" => "", "state" => "", "typename" => "", "fuel" => "", "strontium" => "", "modules" => array());
         if(isset($_SESSION['loggedin'])) {
@@ -191,11 +201,12 @@ class JSONController
         $this->app->response->body(json_encode($resp));
     }
 
+    // get availbale groups
     public function getGroups () {
         $groups = array("owned" => array(), "corporation" => array(), "alliance" => array(), "groups" => array());
         if(isset($_SESSION['loggedin'])) {
             $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
-			$groups['cancreate'] = $char->hasPermission("createGroup");
+			         $groups['cancreate'] = $char->hasPermission("createGroup");
             $groups['groups'] = $char->getGroups();
             // corp group if ceo and corp scoped groups
             if($char->getCCorporation()->getCeoCharacterId() == $char->getCharId()) {
@@ -216,6 +227,7 @@ class JSONController
         $this->app->response->body(json_encode($groups));
     }
 
+    // get a special group
     public function getGroup ($groupID) {
         $group = array();
         if(isset($_SESSION['loggedin'])) {
@@ -226,6 +238,7 @@ class JSONController
         $this->app->response->body(json_encode($group));
     }
 
+    // return the members of a group
     public function getGroupMembers ($groupID) {
         $members = array();
         if(isset($_SESSION['loggedin'])) {
@@ -236,6 +249,7 @@ class JSONController
         $this->app->response->body(json_encode($members));
     }
 
+    // return all permission with a special scope
     public function getPermissionsByScope ($scope) {
         $permissions = array();
         if(isset($_SESSION['loggedin']))
@@ -244,6 +258,7 @@ class JSONController
         $this->app->response->body(json_encode($permissions));
     }
 
+    // remove a permission from a group
     public function removePermissionFromGroup ($groupID, $permissionID) {
         $resp = array("msg" => "", "state" => "error");
         if(isset($_SESSION['loggedin'])) {
@@ -264,6 +279,7 @@ class JSONController
         $this->app->response->body(json_encode($resp));
     }
 
+    // add a permission to a group
     public function addPermissionToGroup ($groupID, $permissionID) {
         $resp = array("msg" => "", "state" => "error");
         if(isset($_SESSION['loggedin'])) {
@@ -281,6 +297,7 @@ class JSONController
         $this->app->response->body(json_encode($resp));
     }
 
+    // remove a character from a group
     public function removeCharacterFromGroup ($groupID, $characterID) {
         $resp = array("msg" => "", "state" => "error");
         if(isset($_SESSION['loggedin'])) {
@@ -302,6 +319,7 @@ class JSONController
         $this->app->response->body(json_encode($resp));
     }
 
+    // add a character to a group
     public function addCharacterToGroup ($groupID, $characterID) {
         $resp = array("msg" => "", "state" => "error");
         if(isset($_SESSION['loggedin'])) {
@@ -319,6 +337,7 @@ class JSONController
         $this->app->response->body(json_encode($resp));
     }
 
+    // create a group
     public function createGroup ($name, $scope, $private) {
         $resp = array("msg" => "", "state" => "error");
         if(isset($_SESSION['loggedin'])) {
@@ -343,6 +362,7 @@ class JSONController
         $this->app->response->body(json_encode($resp));
     }
 
+    // return a special corporation
     public function getCorporation ($corporationID) {
         $corp = array();
         if(isset($_SESSION['loggedin'])) {
@@ -352,6 +372,7 @@ class JSONController
         $this->app->response->body(json_encode($corp));
     }
 
+    // return the members of a corporation
     public function getCorporationMembers ($corporationID) {
         $members = array();
         if(isset($_SESSION['loggedin'])) {
@@ -362,6 +383,7 @@ class JSONController
         $this->app->response->body(json_encode($members));
     }
 
+    // return a  special alliance
     public function getAlliance ($allianceID) {
         $alliance = array();
         if(isset($_SESSION['loggedin'])) {
@@ -371,6 +393,7 @@ class JSONController
         $this->app->response->body(json_encode($alliance));
     }
 
+    // return the members of an alliance
     public function getAllianceMembers ($allianceID) {
         $members = array();
         if(isset($_SESSION['loggedin'])) {
@@ -383,6 +406,7 @@ class JSONController
         $this->app->response->body(json_encode($members));
     }
 
+    // return the corporations in an alliance
     public function getAllianceCorporations ($allianceID) {
         $corporations = array();
         if(isset($_SESSION['loggedin'])) {
@@ -393,12 +417,14 @@ class JSONController
         $this->app->response->body(json_encode($corporations));
     }
 
+    // search for a system named like
     public function findSystemNames ($name) {
         $systemRows = $this->db->query("SELECT solarSystemName as name, solarSystemID as data FROM mapSolarSystems WHERE solarSystemName LIKE :name", array(":name" => $name."%"));
         $this->app->response->headers->set('Content-Type', 'application/json');
         $this->app->response->body(json_encode($systemRows));
     }
 
+    // search for a character named like
     public function findCharacterNames ($name) {
         $characterRows = $this->db->query("SELECT characterName as name, characterID as data FROM easCharacters WHERE characterName LIKE :name", array(":name" => $name."%"));
         $this->app->response->headers->set('Content-Type', 'application/json');
