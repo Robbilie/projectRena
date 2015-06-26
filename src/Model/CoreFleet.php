@@ -50,6 +50,23 @@ class CoreFleet extends CoreBase {
     return (time() - $this->expires) > 0;
   }
 
+  public function hasParticipant ($participantID) {
+    $participants = $this->getFleetParticipants();
+    foreach ($participants as $participant)
+      if($participant['characterID'] == $participantID)
+        return true;
+    return false;
+  }
+
+  public function confirmParticipant ($characterID) {
+    foreach ($this->cfleetparticipants as $fleetparticipant) {
+      if($fleetparticipant->getCharId() == $characterID) {
+        $this->db->execute("UPDATE easFleetParticipants SET confirmed = 1 WHERE fleetID = :fleetID AND characterID = :characterID", array(":fleetID" => $this->id, ":characterID" => $characterID));
+        $fleetparticipant->setConfirmed(true);
+      }
+    }
+  }
+
 	public function jsonSerialize() {
 		return array(
 			"id" => $this->id,

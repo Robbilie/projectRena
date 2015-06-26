@@ -201,6 +201,48 @@ class CoreManager {
       return $cfleetparticipant;
     }
 
+    protected $fleets = array();
+    public function getFleet ($fleetID) {
+      foreach ($this->fleets as $fleet)
+        if($fleet->getId() == $fleetID)
+          return $fleet;
+      $fleetRow = $this->db->queryRow("SELECT * FROM easFleets WHERE id = :fleetID", array(":fleetID" => $fleetID));
+      if($fleetRow) {
+        $fleet = new CoreFleet($this->app, $fleetRow);
+        array_push($this->fleets, $fleet);
+        return $fleet;
+      }
+      return null;
+    }
+
+    public function getFleetByHash ($hash) {
+      foreach ($this->fleets as $fleet)
+        if($fleet->getHash() == $hash)
+          return $fleet;
+      $fleetRow = $this->db->queryRow("SELECT * FROM easFleets WHERE hash = :hash", array(":hash" => $hash));
+      if($fleetRow) {
+        $fleet = new CoreFleet($fleetRow);
+        array_push($this->fleets, $fleet);
+        return $fleet;
+      }
+      return null;
+    }
+
+    public function createFleet ($name, $comment, $creator, $expiresin) {
+      $id = $this->db->execute("INSERT INTO easFleets (name, comment, creator, time, expires, hash) VALUES (:name, :comment, :creator, :time, :expires, :hash)",
+        array(
+          ":name" => $name,
+          ":comment" => $comment,
+          ":creator" => $creator,
+          ":time" => time(),
+          ":expires" => time() + (60*60*$expiresin),
+          ":hash" => md5($creator.$name.$comment.$time."ghjkljz8fu98z3ppi3r3p82p9ief")
+        )
+      );
+      $this->db->execute("INSERT INTO easFleetParticipants (fleetID, characterID, confirmed) VALUE (:fleetID, :characterID, 1)", array(":fleetID" => $id, ":characterID" => $creator));
+      return $this->getFleet($id);
+    }
+
     protected $corps = array();
     public function getCorporation ($corporationID) {
         foreach ($this->corps as $corp)
