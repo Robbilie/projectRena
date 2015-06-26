@@ -15,8 +15,8 @@ class Killmails extends AbstractMigration
      */
     public function change()
     {
-        $users = $this->table('killmails', array("engine" => "TokuDB"));
-        $users
+        $killmails = $this->table('killmails', array("engine" => "TokuDB"));
+        $killmails
          ->addColumn("killID", "integer", array("limit" => 32))
          ->addColumn("processed", "integer", array("limit" => 6))
          ->addColumn("hash", "string", array("limit" => 64))

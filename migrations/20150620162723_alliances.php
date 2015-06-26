@@ -15,8 +15,8 @@ class Alliances extends AbstractMigration
      */
     public function change()
     {
-        $users = $this->table('alliances', array("engine" => "TokuDB"));
-        $users
+        $alliances = $this->table('alliances', array("engine" => "TokuDB"));
+        $alliances
          ->addColumn("allianceID", "integer", array("limit" => 16))
          ->addColumn("allianceName", "string", array("limit" => 128))
          ->addColumn("allianceTicker", "string", array("limit" => 8))

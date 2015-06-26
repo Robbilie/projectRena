@@ -15,8 +15,8 @@ class Characters extends AbstractMigration
      */
     public function change()
     {
-        $users = $this->table('characters', array("engine" => "TokuDB"));
-        $users
+        $characters = $this->table('characters', array("engine" => "TokuDB"));
+        $characters
          ->addColumn("characterID", "integer", array("limit" => 16))
          ->addColumn("corporationID", "integer", array("limit" => 16))
          ->addColumn("allianceID", "integer", array("limit" => 16))

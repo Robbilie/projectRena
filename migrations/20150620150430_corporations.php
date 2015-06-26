@@ -15,8 +15,8 @@ class Corporations extends AbstractMigration
      */
     public function change()
     {
-        $users = $this->table('corporations', array("engine" => "TokuDB"));
-        $users
+        $corporations = $this->table('corporations', array("engine" => "TokuDB"));
+        $corporations
          ->addColumn("corporationID", "integer", array("limit" => 16))
          ->addColumn("allianceID", "integer", array("limit" => 16))
          ->addColumn("corporationName", "string", array("limit" => 128))

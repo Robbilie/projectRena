@@ -35,10 +35,10 @@ before_script:
   - php vendor/bin/phinx status
 
 script:
-  - phpunit --coverage-clover=coverage.clover --bootstrap tests/init.php tests/*
-  - php tests/coverageChecker.php tests/coverage.clover 75
+  - cd tests
+  - phpunit --coverage-clover=coverage.clover --bootstrap init.php .
+  - php coverageChecker.php coverage.clover 75
 
 after_script:
-  - cd tests
   - wget https://scrutinizer-ci.com/ocular.phar
   - php ocular.phar code-coverage:upload --format=php-clover coverage.clover

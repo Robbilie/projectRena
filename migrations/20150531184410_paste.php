@@ -22,8 +22,8 @@ class Paste extends AbstractMigration
 				 */
 				public function up()
 				{
-								$users = $this->table('paste', array("engine" => "TokuDB"));
-								$users
+								$paste = $this->table('paste', array("engine" => "TokuDB"));
+								$paste
 									->addColumn('hash', 'string', array('limit' => 64))
 									->addColumn('userID', 'integer', array('limit' => 5))
 									->addColumn('data', 'text', array("limit" => MysqlAdapter::TEXT_LONG))
