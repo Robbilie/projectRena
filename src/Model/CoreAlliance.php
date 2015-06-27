@@ -81,6 +81,7 @@ class CoreAlliance extends CoreBase {
 	}
 
 	public function hasStandingsTowards ($character) {
+		if(is_null($character)) return false;
 		$r = $this->db->queryField(
 				"SELECT count(contactID) as cnt FROM ntContactList WHERE
 						ownerID = :ownerID AND
