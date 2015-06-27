@@ -108,7 +108,7 @@ class CoreCorporation extends CoreBase {
 	// default
 
 	public function getId () {
-		return $this->id;
+		return (int)$this->id;
 	}
 
 	public function getShortName () {
@@ -120,11 +120,11 @@ class CoreCorporation extends CoreBase {
 	}
 
 	public function getCeoCharacterId () {
-		return $this->ceoCharacterID;
+		return (int)$this->ceoCharacterID;
 	}
 
 	public function getAlliance () {
-		return $this->alliance;
+		return (int)$this->alliance;
 	}
 
 	public function getNpc () {

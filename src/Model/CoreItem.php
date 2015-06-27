@@ -106,35 +106,35 @@ class CoreItem extends CoreBase {
 	// default
 
 	public function getOwnerId () {
-		return $this->ownerID;
+		return (int)$this->ownerID;
 	}
 
 	public function getId () {
-		return $this->itemID;
+		return (int)$this->itemID;
 	}
 
 	public function getItemId () {
-		return $this->itemID;
+		return (int)$this->itemID;
 	}
 
 	public function getTypeId () {
-		return $this->typeID;
+		return (int)$this->typeID;
 	}
 
 	public function getLocationId () {
-		return $this->locationID;
+		return (int)$this->locationID;
 	}
 
 	public function getQuantity () {
-		return $this->quantity;
+		return (int)$this->quantity;
 	}
 
 	public function getFlag () {
-		return $this->flag;
+		return (int)$this->flag;
 	}
 
 	public function getName () {
 		return $this->name;
 	}
 
-}	
+}

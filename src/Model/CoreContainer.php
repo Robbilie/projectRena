@@ -15,19 +15,19 @@ class CoreContainer extends CoreItem {
 	}
 
 	public function getX () {
-		return $this->x;
+		return (int)$this->x;
 	}
 
 	public function getY () {
-		return $this->y;
+		return (int)$this->y;
 	}
 
 	public function getZ () {
-		return $this->z;
+		return (int)$this->z;
 	}
 
 	public function getClosestOrbital () {
-		return $this->closestOrbital;
+		return (int)$this->closestOrbital;
 	}
 
 }

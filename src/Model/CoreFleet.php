@@ -91,7 +91,7 @@ class CoreFleet extends CoreBase {
   // default
 
   public function getId () {
-    return $this->id;
+    return (int)$this->id;
   }
 
   public function getScope () {
@@ -111,15 +111,15 @@ class CoreFleet extends CoreBase {
   }
 
   public function getCreator () {
-    return $this->creator;
+    return (int)$this->creator;
   }
 
   public function getTime () {
-    return $this->time;
+    return (int)$this->time;
   }
 
   public function getExpires () {
-    return $this->expires;
+    return (int)$this->expires;
   }
 
 }

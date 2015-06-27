@@ -175,15 +175,15 @@ class CoreCharacter extends CoreBase {
 	// default
 
 	public function getId () {
-		return $this->id;
+		return (int)$this->id;
 	}
 
 	public function getUser () {
-		return $this->user;
+		return (int)$this->user;
 	}
 
 	public function getCharId () {
-		return $this->characterID;
+		return (int)$this->characterID;
 	}
 
 	public function getCharName () {
@@ -191,7 +191,7 @@ class CoreCharacter extends CoreBase {
 	}
 
 	public function getCorpId () {
-		return $this->corporationID;
+		return (int)$this->corporationID;
 	}
 
 	public function getCorpName () {
@@ -199,7 +199,7 @@ class CoreCharacter extends CoreBase {
 	}
 
 	public function getAlliId () {
-		return $this->allianceID;
+		return (int)$this->allianceID;
 	}
 
 	public function getAlliName () {

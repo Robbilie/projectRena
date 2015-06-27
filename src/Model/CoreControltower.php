@@ -93,11 +93,11 @@ class CoreControltower extends CoreStructure {
 	// default
 
 	public function getState () {
-		return $this->state;
+		return (int)$this->state;
 	}
 
 	public function getMoonId () {
-		return $this->moonID;
+		return (int)$this->moonID;
 	}
 
 }

@@ -27,8 +27,8 @@ class FleetsController
       $fleets = array("fleets" => array(), "cancreate" => false);
       if(isset($_SESSION['loggedin'])) {
         $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
-		  $fleets['cancreate'] = $char->hasPermission("createFleet");
-		  $fleets['fleets'] = $char->getCFleets();
+	      $fleets['cancreate'] = $char->hasPermission("createFleet");
+        $fleets['fleets'] = $char->getCFleets();
       }
 		$this->app->response->headers->set('Content-Type', 'application/json');
 		$this->app->response->body(json_encode($fleets));

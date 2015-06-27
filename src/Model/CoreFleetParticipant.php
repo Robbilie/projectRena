@@ -25,7 +25,7 @@ class CoreFleetParticipant extends CoreCharacter {
   // default
 
   public function getConfirmed () {
-    return $this->confirmed;
+    return (int)$this->confirmed;
   }
 
 }

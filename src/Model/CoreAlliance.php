@@ -108,7 +108,7 @@ class CoreAlliance extends CoreBase {
 	// default
 
 	public function getId () {
-		return $this->id;
+		return (int)$this->id;
 	}
 
 	public function getShortName () {
@@ -120,15 +120,15 @@ class CoreAlliance extends CoreBase {
 	}
 
 	public function getExecutorCorp () {
-		return $this->executorCorp;
+		return (int)$this->executorCorp;
 	}
 
 	public function getStartDate () {
-		return $this->startDate;
+		return (int)$this->startDate;
 	}
 
 	public function getMemberCount () {
-		return $this->memberCount;
+		return (int)$this->memberCount;
 	}
 
 }

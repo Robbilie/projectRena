@@ -30,7 +30,7 @@ class CoreUser extends CoreBase {
 	// default
 
 	public function getId () {
-		return $this->id;
+		return (int)$this->id;
 	}
 
 	public function getAdmin () {

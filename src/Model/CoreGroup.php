@@ -123,7 +123,7 @@ class CoreGroup extends CoreBase {
 	// default
 
 	public function getId () {
-		return $this->id;
+		return (int)$this->id;
 	}
 
 	public function getName () {
@@ -135,7 +135,7 @@ class CoreGroup extends CoreBase {
 	}
 
 	public function getOwner () {
-		return $this->owner;
+		return (int)$this->owner;
 	}
 
 	public function getCustom () {

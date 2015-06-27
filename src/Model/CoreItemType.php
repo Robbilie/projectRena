@@ -17,7 +17,7 @@ class CoreItemType extends CoreBase {
 	// default
 
 	public function getId () {
-		return $this->typeID;
+		return (int)$this->typeID;
 	}
 
 	public function getName () {
@@ -33,7 +33,7 @@ class CoreItemType extends CoreBase {
 	}
 
 	public function getGroupId () {
-		return $this->groupID;
+		return (int)$this->groupID;
 	}
 
 }
