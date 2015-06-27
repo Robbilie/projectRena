@@ -1,0 +1,12 @@
+<div class="contentConti" id="fleetsconfirmConti">
+
+</div>
+<label id="maxBtn" for="checkMaxed">+</label>
+<script type="text/javascript">
+    fleetsconfirmJS();
+    function fleetsconfirmJS () {
+        ajax("/json/fleets/confirm/" + location.hash.split("/")[3] + "/", function (r) {
+            console.log(r);
+        }, "json");
+    }
+</script>

@@ -10,10 +10,7 @@ phinx.yml
 .settings/
 .floo
 .flooignore
-public/css/
-public/img/
-public/js/
-public/favicon.ico
+public/css/webfonts/
+public/img/icons/
 public/pull.php
-view/
 cache/

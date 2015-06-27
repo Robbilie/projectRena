@@ -1,0 +1,72 @@
+<div class="contentConti" id="charactersheetConti">
+	<h1 class="blue tu ml">Active Character</h1>
+	<p class="inset inline-block">
+		<img class="block" id="characterImg"><img id="corporationImg"><img id="allianceImg">
+	</p>
+	<div class="inline-block ml">
+		<h4 class="mbn">Character Name</h4>
+		<h2 class="mtn dark" id="characterName"></h2>
+		<h4 class="mbn">Corporation Name</h4>
+		<h2 class="mtn dark" id="corporationName"></h2>
+		<h4 class="mbn">Alliance Name</h4>
+		<h2 class="mtn dark" id="allianceName"></h2>
+	</div>
+	<div class="inline-block ml">
+		<h4 class="mbn">Groups</h4>
+		<div id="groupList"></div>
+	</div>
+	<div class="divider"></div>
+	<h1 class="blue tu ml">All Characters</h1>
+	<div class="ml mr" id="characterList"></div>
+	<div class="divider"></div>
+	<h1 class="blue tu ml">Add Character</h1>
+	<a class="ml" id="charSwitch" href="{{ EVESSOURL }}"><img src="/img/EVE_SSO_Login_Buttons_Small_White.png" alt="EVE SSO Login Button"></a>
+</div>
+<label id="maxBtn" for="checkMaxed">+</label>
+<script type="text/javascript">
+	setTimeout(function () { profileJS(); }, 300);
+	function profileJS () {
+		$("#charSwitch").href = loginurl + escape("#!/profile/");
+		ajax("/json/character/" + coreStatus.charid + "/", function (r) {
+			$("#characterImg").src = "https://image.eveonline.com/Character/" + r.characterID + "_128.jpg";
+			$("#characterImg").alt = r.characterName;
+			$("#corporationImg").src = "https://image.eveonline.com/Corporation/" + r.corporationID + "_64.png";
+			$("#corporationImg").alt = r.corporationName;
+			$("#allianceImg").src = "https://image.eveonline.com/Alliance/" + r.allianceID + "_64.png";
+			$("#allianceImg").alt = r.allianceName;
+
+			$("#characterName").innerHTML = r.characterName;
+			$("#corporationName").innerHTML = r.corporationName;
+			$("#allianceName").innerHTML = r.allianceName;
+
+			fadeOn($("#charactersheetConti"), 1);
+		}, "json");
+		ajax("/json/characters/", function (r) {
+			var el = $("#characterList");
+			el.innerHTML = '';
+			for (var i = r.length - 1; i >= 0; i--) {
+				el.innerHTML += '<div class="hover row">' + 
+					'<img src="https://image.eveonline.com/Alliance/' + r[i]['allianceID'] + '_32.png" alt="' + r[i]['allianceName'] + '"/>' + 
+					'<img src="https://image.eveonline.com/Corporation/' + r[i]['corporationID'] + '_32.png" alt="' + r[i]['corporationName'] + '"/>' + 
+					'<img src="https://image.eveonline.com/Character/' + r[i]['characterID'] + '_32.jpg" alt="' + r[i]['characterName'] + '"/>' + 
+					'<span onclick="switchCharacter(' + r[i]['characterID'] + ');">' + r[i]['characterName'] + '</span>' + 
+					(r[i]['characterID'] != coreStatus.charid ? '<span class="fr hover" onclick="deleteCharacter(' + r[i]['characterID'] + ');">&times;</span>' : '') + 
+				'</div>';
+			};
+		}, "json");
+		ajax("/json/character/" + coreStatus.charid + "/groups/", function (r) {
+			var el = $("#groupList");
+			el.innerHTML = '';
+			for (var i = r.length - 1; i >= 0; i--) {
+				el.innerHTML += '<div> + ' + r[i]['name'] + '</div>';
+			};
+		}, "json");
+	}
+
+	function deleteCharacter (charid) {
+		ajax("/json/character/delete/" + charid + "/", function (r) {
+			if(r.state == "success")
+				hashChange();
+		}, "json");
+	}
+</script>

@@ -1,0 +1,41 @@
+<div class="contentConti" id="fleetConti">
+    <div class="card">
+        <div class="chead">
+            <h1 class="blue" id="fleetName"></h1>
+        </div>
+        <div id="fleetComment" class="cbody">
+        </div>
+    </div>
+    <div class="card">
+        <div class="chead">
+            <h2 class="blue">Members</h2>
+        </div>
+        <div id="memberList" class="cbody">
+        </div>
+    </div>
+    <div style="display: none;">
+        <div id="memberTemplate">
+            <div class="hover row"><a href="#!/profile/{0}/" onclick="click(this);">{1}</a>{2}</div>
+        </div>
+    </div>
+</div>
+<label id="maxBtn" for="checkMaxed">+</label>
+<script type="text/javascript">
+    fleetJS();
+    function fleetJS () {
+        ajax("/json/fleet/" + location.hash.split("/")[2] + "/", function (r) {
+            console.log(r);
+
+            $("#fleetName").innerHTML = ((r.hash == "") ? r.name : '<a href="#/fleets/confirm/' + r.hash + '/">' + r.name + '</a>') + ((r.expired) ? '<span class="fr">[expired]</span>' : '');
+
+            var tmpl = $("#memberTemplate").innerHTML;
+            var el = $("#memberList");
+            el.innerHTML = "";
+            for(var i = 0; i < r.participants.length; i++)
+                if(r.participants[i])
+                    el.innerHTML += tmpl.format(r.participants[i].characterID, r.participants[i].characterName, (r.participants[i].confirmed ? '<span class="fr">[confirmed]</span>' : ''));
+
+            fadeOn($("#fleetConti"), 1);
+        }, "json");
+    }
+</script>

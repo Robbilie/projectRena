@@ -1,0 +1,65 @@
+<div class="contentConti" id="fleetsConti">
+    <div class="card">
+        <div class="chead">
+            <h2 class="blue">Fleets</h2>
+        </div>
+        <div id="fleetslist" class="cbody">
+        </div>
+    </div>
+    <div class="card" id="createFleetForm">
+        <div class="chead">
+            <h2 class="blue">Create Fleet</h2>
+        </div>
+        <div id="groupform" class="cbody paddedp">
+            <h4 id="createresponse"></h4>
+            <h4 class="mbn">Fleet Name</h4>
+            <input type="text" id="fleetName"/>
+            <h4 class="mbn">Comment</h4>
+            <textarea id="fleetComment"></textarea>
+            <h4 class="mbn">Fleet expires in (hours)</h4>
+            <input type="text" id="fleetExpires"/>
+            <h4 class="mbn">Participants</h4>
+            <textarea id="fleetParticipants"></textarea>
+            <div class="divider"></div>
+            <span class="btn" onclick="createFleet();">Create</span>
+        </div>
+    </div>
+    <div style="display: none;">
+        <div id="fleetTemplate">
+            <div class="hover paddedp"><a href="#!/fleet/{0}/" onclick="click(this);">{1}</a>{2}</div>
+        </div>
+    </div>
+</div>
+<label id="maxBtn" for="checkMaxed">+</label>
+<script type="text/javascript">
+    fleetsJS();
+    function fleetsJS () {
+        ajax("/json/fleets/", function (r) {
+            console.log(r);
+
+            var tmpl = $("#fleetTemplate").innerHTML;
+            var el = $("#fleetslist");
+            el.innerHTML = "";
+
+            for(var i = 0; i < r.fleets.length; i++)
+                el.innerHTML += tmpl.format(r.fleets[i].id, r.fleets[i].name, "");
+
+            fadeOn($("#fleetsConti"), 1);
+        }, "json");
+    }
+
+    function createFleet () {
+        var req = new XMLHttpRequest();
+        req.onreadystatechange = function () {
+            if(req.readyState == 4 && req.status == 200) {
+                var r = JSON.parse(req.responseText);
+                $("#createresponse").innerHTML = r['msg'];
+                if(r.state == "success")
+                    fleetsJS();
+            }
+        };
+        req.open("POST", "/json/fleets/create/", true);
+        req.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+        req.send(encodeURI("name=" + $("#fleetName").value + "&comment=" + $("#fleetComment").value + "&expiresin=" + $("#fleetExpires").value + "&participants=" + $("#fleetParticipants").value.split("\n").join(",")));
+    }
+</script>
