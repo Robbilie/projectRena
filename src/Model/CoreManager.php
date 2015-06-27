@@ -188,6 +188,10 @@ class CoreManager {
                 $char = new CoreCharacter($this->app, $ntCharRow);
                 array_push($this->chars, $char);
                 return $char;
+            } else {
+              $char = new CoreCharacter($this->app, $this->app->EVEEVECharacterAffiliation->getData(array($characterID))['result']['characters'][0]);
+              array_push($this->chars, $char);
+              return $char;
             }
         }
         return null;

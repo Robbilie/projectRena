@@ -186,29 +186,7 @@ class IntelController
             $intel['membertype'] = "characters";
             foreach ($members as &$member) {
               if(!$char->getCAlliance()->hasStandingsTowards($this->app->CoreManager->getCharacter($member['submitterID']))) continue;
-                //if($this->haveStandings($characterID, $member['submitterID']) <= 0) continue;
-                /*$r = $this->db->queryField(
-                    "SELECT count(contactID) as cnt FROM ntContactList WHERE
-                        ownerID = :ownerID AND
-                        (
-                            contactID = :characterID OR
-                            contactID = :corporationID OR
-                            contactID = :allianceID
-                        ) AND
-                        standing > 0",
-                    "cnt",
-                    array(
-                        ":ownerID" => $char->getAlliId(),
-                        ":characterID" => $member['characterID'],
-                        ":corporationID" => $member['corporationID'],
-                        ":allianceID" => $member['allianceID']
-                    )
-                );
-                $member['standing'] = ($r == 0 && $char->getAlliId() != $member['allianceID']) ? "negative" : "positive";
-                if($r == 0 && $char->getAlliId() != $member['allianceID']) {
-                    $intel['hostilecount']++;
-                }*/
-                if(!$char->getCAlliance()->hasStandingsTowards($this->app->CoreManager->getCharacter($member['characterID']))) {
+                if(!$char->getCAlliance()->hasStandingsTowards($this->app->CoreManager->getCharacter($member['id']))) {
                   $member['standing'] = "negative";
                   $intel['hostilecount']++;
                 } else {
@@ -227,23 +205,6 @@ class IntelController
             }
             $alliancesSorted = array();
             foreach ($alliances as $key => $alliance) {
-                /*$r = $this->db->queryField(
-                    "SELECT count(contactID) as cnt FROM ntContactList WHERE
-                        ownerID = :ownerID AND
-                        (
-                            contactID = :allianceID
-                        ) AND
-                        standing > 0",
-                    "cnt",
-                    array(
-                        ":ownerID" => $char->getAlliId(),
-                        ":allianceID" => $key
-                    )
-                );
-                array_push($alliancesSorted, array("id" => $key, "name" => $this->app->CoreManager->getAlliance($key)->getName(), "count" => count($alliance), "standing" => ($r == 0 && $char->getAlliId() != $member['allianceID']) ? "negative" : "positive"));
-                if($r == 0 && $char->getAlliId() != $member['allianceID']) {
-                    $intel['hostilecount'] += count($alliance);
-                }*/
                 if(!$char->getCAlliance()->hasStandingsTowards($this->app->CoreManager->getAlliance($key)->getExecCorp()->getCEOChar())) {
                   array_push($alliancesSorted,
                     array(
@@ -497,27 +458,7 @@ class IntelController
                 )
             );
             foreach ($members as &$member) {
-                /*$r = $this->db->queryField(
-                    "SELECT count(contactID) as cnt FROM ntContactList WHERE
-                        ownerID = :ownerID AND
-                        (
-                            contactID = :characterID OR
-                            contactID = :corporationID OR
-                            contactID = :allianceID
-                        ) AND
-                        standing > 0",
-                    "cnt",
-                    array(
-                        ":ownerID" => $char->getAlliId(),
-                        ":characterID" => $member['characterID'],
-                        ":corporationID" => $member['corporationID'],
-                        ":allianceID" => $member['allianceID']
-                    )
-                );
-                if($r == 0 && $char->getAlliId() != $member['allianceID']) {
-                    $sys['hostilecount']++;
-                }*/
-                if(!$char->getCAlliance()->hasStandingsTowards($this->app->CoreManager->getCharacter($member['characterID'])))
+                if(!$char->getCAlliance()->hasStandingsTowards($this->app->CoreManager->getCharacter($member['id'])))
                   $sys['hostilecount']++;
             }
             array_push($intel, $sys);
