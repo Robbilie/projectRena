@@ -272,14 +272,14 @@ class CoreManager {
 
 		for($i = 0; $i < count($idsFromAPISorted); $i++) {
       if(
-        ($scope == "corporation" && $character->getCorpId() == $affsSorted[$idsFromAPISorted[i]]['corporationID'])
-        ($scope == "alliance" && $character->getAlliId() == $affsSorted[$idsFromAPISorted[i]]['allianceID'])
+        ($scope == "corporation" && $character->getCorpId() == $affsSorted[$idsFromAPISorted[i]]['corporationID']) || 
+        ($scope == "alliance" && $character->getAlliId() == $affsSorted[$idsFromAPISorted[i]]['allianceID']) ||
         ($scope == "blue" && $character->getCCorporation()->getCAlliance()->hasStandingsTowards($this->app->CoreManager->getCharacter($idsFromAPISorted[i])))
       ) {
         $this->db->execute("INSERT INTO easFleetParticipants (fleetID, characterID, confirmed) VALUE (:fleetID, :characterID, 0)", array(":fleetID" => $id, ":characterID" => $idsFromAPISorted[$i]));
       }
-    }
-
+    } || 
+ ||
 		if(in_array($creator, $idsFromAPISorted)) {
 			$this->db->execute("UPDATE easFleetParticipants SET confirmed = 1 WHERE fleetID = :fleetID AND characterID = :characterID", array(":fleetID" => $id, ":characterID" => $creator));
 		} else {
