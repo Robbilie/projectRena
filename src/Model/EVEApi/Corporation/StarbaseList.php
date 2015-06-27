@@ -9,36 +9,41 @@ use ProjectRena\RenaApp;
  */
 class StarbaseList
 {
-				/**
-				 * @var int
-				 */
-				public $accessMask = 524288;
+    /**
+     * @var int
+     */
+    public $accessMask = 524288;
 
-				/**
-				 * @var
-				 */
-				private $app;
+    /**
+     * @var
+     */
+    private $app;
 
-				/**
-				 * @param \ProjectRena\RenaApp $app
-				 */
-				function __construct(RenaApp $app)
-				{
-								$this->app = $app;
-				}
+    /**
+     * @param \ProjectRena\RenaApp $app
+     */
+    function __construct(RenaApp $app)
+    {
+        $this->app = $app;
+    }
 
-				/**
-				 * @param $apiKey
-				 * @param $vCode
-				 *
-				 * @return mixed
-				 */
-				public function getData($apiKey, $vCode)
-				{
-								$pheal = $this->app->Pheal($apiKey, $vCode);
-								$pheal->scope = 'Corp';
-								$result = $pheal->StarbaseList()->toArray();
-
-								return $result;
-				}
+    /**
+     * @param $apiKey
+     * @param $vCode
+     *
+     * @return mixed
+     */
+    public function getData($apiKey, $vCode)
+    {
+        try
+        {
+            $pheal = $this->app->Pheal->Pheal($apiKey, $vCode);
+            $pheal->scope = 'Corp';
+            $result = $pheal->StarbaseList()->toArray();
+            return $result;
+        } catch(\Exception $exception)
+        {
+            $this->app->Pheal->handleApiException($apiKey, null, $exception);
+        }
+    }
 }

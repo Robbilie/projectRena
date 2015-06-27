@@ -9,35 +9,40 @@ use ProjectRena\RenaApp;
  */
 class CharacterName
 {
-				/**
-				 * @var int
-				 */
-				public $accessMask = null;
+    /**
+     * @var int
+     */
+    public $accessMask = null;
 
-				/**
-				 * @var
-				 */
-				private $app;
+    /**
+     * @var
+     */
+    private $app;
 
-				/**
-				 * @param \ProjectRena\RenaApp $app
-				 */
-				function __construct(RenaApp $app)
-				{
-								$this->app = $app;
-				}
+    /**
+     * @param \ProjectRena\RenaApp $app
+     */
+    function __construct(RenaApp $app)
+    {
+        $this->app = $app;
+    }
 
-				/**
-				 * @param array $characterIDs Max 250 characterIDs
-				 *
-				 * @return mixed
-				 */
-				public function getData($characterIDs = array())
-				{
-								$pheal = $this->app->Pheal->Pheal();
-								$pheal->scope = 'EVE';
-								$result = $pheal->CharacterName(array('ids' => implode(',', $characterIDs)))->toArray();
-
-								return $result;
-				}
+    /**
+     * @param array $characterIDs Max 250 characterIDs
+     *
+     * @return mixed
+     */
+    public function getData($characterIDs = array())
+    {
+        try
+        {
+            $pheal = $this->app->Pheal->Pheal();
+            $pheal->scope = 'EVE';
+            $result = $pheal->CharacterName(array('ids' => implode(',', $characterIDs)))->toArray();
+            return $result;
+        } catch(\Exception $exception)
+        {
+            $this->app->Pheal->handleApiException(null, null, $exception);
+        }
+    }
 }

@@ -9,42 +9,47 @@ use ProjectRena\RenaApp;
  */
 class CorporationSheet
 {
-				/**
-				 * @var int
-				 */
-				public $accessMask = 8;
+    /**
+     * @var int
+     */
+    public $accessMask = 8;
 
-				/**
-				 * @var
-				 */
-				private $app;
+    /**
+     * @var
+     */
+    private $app;
 
-				/**
-				 * @param \ProjectRena\RenaApp $app
-				 */
-				function __construct(RenaApp $app)
-				{
-								$this->app = $app;
-				}
+    /**
+     * @param \ProjectRena\RenaApp $app
+     */
+    function __construct(RenaApp $app)
+    {
+        $this->app = $app;
+    }
 
-				/**
-				 * @param $apiKey
-				 * @param $vCode
-				 * @param null $corporationID
-				 *
-				 * @return mixed
-				 */
-				public function getData($apiKey, $vCode, $corporationID = null)
-				{
-								$pheal = $this->app->Pheal($apiKey, $vCode);
-								$pheal->scope = 'Corp';
-								$requestArray = array();
-								if(isset($corporationID))
-								{
-												$requestArray['corporationID'] = $corporationID;
-								}
-								$result = $pheal->CorporationSheet($requestArray)->toArray();
-
-								return $result;
-				}
+    /**
+     * @param $apiKey
+     * @param $vCode
+     * @param null $corporationID
+     *
+     * @return mixed
+     */
+    public function getData($apiKey = null, $vCode = null, $corporationID = null)
+    {
+        try
+        {
+            $pheal = $this->app->Pheal->Pheal();
+            $pheal->scope = 'Corp';
+            $requestArray = array();
+            if(isset($corporationID))
+            {
+                $requestArray['corporationID'] = $corporationID;
+            }
+            $result = $pheal->CorporationSheet($requestArray)->toArray();
+            return $result;
+        } catch(\Exception $exception)
+        {
+            $this->app->Pheal->handleApiException($apiKey, null, $exception);
+        }
+    }
 }

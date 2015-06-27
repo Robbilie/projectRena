@@ -178,7 +178,7 @@ class alliances
                  ":executorCorporationID" => $executorCorporationID,
                  ":allianceID"  => $allianceID,
                 ));
-                if($information) $this->db->execute("UPDATE alliances SET history = :history WHERE allianceID = :allianceID", array(
+                if($information) $this->db->execute("UPDATE alliances SET information = :information WHERE allianceID = :allianceID", array(
                  ":information"      => $information,
                  ":allianceID" => $allianceID,
                 ));

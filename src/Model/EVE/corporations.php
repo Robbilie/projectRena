@@ -182,14 +182,16 @@ class corporations
                  ":memberCount" => $memberCount,
                  ":corporationID"  => $corporationID,
                 ));
-                if($information) $this->db->execute("UPDATE corporations SET history = :history WHERE corporationID = :corporationID", array(
+                if($information) $this->db->execute("UPDATE corporations SET information = :information WHERE corporationID = :corporationID", array(
                  ":information"      => $information,
                  ":corporationID" => $corporationID,
                 ));
 
             } elseif(!empty($corporationID) && !empty($allianceID) && !empty($corporationName) && !empty($ceoID) && !empty($corpTicker) && !empty($memberCount) && !empty($information))
             {
-                $this->db->execute("INSERT INTO corporations (corporationID, allianceID, corporationName, ceoID, corpTicker, memberCount, information) VALUES (:corporationID, :allianceID, :corporationName, :ceoID, :corpTicker, :memberCount, :information)", array(
+                $this->db->execute("INSERT INTO corporations
+       (corporationID, allianceID, corporationName, ceoID, corpTicker, memberCount, information)
+VALUES (:corporationID, :allianceID, :corporationName, :ceoID, :corpTicker, :memberCount, :information)", array(
                  ":corporationID" => $corporationID,
                  ":allianceID"    => $allianceID,
                  ":corporationName" => $corporationName,
@@ -200,6 +202,14 @@ class corporations
                 ));
             }
         }
+    }
+
+    /**
+     * @param $corporationID
+     */
+    public function insertCorporationID($corporationID)
+    {
+        $this->db->execute("INSERT IGNORE INTO corporations (corporationID) VALUES (:corporationID)", array(":corporationID" => $corporationID));
     }
 
     /**

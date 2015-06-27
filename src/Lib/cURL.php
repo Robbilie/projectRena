@@ -18,7 +18,7 @@ class cURL
 				function __construct(RenaApp $app)
 				{
 								$this->app = $app;
-								$this->cache = $app->renaCache;
+								$this->cache = $app->Cache;
 				}
 
 				/**

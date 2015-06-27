@@ -9,43 +9,48 @@ use ProjectRena\RenaApp;
  */
 class Contracts
 {
-				/**
-				 * @var int
-				 */
-				public $accessMask = 8388608;
+    /**
+     * @var int
+     */
+    public $accessMask = 8388608;
 
-				/**
-				 * @var
-				 */
-				private $app;
+    /**
+     * @var
+     */
+    private $app;
 
-				/**
-				 * @param \ProjectRena\RenaApp $app
-				 */
-				function __construct(RenaApp $app)
-				{
-								$this->app = $app;
-				}
+    /**
+     * @param \ProjectRena\RenaApp $app
+     */
+    function __construct(RenaApp $app)
+    {
+        $this->app = $app;
+    }
 
-				/**
-				 * @param $apiKey
-				 * @param $vCode
-				 * @param $characterID
-				 * @param null $contractID
-				 *
-				 * @return mixed
-				 */
-				public function getData($apiKey, $vCode, $characterID, $contractID = null)
-				{
-								$pheal = $this->app->Pheal($apiKey, $vCode);
-								$pheal->scope = 'Corp';
-								$requestArray = array('characterID' => $characterID);
-								if(isset($contractID))
-								{
-												$requestArray['contractID'] = $contractID;
-								}
-								$result = $pheal->Contracts($requestArray)->toArray();
-
-								return $result;
-				}
+    /**
+     * @param $apiKey
+     * @param $vCode
+     * @param $characterID
+     * @param null $contractID
+     *
+     * @return mixed
+     */
+    public function getData($apiKey, $vCode, $characterID, $contractID = null)
+    {
+        try
+        {
+            $pheal = $this->app->Pheal->Pheal($apiKey, $vCode);
+            $pheal->scope = 'Corp';
+            $requestArray = array('characterID' => $characterID);
+            if(isset($contractID))
+            {
+                $requestArray['contractID'] = $contractID;
+            }
+            $result = $pheal->Contracts($requestArray)->toArray();
+            return $result;
+        } catch(\Exception $exception)
+        {
+            $this->app->Pheal->handleApiException($apiKey, $characterID, $exception);
+        }
+    }
 }

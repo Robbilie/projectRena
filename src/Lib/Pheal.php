@@ -21,6 +21,8 @@ class Pheal
 					*/
 				function __construct(RenaApp $app)
 				{
+								$this->app = $app;
+
 								Config::getInstance()->http_method = "curl";
 								Config::getInstance()->http_user_agent = $app->baseConfig->getConfig("userAgent", "site", "API DataGetter from projectRena (karbowiak@gmail.com)");
 								Config::getInstance()->http_post = false;
@@ -29,7 +31,7 @@ class Pheal
 								Config::getInstance()->cache = new \Pheal\Cache\RedisStorage(array(
 									"host"       => $app->baseConfig->getConfig("host", "redis", "127.0.0.1"),
 									"port"       => $app->baseConfig->getConfig("port", "redis", 6379),
-									"persistent" => false,
+									"persistent" => true,
 									"auth"       => null,
 									"prefix"     => "Pheal",
 								));
@@ -41,15 +43,102 @@ class Pheal
 				/**
 				 *
 				 */
-				function RunAsNew()
+				function RunAsNew() {}
+
+				/**
+					* @return \Pheal\Pheal
+					* @throws \Exception
+					*/
+				public function Pheal()
 				{
+								if($this->app->Storage->get("Api904") <= date("Y-m-d H:i:s"))
+												return new \Pheal\Pheal();
+								else
+												throw new \Exception("Error, CCP has 904ed us till " . $this->app->Storage->get("Api904"));
 				}
 
 				/**
-				 * @return \Pheal\Pheal
+				 * @param \Exception $exception
 				 */
-				public function Pheal()
+				public function handleApiException($keyID, $characterID, $exception)
 				{
-								return new \Pheal\Pheal();
+								$exceptionCode = $exception->getCode();
+								$exceptionMessage = $exception->getMessage();
+
+								switch($exceptionCode)
+								{
+												case 28: // Timeouts
+												case 904: // temp ban from CCPs api server
+																$this->app->Storage->set("Api904", date("Y-m-d H:i:s", time() + 300));
+												break;
+
+												case 403:
+												case 502:
+												case 503: // Service Unavailable - try again later
+
+												break;
+
+												case 119: // Kills exhausted: retry after [{0}]
+
+												break;
+
+												case 120: // Expected beforeKillID [{0}] but supplied [{1}]: kills previously loaded.
+
+												break;
+
+												case 221: // Demote toon, illegal page access
+
+												break;
+
+												case 220:
+												case 200: // Current security level not high enough.
+																// Typically happens when a key isn't a full API Key
+
+												break;
+
+												case 522:
+												case 201: // Character does not belong to account.
+																// Typically caused by a character transfer
+
+												break;
+
+												case 207: // Not available for NPC corporations.
+												case 209:
+
+												break;
+
+												case 222: // account has expired
+
+												break;
+
+												case 403:
+												case 211: // Login denied by account status
+																// Remove characters, will revalidate with next doPopulate
+
+												break;
+
+												case 202: // API key authentication failure.
+												case 203: // Authentication failure - API is no good and will never be good again
+												case 204: // Authentication failure.
+												case 205: // Authentication failure (final pass).
+												case 210: // Authentication failure.
+												case 521: // Invalid username and/or password passed to UserData.LoginWebUser().
+
+												break;
+
+												case 500: // Internal Server Error (More CCP Issues)
+												case 520: // Unexpected failure accessing database. (More CCP issues)
+												case 404: // URL Not Found (CCP having issues...)
+												case 902: // Eve backend database temporarily disabled
+
+												break;
+
+												case 0: // API Date could not be read / parsed, original exception (Something is wrong with the XML and it couldn't be parsed)
+												default: // try again in 5 minutes
+																$this->app->Logging->log("ERROR", "$keyID - Unhandled error - Code $exceptionCode - $exceptionMessage");
+												break;
+								}
+
+								// Do stuff to the apikeys here
 				}
 }

@@ -110,7 +110,7 @@ class participants
 
         // Merge the arrays
         $array = array(":killID" => $killID);
-        $query = "EXPLAIN SELECT * FROM participants WHERE killID = :killID" . $vQuery;
+        $query = "SELECT * FROM participants WHERE killID = :killID" . $vQuery;
 
         // Execute the query
         return $this->db->query($query, $array, $cacheTime);
@@ -136,7 +136,7 @@ class participants
 
         // Merge the arrays
         $array = array_merge(array(":killTime" => $killTime), $vArray);
-        $query = "EXPLAIN SELECT * FROM participants WHERE killTime = :killTime" . $vQuery;
+        $query = "SELECT * FROM participants WHERE killTime = :killTime" . $vQuery;
 
         // Execute the query
         return $this->db->query($query, $array, $cacheTime);
@@ -162,7 +162,7 @@ class participants
 
         // Merge the arrays
         $array = array_merge(array(":solarSystemID" => $solarSystemID), $vArray);
-        $query = "EXPLAIN SELECT * FROM participants WHERE solarSystemID = :solarSystemID" . $vQuery;
+        $query = "SELECT * FROM participants WHERE solarSystemID = :solarSystemID" . $vQuery;
 
         // Execute the query
         return $this->db->query($query, $array, $cacheTime);
@@ -188,7 +188,7 @@ class participants
 
         // Merge the arrays
         $array = array_merge(array(":regionID" => $regionID), $vArray);
-        $query = "EXPLAIN SELECT * FROM participants WHERE regionID = :regionID" . $vQuery;
+        $query = "SELECT * FROM participants WHERE regionID = :regionID" . $vQuery;
 
         // Execute the query
         return $this->db->query($query, $array, $cacheTime);
@@ -214,7 +214,7 @@ class participants
 
         // Merge the arrays
         $array = array_merge(array(":characterID" => $characterID), $vArray);
-        $query = "EXPLAIN SELECT * FROM participants WHERE characterID = :characterID" . $vQuery;
+        $query = "SELECT * FROM participants WHERE characterID = :characterID" . $vQuery;
 
         // Execute the query
         return $this->db->query($query, $array, $cacheTime);
@@ -240,7 +240,7 @@ class participants
 
         // Merge the arrays
         $array = array_merge(array(":corporationID" => $corporationID), $vArray);
-        $query = "EXPLAIN SELECT * FROM participants WHERE corporationID = :corporationID" . $vQuery;
+        $query = "SELECT * FROM participants WHERE corporationID = :corporationID" . $vQuery;
 
         // Execute the query
         return $this->db->query($query, $array, $cacheTime);
@@ -266,7 +266,7 @@ class participants
 
         // Merge the arrays
         $array = array_merge(array(":allianceID" => $allianceID), $vArray);
-        $query = "EXPLAIN SELECT * FROM participants WHERE allianceID = :allianceID" . $vQuery;
+        $query = "SELECT * FROM participants WHERE allianceID = :allianceID" . $vQuery;
 
         // Execute the query
         return $this->db->query($query, $array, $cacheTime);
@@ -292,7 +292,7 @@ class participants
 
         // Merge the arrays
         $array = array_merge(array(":factionID" => $factionID), $vArray);
-        $query = "EXPLAIN SELECT * FROM participants WHERE factionID = :factionID" . $vQuery;
+        $query = "SELECT * FROM participants WHERE factionID = :factionID" . $vQuery;
 
         // Execute the query
         return $this->db->query($query, $array, $cacheTime);
@@ -318,7 +318,7 @@ class participants
 
         // Merge the arrays
         $array = array_merge(array(":shipTypeID" => $shipTypeID), $vArray);
-        $query = "EXPLAIN SELECT * FROM participants WHERE shipTypeID = :shipTypeID" . $vQuery;
+        $query = "SELECT * FROM participants WHERE shipTypeID = :shipTypeID" . $vQuery;
 
         // Execute the query
         return $this->db->query($query, $array, $cacheTime);
@@ -344,7 +344,7 @@ class participants
 
         // Merge the arrays
         $array = array_merge(array(":groupID" => $groupID), $vArray);
-        $query = "EXPLAIN SELECT * FROM participants WHERE groupID = :groupID" . $vQuery;
+        $query = "SELECT * FROM participants WHERE groupID = :groupID" . $vQuery;
 
         // Execute the query
         return $this->db->query($query, $array, $cacheTime);
@@ -370,7 +370,7 @@ class participants
 
         // Merge the arrays
         $array = array_merge(array(":vGroupID" => $vGroupID), $vArray);
-        $query = "EXPLAIN SELECT * FROM participants WHERE vGroupID = :vGroupID" . $vQuery;
+        $query = "SELECT * FROM participants WHERE vGroupID = :vGroupID" . $vQuery;
 
         // Execute the query
         return $this->db->query($query, $array, $cacheTime);
@@ -396,7 +396,7 @@ class participants
 
         // Merge the arrays
         $array = array_merge(array(":weaponTypeID" => $weaponTypeID), $vArray);
-        $query = "EXPLAIN SELECT * FROM participants WHERE weaponTypeID = :weaponTypeID" . $vQuery;
+        $query = "SELECT * FROM participants WHERE weaponTypeID = :weaponTypeID" . $vQuery;
 
         // Execute the query
         return $this->db->query($query, $array, $cacheTime);

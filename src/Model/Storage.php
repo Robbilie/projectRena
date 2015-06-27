@@ -34,7 +34,7 @@ class Storage
 				}
 
 				/**
-				 * @param $key
+				 * @param string $key
 				 * @param null $default
 				 *
 				 * @return null
@@ -49,8 +49,8 @@ class Storage
 				}
 
 				/**
-				 * @param $key
-				 * @param $value
+				 * @param string $key
+				 * @param string $value
 				 *
 				 * @return bool|int|string
 				 */

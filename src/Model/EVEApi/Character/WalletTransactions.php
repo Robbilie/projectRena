@@ -9,50 +9,56 @@ use ProjectRena\RenaApp;
  */
 class WalletTransactions
 {
-				/**
-				 * @var int
-				 */
-				public $accessMask = 4194304;
+    /**
+     * @var int
+     */
+    public $accessMask = 4194304;
 
-				/**
-				 * @var
-				 */
-				private $app;
+    /**
+     * @var
+     */
+    private $app;
 
-				/**
-				 * @param \ProjectRena\RenaApp $app
-				 */
-				function __construct(RenaApp $app)
-				{
-								$this->app = $app;
-				}
+    /**
+     * @param \ProjectRena\RenaApp $app
+     */
+    function __construct(RenaApp $app)
+    {
+        $this->app = $app;
+    }
 
-				/**
-				 * @param $apiKey
-				 * @param $vCode
-				 * @param $characterID
-				 * @param int $accountKey
-				 * @param null $fromID
-				 * @param null $rowCount
-				 *
-				 * @return mixed
-				 */
-				public function getData($apiKey, $vCode, $characterID, $accountKey = 1000, $fromID = null, $rowCount = null)
-				{
-								$pheal = $this->app->Pheal($apiKey, $vCode);
-								$pheal->scope = 'Char';
-								$requestArray = array('characterID' => $characterID, 'accountKey' => $accountKey);
-								if(isset($fromID))
-								{
-												$requestArray['fromID'] = $fromID;
-								}
-								if(isset($rowCount))
-								{
-												$requestArray['rowCount'] = $rowCount;
-								}
+    /**
+     * @param $apiKey
+     * @param $vCode
+     * @param $characterID
+     * @param int $accountKey
+     * @param null $fromID
+     * @param null $rowCount
+     *
+     * @return mixed
+     */
+    public function getData($apiKey, $vCode, $characterID, $accountKey = 1000, $fromID = null, $rowCount = null)
+    {
+        try
+        {
+            $pheal = $this->app->Pheal->Pheal($apiKey, $vCode);
+            $pheal->scope = 'Char';
+            $requestArray = array('characterID' => $characterID, 'accountKey' => $accountKey);
+            if(isset($fromID))
+            {
+                $requestArray['fromID'] = $fromID;
+            }
+            if(isset($rowCount))
+            {
+                $requestArray['rowCount'] = $rowCount;
+            }
 
-								$result = $pheal->WalletTransactions($requestArray)->toArray();
+            $result = $pheal->WalletTransactions($requestArray)->toArray();
 
-								return $result;
-				}
+            return $result;
+        } catch(\Exception $exception)
+        {
+            $this->app->Pheal->handleApiException($apiKey, null, $exception);
+        }
+    }
 }

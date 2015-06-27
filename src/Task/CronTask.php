@@ -32,7 +32,7 @@ class CronTask extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         // Enable the garbage collector since this is a long running process
-        gc_enable();
+        //gc_enable();
 
         // Get the slim instance
         $app = RenaApp::getInstance();
@@ -45,7 +45,7 @@ class CronTask extends Command
             $cnt++;
             if($cnt > 50)
             {
-                gc_collect_cycles();
+                //gc_collect_cycles();
                 $cnt = 0;
             }
 
@@ -102,12 +102,8 @@ class CronTask extends Command
                                 // Tell the cache that we're running the cronjobs will automatically remove it from the cache once they're done
                                 $app->Cache->set($md5 . '_pid', $pid);
 
-                                // Init all the stuff needed inside the Cronjob
-                                $db = new \ProjectRena\Lib\Db($app);
-                                $db->persistence = true; // Turn persistent connections off
-
                                 // Execute the cronjob
-                                $class->execute($pid, $md5, $db, $app);
+                                $class->execute($pid, $md5, $app);
                                 exit();
                             }
 

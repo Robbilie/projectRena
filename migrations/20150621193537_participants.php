@@ -18,6 +18,14 @@ class Participants extends AbstractMigration
         $this->execute("DROP INDEX corporationID ON participants");
         $this->execute("DROP INDEX allianceID ON participants");
         $this->execute("DROP INDEX factionID ON participants");
+        $this->execute("DROP INDEX shipValue ON participants");
+        $this->execute("DROP INDEX damageDone ON participants");
+        $this->execute("DROP INDEX totalValue ON participants");
+        $this->execute("DROP INDEX pointValue ON participants");
+        $this->execute("DROP INDEX numberInvolved ON participants");
+        $this->execute("DROP INDEX isVictim ON participants");
+        $this->execute("DROP INDEX finalBlow ON participants");
+        $this->execute("DROP INDEX isNPC ON participants");
     }
     /**
      * Change Method.
@@ -53,15 +61,6 @@ class Participants extends AbstractMigration
          ->addColumn("isVictim", "integer", array("limit" => 1))
          ->addColumn("finalBlow", "integer", array("limit" => 1))
          ->addColumn("isNPC", "integer", array("limit" => 1))
-            // Indexes
-         ->addIndex(array("isNPC", "killID"))
-         ->addIndex(array("finalBlow", "killID"))
-         ->addIndex(array("damageDone", "killID"))
-         ->addIndex(array("shipValue", "killID"))
-         ->addIndex(array("isVictim", "killID"))
-         ->addIndex(array("numberInvolved", "killID"))
-         ->addIndex(array("pointValue", "killID"))
-         ->addIndex(array("totalValue", "killID"))
          ->save();
 
         // Clustered indexes in tokudb take up A LOT of space.. Old DB table was ~70GB (~70GB on disk), now it's +200GB, tho it only takes up ~60GB on disk
@@ -90,7 +89,23 @@ class Participants extends AbstractMigration
             $this->execute("CREATE INDEX allianceID ON participants (allianceID) CLUSTERING=YES");
         if(!$participants->hasIndex("factionID"))
             $this->execute("CREATE INDEX factionID ON participants (factionID) CLUSTERING=YES");
-        if(!$participants->hasIndex("killID")) // For some reason it can skip killID index creation, don't ask me why.........
+        if(!$participants->hasIndex("isNPC"))
+            $this->execute("CREATE INDEX isNPC ON participants (isNPC) CLUSTERING=YES");
+        if(!$participants->hasIndex("finalBlow"))
+            $this->execute("CREATE INDEX finalBlow ON participants (finalBlow) CLUSTERING=YES");
+        if(!$participants->hasIndex("damageDone"))
+            $this->execute("CREATE INDEX damageDone ON participants (damageDone) CLUSTERING=YES");
+        if(!$participants->hasIndex("shipValue"))
+            $this->execute("CREATE INDEX shipValue ON participants (shipValue) CLUSTERING=YES");
+        if(!$participants->hasIndex("isVictim"))
+            $this->execute("CREATE INDEX isVictim ON participants (isVictim) CLUSTERING=YES");
+        if(!$participants->hasIndex("numberInvolved"))
+            $this->execute("CREATE INDEX numberInvolved ON participants (numberInvolved) CLUSTERING=YES");
+        if(!$participants->hasIndex("pointValue"))
+            $this->execute("CREATE INDEX pointValue ON participants (pointValue) CLUSTERING=YES");
+        if(!$participants->hasIndex("totalValue"))
+            $this->execute("CREATE INDEX totalValue ON participants (totalValue) CLUSTERING=YES");
+        if(!$participants->hasIndex("killID"))// For some reason it can skip killID index creation, don't ask me why.........
             $this->execute("CREATE INDEX killID ON participants (killID) CLUSTERING=YES");
     }
 }

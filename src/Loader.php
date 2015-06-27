@@ -38,7 +38,7 @@ foreach($load as $path)
 												$callName = "EVE" . $ep[0] . $callName;
 								}
 
-								if(method_exists(new $namespace($app), "RunAsNew"))
+								if(method_exists(new $namespace($app), "RunAsNew") || php_sapi_name() == "cli")
 								{
 												$app->container->set(/**
 												 * @param $container

@@ -9,38 +9,44 @@ use ProjectRena\RenaApp;
  */
 class MailBodies
 {
-				/**
-				 * @var int
-				 */
-				public $accessMask = 512;
+    /**
+     * @var int
+     */
+    public $accessMask = 512;
 
-				/**
-				 * @var
-				 */
-				private $app;
+    /**
+     * @var
+     */
+    private $app;
 
-				/**
-				 * @param \ProjectRena\RenaApp $app
-				 */
-				function __construct(RenaApp $app)
-				{
-								$this->app = $app;
-				}
+    /**
+     * @param \ProjectRena\RenaApp $app
+     */
+    function __construct(RenaApp $app)
+    {
+        $this->app = $app;
+    }
 
-				/**
-				 * @param $apiKey
-				 * @param $vCode
-				 * @param $characterID
-				 * @param array $ids
-				 *
-				 * @return mixed
-				 */
-				public function getData($apiKey, $vCode, $characterID, $ids = array())
-				{
-								$pheal = $this->app->Pheal($apiKey, $vCode);
-								$pheal->scope = 'Char';
-								$result = $pheal->MailBodies(array('characterID' => $characterID, 'ids' => implode(',', $ids)))->toArray();
+    /**
+     * @param $apiKey
+     * @param $vCode
+     * @param $characterID
+     * @param array $ids
+     *
+     * @return mixed
+     */
+    public function getData($apiKey, $vCode, $characterID, $ids = array())
+    {
+        try
+        {
+            $pheal = $this->app->Pheal->Pheal($apiKey, $vCode);
+            $pheal->scope = 'Char';
+            $result = $pheal->MailBodies(array('characterID' => $characterID, 'ids' => implode(',', $ids)))->toArray();
 
-								return $result;
-				}
+            return $result;
+        } catch(\Exception $exception)
+        {
+            $this->app->Pheal->handleApiException($apiKey, $characterID, $exception);
+        }
+    }
 }

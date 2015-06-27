@@ -9,38 +9,44 @@ use ProjectRena\RenaApp;
  */
 class Locations
 {
-				/**
-				 * @var int
-				 */
-				public $accessMask = 134217728;
+    /**
+     * @var int
+     */
+    public $accessMask = 134217728;
 
-				/**
-				 * @var
-				 */
-				private $app;
+    /**
+     * @var
+     */
+    private $app;
 
-				/**
-				 * @param \ProjectRena\RenaApp $app
-				 */
-				function __construct(RenaApp $app)
-				{
-								$this->app = $app;
-				}
+    /**
+     * @param \ProjectRena\RenaApp $app
+     */
+    function __construct(RenaApp $app)
+    {
+        $this->app = $app;
+    }
 
-				/**
-				 * @param $apiKey
-				 * @param $vCode
-				 * @param $characterID
-				 * @param array $ids
-				 *
-				 * @return mixed
-				 */
-				public function getData($apiKey, $vCode, $characterID, $ids = array())
-				{
-								$pheal = $this->app->Pheal($apiKey, $vCode);
-								$pheal->scope = 'Char';
-								$result = $pheal->Locations(array('characterID' => $characterID, 'IDs' => implode(',', $ids)))->toArray();
+    /**
+     * @param $apiKey
+     * @param $vCode
+     * @param $characterID
+     * @param array $ids
+     *
+     * @return mixed
+     */
+    public function getData($apiKey, $vCode, $characterID, $ids = array())
+    {
+        try
+        {
+            $pheal = $this->app->Pheal->Pheal($apiKey, $vCode);
+            $pheal->scope = 'Char';
+            $result = $pheal->Locations(array('characterID' => $characterID, 'IDs' => implode(',', $ids)))->toArray();
 
-								return $result;
-				}
+            return $result;
+        } catch(\Exception $exception)
+        {
+            $this->app->Pheal->handleApiException($apiKey, $characterID, $exception);
+        }
+    }
 }
