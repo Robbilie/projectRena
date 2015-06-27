@@ -36,7 +36,7 @@ class CoreManager {
     }
 
     public function createCharacter ($characterID) {
-        $char;
+        $char = null;
         $apiChar = (new \ProjectRena\Model\EVEApi\EVE\CharacterAffiliation($this->app))->getData([$characterID])["result"]["characters"][0];
         $charRow = $this->db->queryRow("SELECT * FROM easCharacters WHERE characterID = :characterID", array(":characterID" => $characterID));
         if(!$charRow) {
@@ -278,8 +278,7 @@ class CoreManager {
       ) {
         $this->db->execute("INSERT INTO easFleetParticipants (fleetID, characterID, confirmed) VALUE (:fleetID, :characterID, 0)", array(":fleetID" => $id, ":characterID" => $idsFromAPISorted[$i]));
       }
-    } || 
- ||
+    }
 		if(in_array($creator, $idsFromAPISorted)) {
 			$this->db->execute("UPDATE easFleetParticipants SET confirmed = 1 WHERE fleetID = :fleetID AND characterID = :characterID", array(":fleetID" => $id, ":characterID" => $creator));
 		} else {
@@ -353,7 +352,6 @@ class CoreManager {
     }
 
     public function addLocation ($newlocation) {
-        $location;
         foreach ($this->locations as $location)
             if($location->getId() == $newlocation->getId())
                 return;
