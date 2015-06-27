@@ -14,6 +14,12 @@
             <h4 id="createresponse"></h4>
             <h4 class="mbn">Fleet Name</h4>
             <input type="text" id="fleetName"/>
+      			<h4 class="mbn">Fleet Scope</h4>
+      			<select id="fleetScope">
+      				<option>corporation</option>
+      				<option>alliance</option>
+      				<option>blue</option>
+      			</select>
             <h4 class="mbn">Comment</h4>
             <textarea id="fleetComment"></textarea>
             <h4 class="mbn">Fleet expires in (hours)</h4>
@@ -60,6 +66,10 @@
         };
         req.open("POST", "/json/fleets/create/", true);
         req.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-        req.send(encodeURI("name=" + $("#fleetName").value + "&comment=" + $("#fleetComment").value + "&expiresin=" + $("#fleetExpires").value + "&participants=" + $("#fleetParticipants").value.split("\n").join(",")));
+        req.send(encodeURI("scope=" + $("#fleetScope").value + "&name=" + $("#fleetName").value + "&comment=" + $("#fleetComment").value + "&expiresin=" + $("#fleetExpires").value + "&participants=" + $("#fleetParticipants").value.split("\n").join(",")));
+    }
+
+    function resetFleetForm () {
+
     }
 </script>

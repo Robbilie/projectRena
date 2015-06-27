@@ -6,6 +6,7 @@ use ProjectRena\RenaApp;
 class CoreFleet extends CoreBase {
 
   protected $id;
+  protected $scope;
   protected $name;
   protected $comment;
   protected $hash;
@@ -90,6 +91,10 @@ class CoreFleet extends CoreBase {
 
   public function getId () {
     return $this->id;
+  }
+
+  public function getScope () {
+    return $this->scope;
   }
 
   public function getName () {

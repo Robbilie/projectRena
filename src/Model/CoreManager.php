@@ -229,9 +229,10 @@ class CoreManager {
       return null;
     }
 
-    public function createFleet ($name, $comment, $creator, $expiresin, $participants) {
-      $id = $this->db->execute("INSERT INTO easFleets (name, comment, creator, time, expires, hash) VALUES (:name, :comment, :creator, :time, :expires, :hash)",
+    public function createFleet ($scope, $name, $comment, $creator, $expiresin, $participants) {
+      $id = $this->db->execute("INSERT INTO easFleets (scope, name, comment, creator, time, expires, hash) VALUES (:scope, :name, :comment, :creator, :time, :expires, :hash)",
         array(
+          ":scope" => $scope,
           ":name" => $name,
           ":comment" => $comment,
           ":creator" => $creator,

@@ -70,10 +70,10 @@ class FleetsController
     public function createFleet () {
       $resp = array("state" => "error", "msg" => "");
       if(isset($_SESSION['loggedin'])) {
-		  if(isset($_POST['name']) && $_POST['name'] != "" && isset($_POST['comment']) && $_POST['comment'] != "" && isset($_POST['expiresin']) && $_POST['expiresin'] != "" && isset($_POST['participants']) && $_POST['participants'] != "") {
+		  if(isset($_POST['scope']) && $_POST['scope'] != "" && $_POST['name']) && $_POST['name'] != "" && isset($_POST['comment']) && $_POST['comment'] != "" && isset($_POST['expiresin']) && $_POST['expiresin'] != "" && isset($_POST['participants']) && $_POST['participants'] != "") {
 			  $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
 			  if ($char->hasPermission("createFleet")) {
-				  $fleet = $this->app->CoreManager->createFleet($_POST['name'], $_POST['comment'], $_SESSION['characterID'], (int)$_POST['expiresin'], $_POST['participants']);
+				  $fleet = $this->app->CoreManager->createFleet($_POST['scope'], $_POST['name'], $_POST['comment'], $_SESSION['characterID'], (int)$_POST['expiresin'], $_POST['participants']);
 				  if (!is_null($fleet)) {
 					  $resp['state'] = "success";
 				  } else {
