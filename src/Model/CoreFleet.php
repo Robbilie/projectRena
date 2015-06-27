@@ -77,6 +77,7 @@ class CoreFleet extends CoreBase {
 	public function jsonSerialize() {
 		return array(
 			"id" => $this->id,
+      "scope" => $this->scope,
 			"hash" => ($this->showHash ? $this->getHash() : ""),
 			"name" => $this->name,
 			"comment" => $this->comment,
