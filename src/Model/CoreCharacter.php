@@ -22,6 +22,7 @@ class CoreCharacter extends CoreBase {
 
 	protected $userObj;
 	protected $corp;
+	protected $alliance;
 
 	protected $items;
 	protected $containers;
@@ -43,6 +44,12 @@ class CoreCharacter extends CoreBase {
 		if(is_null($this->corp))
 			$this->corp = $this->app->CoreManager->getCorporation($this->corporationID);
 		return $this->corp;
+	}
+
+	public function getCAlliance () {
+		if(is_null($this->alliance))
+			$this->alliance = $this->app->CoreManager->getAlliance($this->allianceID);
+		return $this->alliance;
 	}
 
 	public function getAPIData () {

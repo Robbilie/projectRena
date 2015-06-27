@@ -40,6 +40,7 @@
 <script type="text/javascript">
     fleetsJS();
     function fleetsJS () {
+      resetFleetForm();
         ajax("/json/fleets/", function (r) {
             console.log(r);
 
@@ -70,6 +71,10 @@
     }
 
     function resetFleetForm () {
-
+      $("#fleetScope").value = "corporation";
+      $("#fleetName").value = "";
+      $("#fleetComment").value = "";
+      $("#fleetExpires").value = "";
+      $("#fleetParticipants").value = "";
     }
 </script>

@@ -51,6 +51,7 @@
 <script type="text/javascript">
 	groupsJS();
 	function groupsJS () {
+		resetGroupFrom();
 		ajax("/json/groups/", function (r) {
 			console.log(r);
 
@@ -85,5 +86,11 @@
 				$("#createresponse").innerHTML = r.msg;
 			}
 		}, "json");
+	}
+
+	function resetGroupFrom () {
+		$("#groupName").value = "";
+		$("#groupScope").value = "corporation";
+		$("#groupState").checked = true;
 	}
 </script>

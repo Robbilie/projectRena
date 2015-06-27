@@ -241,7 +241,8 @@ class CoreManager {
           ":hash" => md5($creator.$name.$comment.time()."ghjkljz8fu98z3ppi3r3p82p9ief")
         ), true
       );
-		var_dump(time()." : ".(time() + (60*60*$expiresin))." : ".(60*60*$expiresin));
+
+        $character = $this->getCharacter($creator);
 
 		// participants
 		$participantsArr = str_replace("%20", " ", $participants);
@@ -257,8 +258,27 @@ class CoreManager {
 		foreach ($idsFromAPI as $idFromAPI)
 			array_push($idsFromAPISorted, (int)$idFromAPI['characterID']);
 
-		for($i = 0; $i < count($idsFromAPISorted); $i++)
-			$this->db->execute("INSERT INTO easFleetParticipants (fleetID, characterID, confirmed) VALUE (:fleetID, :characterID, 0)", array(":fleetID" => $id, ":characterID" => $idsFromAPISorted[$i]));
+    // get affiliations from api
+    $chunkedIdsFromAPI = array_chunk($idsFromAPISorted, 100);
+    $affs = array();
+    for($i = 0; $i < count($chunkedIdsFromAPI); $i++) {
+        $affs = array_merge($affs, $this->app->EVEEVECharacterAffiliation->getData($chunkedIdsFromAPI[$i])['result']['characters']);
+    }
+
+    $affsSorted = array();
+    foreach($affs as $aff)
+        $affsSorted[$aff['characterID']] = $aff;
+
+
+		for($i = 0; $i < count($idsFromAPISorted); $i++) {
+      if(
+        ($scope == "corporation" && $character->getCorpId() == $affsSorted[$idsFromAPISorted[i]]['corporationID'])
+        ($scope == "alliance" && $character->getAlliId() == $affsSorted[$idsFromAPISorted[i]]['allianceID'])
+        ($scope == "blue" && $character->getCCorporation()->getCAlliance()->hasStandingsTowards($this->app->CoreManager->getCharacter($idsFromAPISorted[i])))
+      ) {
+        $this->db->execute("INSERT INTO easFleetParticipants (fleetID, characterID, confirmed) VALUE (:fleetID, :characterID, 0)", array(":fleetID" => $id, ":characterID" => $idsFromAPISorted[$i]));
+      }
+    }
 
 		if(in_array($creator, $idsFromAPISorted)) {
 			$this->db->execute("UPDATE easFleetParticipants SET confirmed = 1 WHERE fleetID = :fleetID AND characterID = :characterID", array(":fleetID" => $id, ":characterID" => $creator));
