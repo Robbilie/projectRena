@@ -30,6 +30,9 @@ class CoreCharacter extends CoreBase {
 	protected $permissions;
 	protected $cpermissions;
 
+	protected $notifications;
+	protected $cnotifications;
+
 	protected $apiData;
 
 	// custom
@@ -170,6 +173,80 @@ class CoreCharacter extends CoreBase {
 	public function resetFleets () {
 		$this->fleets = null;
 		$this->cfleets = null;
+	}
+
+	public function getNotifications () {
+		if(is_null($this->notifications)) {
+			$this->notifications = $this->db->query(
+				"SELECT easNotifications.*, (SELECT 1 as i FROM easNotificationReaders WHERE notificationID = easNotifications.id AND readerID = :characterID) as readState
+				FROM
+					easNotifications
+				LEFT JOIN easNotificationSettings
+				ON
+					easNotifications.recipientID = easNotificationSettings.corporationID,
+					easNotificationTypes,
+					easPermissions
+				WHERE
+					easNotifications.typeID = easNotificationTypes.typeID
+				AND
+					easNotificationTypes.permissionID IN (:permissions)
+				AND
+					easNotificationTypes.permissionID = easPermissions.id
+				AND
+					(
+				        (
+				            easNotificationSettings.scope = easPermissions.scope
+				        )
+				    OR
+				        (
+				            easNotificationSettings.scope IS NULL
+				        AND
+				            easPermissions.scope = 'corporation'
+				        )
+				    )
+				AND
+					(
+						(
+							(
+				                easNotificationSettings.scope = 'corporation'
+				            OR
+				                easNotificationSettings.scope IS NULL
+				            )
+						AND
+							easNotifications.recipientID = :corporationID
+						)
+					OR
+						(
+							easNotificationSettings.scope = 'alliance'
+						AND
+							:allianceID = (SELECT alliance FROM ntCorporation WHERE id = easNotifications.recipientID)
+						)
+					OR
+						(
+							easNotificationSettings.scope = 'blue'
+						AND
+							0 = 1
+						)
+					)",
+					array(
+						":permissions" => implode(",", $this->getPermissions()),
+						":characterID" => $this->getCharId(),
+						":corporationID" => $this->getCorpId(),
+						":allianceID" => $this->getAlliId()
+					)
+				);
+			}
+			return $this->notifications;
+	}
+
+	public function getCNotifications () {
+		if(is_null($this->cnotifications)) {
+			$notifications = $this->getNotifications();
+			$this->cnotifications = array();
+			foreach ($notifications as $notification)
+				array_push($this->cnotifications, new CoreNotification($this->app, $notification));
+		}
+		return $this->cnotifications;
 	}
 
 	// default

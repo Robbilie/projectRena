@@ -63,6 +63,72 @@ class CoreManager {
         return $char;
     }
 
+    public function getNotification ($notificationID) {
+      $character = $this->getCharacter($_SESSION['characterID']);
+      $notification = $this->db->queryRow(
+				"SELECT easNotifications.*, (SELECT 1 as i FROM easNotificationReaders WHERE notificationID = easNotifications.id AND readerID = :characterID) as readState
+				FROM
+					easNotifications
+				LEFT JOIN easNotificationSettings
+				ON
+					easNotifications.recipientID = easNotificationSettings.corporationID,
+					easNotificationTypes,
+					easPermissions
+				WHERE
+					easNotifications.typeID = easNotificationTypes.typeID
+				AND
+					easNotificationTypes.permissionID IN (:permissions)
+				AND
+					easNotificationTypes.permissionID = easPermissions.id
+				AND
+					(
+				        (
+				            easNotificationSettings.scope = easPermissions.scope
+				        )
+				    OR
+				        (
+				            easNotificationSettings.scope IS NULL
+				        AND
+				            easPermissions.scope = 'corporation'
+				        )
+				    )
+				AND
+					(
+						(
+							(
+				                easNotificationSettings.scope = 'corporation'
+				            OR
+				                easNotificationSettings.scope IS NULL
+				            )
+						AND
+							easNotifications.recipientID = :corporationID
+						)
+					OR
+						(
+							easNotificationSettings.scope = 'alliance'
+						AND
+							:allianceID = (SELECT alliance FROM ntCorporation WHERE id = easNotifications.recipientID)
+						)
+					OR
+						(
+							easNotificationSettings.scope = 'blue'
+						AND
+							0 = 1
+						)
+					)",
+					array(
+						":permissions" => implode(",", $character->getPermissions()),
+						":characterID" => $character->getCharId(),
+						":corporationID" => $character->getCorpId(),
+						":allianceID" => $character->getAlliId()
+					)
+				);
+        if($notification) {
+          return new CoreNotification($this->app, $notification);
+        }
+        return null;
+    }
+
     protected $groups = array();
     public function getGroup ($grp) {
         foreach ($this->groups as $group) {

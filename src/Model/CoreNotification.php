@@ -6,40 +6,42 @@ use ProjectRena\RenaApp;
 class CoreNotification extends CoreBase {
 
 	protected $id;
-	protected $type;
-	protected $issuer;
-	protected $recipient;
-	protected $location;
-	protected $created;
-	protected $requested;
-	protected $finished;
+	protected $eveID;
 	protected $state;
-	protected $permissions;
+	protected $typeID;
+	protected $creatorID;
+	protected $recipientID;
+	protected $locationID;
 	protected $body;
+	protected $readState;
 
-	protected $issuerobj;
-	protected $recipientobj;
-	protected $locationobj;
-	protected $permissionslist;
-	protected $parsedbody;
+	protected $bodyData;
+	protected $type;
+	protected $scope;
 
 	// custom
 
-	public function getPermissionList () {
-		if(is_null($this->permissionList)) {
-			$this->permissionList = array();
-			$permissionRows = $this->db->query("SELECT * FROM easPermissions WHERE :permissions & POWER(2, id) = POWER(2, id)", array(":permissions" => $this->permissions));
-			foreach ($permissionRows as $permissionRow) {
-				array_push($this->permissionList, new CorePermission($this->app, $permissionRow));
-			}
+	public function getBodyData () {
+		if(is_null($this->bodyData)) {
+			$this->bodyData = @json_decode($this->body, true);
 		}
-		return $this->permissionList;
+		return $this->bodyData;
 	}
 
-	public function getBodyObj () {
-		if(is_null($this->parsedbody))
-			$this->parsedbody = @json_decode($this->body);
-		return $this->parsedbody;
+	public function getScope () {
+		if(is_null($this->scope)) {
+			$this->scope = $this->db->queryField("SELECT scope FROM easNotificationSettings WHERE corporationID = :recipientID", "scope", array(":recipientID" => $this->recipientID));
+			if(is_null($this->scope))
+				$this->scope = "corporation";
+		}
+		return $this->scope;
+	}
+
+	public function getType () {
+		if(is_null($this->type)) {
+			$this->type = $this->db->queryRow("SELECT easNotificationTypes.* FROM easNotificationTypes, easPermissions WHERE easNotificationTypes.typeID = :typeID AND easNotificationTypes.permissionID = easPermissions.id AND easPermissions.scope = :scope", array(":typeID" => $this->typeID, ":scope" => $this->getScope()));
+		}
+		return $this->type;
 	}
 
 	// default
@@ -48,44 +50,36 @@ class CoreNotification extends CoreBase {
 		return $this->id;
 	}
 
-	public function getType () {
-		return $this->type;
-	}
-
-	public function getIssuer () {
-		return $this->issuer;
-	}
-
-	public function getRecipient () {
-		return $this->recipient;
-	}
-
-	public function getLocation () {
-		return $this->location;
-	}
-
-	public function getCreated () {
-		return $this->created;
-	}
-
-	public function getRequested () {
-		return $this->requested;
-	}
-
-	public function getFinished () {
-		return $this->finished;
+	public function getEveId () {
+		return $this->eveID;
 	}
 
 	public function getState () {
 		return $this->state;
 	}
 
-	public function getPermissions () {
-		return $this->permissions;
+	public function getTypeId () {
+		return $this->typeID;
+	}
+
+	public function getCreatorId () {
+		return $this->creatorID;
+	}
+
+	public function getRecipientId () {
+		return $this->recipientID;
+	}
+
+	public function getLocationId () {
+		return $this->locationID;
 	}
 
 	public function getBody () {
 		return $this->body;
+	}
+
+	public function getReadState () {
+		return $this->readState;
 	}
 
 }
