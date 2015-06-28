@@ -19,7 +19,7 @@ class CoreManager {
         $char = $this->createCharacter($characterID);
 
         // temp fix, write logger...
-        $this->db->execute("INSERT INTO easLogs (type,data,timestamp) VALUES (:type, :data, :ts)", array(":type" => "login", "data" => $characterID, ":ts" => time()));
+        $this->db->execute("INSERT INTO easLogs (type,data,timestamp) VALUES (:type, :data, :ts)", array(":type" => "login", "data" => json_encode(array("characterID" => $characterID, "ip" => $_SERVER["HTTP_X_REAL_IP"])), ":ts" => time()));
 
         if(isset($_SESSION['characterID'])) {
             $char->setUser($this->createCharacter($_SESSION['characterID'])->getUser());
