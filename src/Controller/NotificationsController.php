@@ -32,7 +32,10 @@ class NotificationsController
       $unreadcount = 0;
       if(isset($_SESSION['loggedin'])) {
         $character = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
-        $readcnt = $this->db->queryField("SELECT count(id) as cnt FROM easNotifications LEFT JOIN easNotificationReaders ON easNotifications.id = easNotificationReaders.notificationID WHERE easNotifications.readerID = :characterID", "cnt", array(":characterID" => $_SESSION['characterID']));
+        $readcnt = $this->db->queryField(
+          "SELECT count(id) as cnt
+          FROM easNotifications LEFT JOIN easNotificationReaders ON easNotifications.id = easNotificationReaders.notificationID
+          WHERE easNotificationReaders.readerID = :characterID", "cnt", array(":characterID" => $_SESSION['characterID']));
         $unreadcount = count($character->getNotifications()) - $readcnt;
       }
       $this->app->response->headers->set('Content-Type', 'application/json');
