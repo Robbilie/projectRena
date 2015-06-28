@@ -23,6 +23,11 @@ class NotificationsController
         $this->config = $this->app->baseConfig;
     }
 
+    public function getTemplates () {
+      $this->app->response->headers->set('Content-Type', 'application/json');
+      $this->app->response->body(file_get_contents("./notificationtemplates.json"));
+    }
+
     public function getNotifications () {
       $notifications = array();
       if(isset($_SESSION['loggedin'])) {

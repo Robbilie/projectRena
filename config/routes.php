@@ -39,14 +39,6 @@ $app->get('/json/structures/controltower/:towerID/', function($towerID) use ($ap
     (new \ProjectRena\Controller\JSONController($app))->getControltower($towerID);
 });
 
-$app->get('/json/notifications/', function() use ($app){
-    (new \ProjectRena\Controller\NotificationsController($app))->getNotifications();
-});
-
-$app->get('/json/notifications/:notificationID/', function($notificationID) use ($app){
-    (new \ProjectRena\Controller\NotificationsController($app))->getNotification($notificationID);
-});
-
 $app->get('/json/groups/', function() use ($app){
     (new \ProjectRena\Controller\JSONController($app))->getGroups();
 });
@@ -148,7 +140,6 @@ $app->get('/json/fleets/confirm/:hash/', function ($hash) use ($app){
 });
 
 
-
 /*
  * Search
  */
@@ -163,7 +154,22 @@ $app->get('/json/characternames/:name', function ($name) use ($app){
 });
 
 
+/*
+ * Notifications
+ */
 
+
+$app->get('/json/notifications/', function() use ($app){
+    (new \ProjectRena\Controller\NotificationsController($app))->getNotifications();
+});
+
+$app->get('/json/notifications/templates/', function() use ($app){
+   (new \ProjectRena\Controller\NotificationsController($app))->getTemplates();
+});
+
+$app->get('/json/notifications/:notificationID/', function($notificationID) use ($app){
+    (new \ProjectRena\Controller\NotificationsController($app))->getNotification($notificationID);
+});
 
 
  /*
