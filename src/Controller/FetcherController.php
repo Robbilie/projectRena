@@ -24,8 +24,9 @@ class FetcherController
     }
 
     public function postApiFetch () {
-      echo " init postApiFetch\n";
-      echo " + Step 1 : Convert new Notifications\n";
+      if(!isset($_GET['secret']) || $_GET['secret'] != $this->config->getConfig("fetcher", "secrets")) return;
+      echo " init postApiFetch<br>";
+      echo " + Step 1 : Convert new Notifications<br>";
       $this->convertNotifications();
     }
 
@@ -55,7 +56,7 @@ class FetcherController
           )
         );
       }
-      echo " + - ".count($notificationRows)." Notifications converted\n";
+      echo " + - ".count($notificationRows)." Notifications converted<br>";
     }
-    
+
 }

@@ -308,7 +308,7 @@ class CoreManager {
           ":creator" => $creator,
           ":time" => time(),
           ":expires" => time() + (60*60*$expiresin),
-          ":hash" => md5($creator.$name.$comment.time()."ghjkljz8fu98z3ppi3r3p82p9ief")
+          ":hash" => md5($creator.$name.$comment.time().$this->config->getConfig("fleetsalt", "secrets"))
         ), true
       );
 
