@@ -228,7 +228,7 @@ class CoreCharacter extends CoreBase {
 						AND
 							0 = 1
 						)
-					)",
+					) ORDER BY easNotifications.requested DESC",
 					array(
 						":characterID" => $this->getCharId(),
 						":corporationID" => $this->getCorpId(),

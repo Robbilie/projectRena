@@ -158,6 +158,17 @@ $app->get('/json/fleets/confirm/:hash/', function ($hash) use ($app){
 
 
 /*
+ * Fetcher
+ */
+
+
+$app->get('/fetcher/postapifetch/', function () use ($app) {
+  (new \ProjectRena\Controller\FetcherController($app))->postApiFetch();
+});
+
+
+
+/*
  * Content
  */
 
@@ -283,51 +294,9 @@ $app->get('/fleets/confirm/:hash/', function($hash) use ($app){
 });
 
 
-/*
 
-$app->get('/structures/controltower/:towerID/', function($towerID) use ($app){
-    $char = $app->CoreManager->getCharacter($_SESSION['characterID']);
-    $tower = $app->CoreManager->getControlTower($towerID);
-    $mayview = false;
-    if($tower->getOwner()->getCAlliance()->getId() == $char->getAlliId() && $char->hasPermission("viewAllianceControltower")) {
-      $mayview = true;
-    } else if($tower->getOwner()->getId() == $char->getCorpId() && $char->hasPermission("viewCorporationControltower")) {
-      $mayview = true;
-    }
-    $app->render("/pages/controltower.twig", array("controltower" => $mayview ? $tower : null));
-});
 
-$app->get('/json/character/:characterID/items/', function($characterID) use ($app){
-    (new \ProjectRena\Controller\JSONController($app))->getCharacterItems($characterID);
-});
 
-$app->get('/json/character/:characterID/containers/', function($characterID) use ($app){
-    (new \ProjectRena\Controller\JSONController($app))->getCharacterContainers($characterID);
-});
-
-$app->get('/json/corporation/:corporationID/items/', function($corporationID) use ($app){
-    (new \ProjectRena\Controller\JSONController($app))->getCorporationItems($corporationID);
-});
-
-$app->get('/json/corporation/:corporationID/containers/', function($corporationID) use ($app){
-    (new \ProjectRena\Controller\JSONController($app))->getCorporationContainers($corporationID);
-});
-
-$app->get('/json/corporation/:corporationID/controltower/', function($corporationID) use ($app){
-    (new \ProjectRena\Controller\JSONController($app))->getCorporationControltowers($corporationID);
-});
-
-$app->get('/contents/:id/', function($id) use ($app){
-    $char = $app->CoreManager->getCharacter($_SESSION['characterID']);
-    $containername = "";
-    $item = $app->CoreManager->getItem($id);
-    if($item)
-      $containername = $item->getName();
-    $mayview = true;
-    $contents = $char->getCCorporation()->getCAlliance()->getItems(function ($i) use ($id) { return $i->getLocationId() == $id; });
-    $app->render("/pages/contents.twig", array("containername" => $containername,"contents" => $mayview ? $contents : null));
-});
-*/
 $app->get('/', function () use ($app)
 {
                 (new \ProjectRena\Controller\IndexController($app))->index();

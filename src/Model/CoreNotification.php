@@ -13,6 +13,8 @@ class CoreNotification extends CoreBase {
 	protected $recipientID;
 	protected $locationID;
 	protected $body;
+	protected $created;
+	protected $requested;
 	protected $readState;
 
 	protected $bodyData;
@@ -76,6 +78,14 @@ class CoreNotification extends CoreBase {
 
 	public function getBody () {
 		return $this->body;
+	}
+
+	public function getCreated () {
+		return $this->created;
+	}
+
+	public function getRequested () {
+		return $this->requested;
 	}
 
 	public function getReadState () {
