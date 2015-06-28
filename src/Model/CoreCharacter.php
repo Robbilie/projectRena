@@ -178,6 +178,8 @@ class CoreCharacter extends CoreBase {
 	public function getNotifications () {
 		if(is_null($this->notifications)) {
 			$permString = implode(",", $this->getPermissions());
+			if($permString == "")
+				$permString = "0";
 			$this->notifications = $this->db->query(
 				"SELECT easNotifications.*, (SELECT 1 as i FROM easNotificationReaders WHERE notificationID = easNotifications.id AND readerID = :characterID) as readState
 				FROM
