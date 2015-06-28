@@ -15,10 +15,10 @@ class CoreFleetParticipant extends CoreCharacter {
 
 	public function jsonSerialize() {
 		return array(
-			"characterID" => $this->getCharId(),
-			"characterName" => $this->getCharName(),
-			"corporationName" => $this->getCorpName(),
-			"confirmed" => $this->getConfirmed()
+			"characterID"      => (int)$this->getCharId(),
+			"characterName"    => $this->getCharName(),
+			"corporationName"  => $this->getCorpName(),
+			"confirmed"        => $this->getConfirmed()
 		);
 	}
 

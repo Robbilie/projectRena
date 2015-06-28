@@ -111,11 +111,11 @@ class CoreGroup extends CoreBase {
 
 	public function jsonSerialize() {
 		return array(
-			"id" => $this->id,
-			"name" => $this->name,
-			"scope" => $this->scope,
-			"owner" => $this->owner,
-			"custom" => $this->isCustom(),
+			"id"					=> (int)$this->id,
+			"name"				=> $this->name,
+			"scope"				=> $this->scope,
+			"owner"				=> (int)$this->owner,
+			"custom"			=> $this->isCustom(),
 			"permissions" => $this->getPermissions()
 		);
 	}

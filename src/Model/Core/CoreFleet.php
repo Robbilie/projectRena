@@ -76,15 +76,15 @@ class CoreFleet extends CoreBase {
 
 	public function jsonSerialize() {
 		return array(
-			"id" => $this->id,
-      "scope" => $this->scope,
-			"hash" => ($this->showHash ? $this->getHash() : ""),
-			"name" => $this->name,
-			"comment" => $this->comment,
-			"creatorID" => $this->creator,
-			"creatorName" => $this->getCCreator()->getCharName(),
+			"id"           => (int)$this->id,
+      "scope"        => $this->scope,
+			"hash"         => ($this->showHash ? $this->getHash() : ""),
+			"name"         => $this->name,
+			"comment"      => $this->comment,
+			"creatorID"    => (int)$this->creator,
+			"creatorName"  => $this->getCCreator()->getCharName(),
 			"participants" => $this->getCFleetParticipants(),
-			"expired" => $this->isExpired()
+			"expired"      => $this->isExpired()
 		);
 	}
 

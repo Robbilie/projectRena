@@ -342,7 +342,7 @@ class JSONController
         $resp = array("msg" => "", "state" => "error");
         if(isset($_SESSION['loggedin'])) {
             $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
-            $fakegroup = new \ProjectRena\Model\CoreGroup($this->app, array("scope" => $scope, "owner" => $private ? ($scope == "corporation" ? $char->getCorpId() : ($scope == "alliance" ? $char->getAlliId() : null)) : null));
+            $fakegroup = new \ProjectRena\Model\Core\CoreGroup($this->app, array("scope" => $scope, "owner" => $private ? ($scope == "corporation" ? $char->getCorpId() : ($scope == "alliance" ? $char->getAlliId() : null)) : null));
             if($this->app->CoreManager->charHasGroupPrivs($char, $fakegroup)) {
                 if(trim($name) != "") {
                     if(!$this->app->CoreManager->entityExists($name)) {
