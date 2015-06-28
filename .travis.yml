@@ -23,6 +23,7 @@ before_script:
   - sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" -q -y install mariadb-server
   - mysql -uroot -e 'INSTALL SONAME "ha_tokudb"';
   - mysql -uroot -e 'create database rena;'
+  - phpenv config-add tests/phpsettings.ini
   - wget http://getcomposer.org/composer.phar
   - php composer.phar install --dev --no-interaction -o
   - ls -alh
@@ -30,7 +31,6 @@ before_script:
   - cat config/config.php
   - cp tests/phinx.yml .
   - cat phinx.yml
-  - phpenv config-add tests/phpsettings.ini
   - php vendor/bin/phinx migrate
   - php vendor/bin/phinx status
 

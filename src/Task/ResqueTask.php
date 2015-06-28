@@ -27,9 +27,7 @@ class ResqueTask extends Command
 				 */
 				protected function execute(InputInterface $input, OutputInterface $output)
 				{
-								putenv("VERBOSE=1");
-								putenv("QUEUE=now,important,default");
-
+								putenv("VERBOSE=0");
 								include __DIR__ . "/../../vendor/chrisboulton/php-resque/resque.php";
 				}
 }

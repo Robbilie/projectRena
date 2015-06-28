@@ -1,0 +1,116 @@
+<?php
+namespace ProjectRena\Task\Resque;
+
+use ProjectRena\RenaApp;
+use ZMQ;
+use ZMQContext;
+
+/**
+ * Fetches killmails and puts them into the killmails table
+ */
+class killMailFetcher
+{
+    /**
+     * @var
+     */
+    protected $app;
+
+    /**
+     * Performs the task, can access all $this->crap setup in setUp)
+     */
+    public function perform()
+    {
+        $this->app->StatsD->increment("ccpRequests");
+        $fetchData = unserialize($this->args["fetchData"]);
+        $keyID = $fetchData["keyID"];
+        $vCode = $this->app->ApiKeys->getVCodeByKeyID($keyID);
+        $characterID = $fetchData["characterID"];
+        $maxKillID = $fetchData["maxKillID"];
+        $isDirector = $fetchData["isDirector"];
+
+        if($isDirector)
+            $data = $this->getData($keyID, $vCode, $maxKillID);
+        else
+            $data = $this->getData($keyID, $vCode, $characterID, $maxKillID);
+
+        $cachedUntil = $data["cachedUntil"];
+        $maxKillID = 0;
+        $kills = $data["result"]["kills"];
+
+        if(!empty($kills))
+        {
+            foreach($kills as $kill)
+            {
+                // Increment statsd
+                $this->app->StatsD->increment("killmailsAdded");
+
+                // Remove that bloody string value thing
+                unset($kill["_stringValue"]);
+
+                // Set the killID
+                $killID = $kill["killID"];
+
+                // Generate the hash
+                $hash = hash("sha256", ":" . $kill["killTime"] . ":" . $kill["solarSystemID"] . ":" . $kill["moonID"] . "::" . $kill["victim"]["characterID"] . ":" . $kill["victim"]["shipTypeID"] . ":" . $kill["victim"]["damageTaken"] . ":");
+
+                // Create the source
+                $source = "apiKey:" . $keyID;
+
+                // json encode the killData
+                $json = json_encode($kill);
+
+                // insert the killData to the killmails table
+                $this->app->Db->execute("INSERT IGNORE INTO killmails (killID, hash, source, kill_json) VALUES (:killID, :hash, :source, :json)", array(":killID" => $killID, ":hash" => $hash, ":source" => $source, ":json" => $json));
+
+                // Update the maxKillID
+                $maxKillID = max($maxKillID, $killID);
+
+                // Push it over zmq to the websocket
+                $context = new ZMQContext();
+                $socket = $context->getSocket(ZMQ::SOCKET_PUSH, "rena");
+                $socket->connect("tcp://localhost:5555");
+                $socket->send($json);
+
+            }
+        }
+
+        $this->app->ApiKeyCharacters->setMaxKillID($keyID, $characterID, $maxKillID);
+        $this->app->ApiKeyCharacters->setCachedUntil($keyID, $characterID, $cachedUntil);
+        $this->app->ApiKeyCharacters->setLastChecked($keyID, $characterID, date("Y-m-d H:i:s"));
+    }
+
+    /**
+     * Sets up the task (Setup $this->crap and such here)
+     */
+    public function setUp()
+    {
+        $this->app = RenaApp::getInstance();
+    }
+
+    /**
+     * Tears the task down, unset $this->crap and such
+     */
+    public function tearDown()
+    {
+        $this->app = null;
+    }
+
+    /**
+     * @param $apiKey
+     * @param $vCode
+     * @param null $characterID
+     * @param null $fromID
+     * @param null $rowCount
+     *
+     * @return mixed
+     */
+    private function getData($apiKey, $vCode, $characterID = null, $fromID = null, $rowCount = null)
+    {
+        if(!$characterID)
+            $data = $this->app->EVECorporationKillMails->getData($apiKey, $vCode, $fromID, $rowCount);
+        else
+            $data = $this->app->EVECharacterKillMails->getData($apiKey, $vCode, $characterID, $fromID, $rowCount);
+
+        return $data;
+    }
+}

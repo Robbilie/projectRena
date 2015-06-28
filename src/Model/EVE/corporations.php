@@ -189,9 +189,7 @@ class corporations
 
             } elseif(!empty($corporationID) && !empty($allianceID) && !empty($corporationName) && !empty($ceoID) && !empty($corpTicker) && !empty($memberCount) && !empty($information))
             {
-                $this->db->execute("INSERT INTO corporations
-       (corporationID, allianceID, corporationName, ceoID, corpTicker, memberCount, information)
-VALUES (:corporationID, :allianceID, :corporationName, :ceoID, :corpTicker, :memberCount, :information)", array(
+                $this->db->execute("INSERT INTO corporations (corporationID, allianceID, corporationName, ceoID, corpTicker, memberCount, information) VALUES (:corporationID, :allianceID, :corporationName, :ceoID, :corpTicker, :memberCount, :information) ON DUPLICATE KEY UPDATE corporationID = :corporationID, allianceID = :allianceID, corporationName = :corporationName, ceoID = :ceoID, corpTicker = :corpTicker, memberCount = :memberCount, information = :information", array(
                  ":corporationID" => $corporationID,
                  ":allianceID"    => $allianceID,
                  ":corporationName" => $corporationName,

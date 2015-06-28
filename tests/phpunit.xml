@@ -3,4 +3,9 @@
     <testsuite name='projectRena'>
         <directory suffix='.php'>./</directory>
     </testsuite>
+    <filter>
+        <blacklist>
+            <directory>./vendor</directory>
+        </blacklist>
+    </filter>
 </phpunit>

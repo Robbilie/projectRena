@@ -44,6 +44,7 @@ class APIKeyInfo
         } catch(\Exception $exception)
         {
             $this->app->Pheal->handleApiException($apiKey, null, $exception);
+            return array("errorCode" => $exception->getCode(), "errorMessage" => $exception->getMessage());
         }
     }
 }

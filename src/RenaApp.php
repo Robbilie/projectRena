@@ -14,6 +14,7 @@ use ProjectRena\Lib\Timer;
 use ProjectRena\Lib\baseConfig;
 use ProjectRena\Lib\cURL;
 use ProjectRena\Lib\OAuth\EVEOAuth;
+use ProjectRena\Model\ApiKeyCharacters;
 use ProjectRena\Model\ApiKeys;
 use ProjectRena\Model\Config;
 use ProjectRena\Model\Paste;
@@ -134,6 +135,7 @@ use ProjectRena\Model\EVEApi\Server\ServerStatus as EVEServerServerStatus;
  * @property baseConfig baseConfig
  * @property cURL cURL
  * @property EVEOAuth EVEOAuth
+ * @property ApiKeyCharacters ApiKeyCharacters
  * @property ApiKeys ApiKeys
  * @property Config Config
  * @property Paste Paste

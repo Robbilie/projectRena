@@ -26,7 +26,7 @@ class Corporations extends AbstractMigration
          ->addColumn('information', 'text', array("limit" => MysqlAdapter::TEXT_MEDIUM))
          ->addColumn('dateAdded', 'datetime', array('default' => 'CURRENT_TIMESTAMP'))
          ->addColumn('lastUpdated', 'datetime', array('default' => '0000-00-00 00:00:00'))
-         ->addIndex(array("corporationID", "corporationName"), array("unique" => true))
+         ->addIndex(array("corporationID"))
          ->addIndex(array("allianceID"))
          ->addIndex(array("corporationName"))
          ->addIndex(array("lastUpdated"))

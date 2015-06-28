@@ -321,7 +321,7 @@ EOF;
 								}
 
 								$class = new PhpClass();
-								$class->setQualifiedName("ProjectRena\\Task\\Cronjobs\\{$name}Task")
+								$class->setQualifiedName("ProjectRena\\Task\\Cronjobs\\{$name}Cronjob")
 												->setDescription($this->descr)
 												->setMethod(PhpMethod::create("getRunTimes")
 																->setVisibility("public")
@@ -335,7 +335,6 @@ EOF;
 																->setDescription("Executes the cronjob task")
 																->addParameter(PhpParameter::create("pid"))
 																->addParameter(PhpParameter::create("md5"))
-																->addParameter(PhpParameter::create("db"))
 																->addParameter(PhpParameter::create("app")->setType("RenaApp"))
 																->setBody("exit(); // Keep this at the bottom, to make sure the fork exits")
 												)
@@ -363,7 +362,7 @@ EOF;
 								}
 
 								$class = new PhpClass();
-								$class->setQualifiedName("ProjectRena\\Task\\Resque\\{$name}Task")
+								$class->setQualifiedName("ProjectRena\\Task\\Resque\\{$name}")
 												->setDescription($this->descr)
 												->setMethod(PhpMethod::create("setUp")
 																->setVisibility("public")

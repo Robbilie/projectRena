@@ -14,8 +14,7 @@ class updateCorporationsCronjob
 
     public static function execute($pid, $md5, RenaApp $app)
     {
-        // Select 1000 characters which lastValidation was over 7 days ago, then update them
-        $corporations = $app->Db->query("SELECT corporationID FROM corporations WHERE lastUpdated < date_sub(now(), interval 7 day) AND corporationID != 0 ORDER BY lastUpdated LIMIT 1000", array(), 0);
+        $corporations = $app->Db->query("SELECT corporationID FROM corporations WHERE lastUpdated < date_sub(now(), interval 7 day) AND corporationID != 0 ORDER BY lastUpdated LIMIT 500", array(), 0);
         if($corporations)
         {
             foreach($corporations as $corporation)
