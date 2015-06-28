@@ -25,7 +25,6 @@ class updateAlliances
 				public function perform()
 				{
 								$this->app->StatsD->increment("ccpRequests");
-								\Resque::dequeue("now", "updateAlliances");
 								$data = $this->app->EVEEVEAllianceList->getData();
 								if(isset($data["result"]["alliances"]))
 								{

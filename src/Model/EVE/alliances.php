@@ -35,7 +35,7 @@ class alliances
      */
     public function getAllByID($allianceID)
     {
-        return $this->db->queryRow("SELECT * FROM alliances WHERE allianceID = :id", array(":id" => $allianceID), 3600);
+        return $this->db->queryRow("SELECT * FROM alliances WHERE allianceID = :id", array(":id" => $allianceID), 0);
     }
 
     /**
@@ -148,53 +148,16 @@ class alliances
      *
      * @internal param null $ceoID
      */
-    public function updateAllianceDetails(
-     $allianceID,
-     $allianceName = null,
-     $allianceTicker = null,
-     $memberCount = null,
-     $executorCorporationID = null,
-     $information = null
-    )
+    public function updateAllianceDetails($allianceID, $allianceName = null, $allianceTicker = null, $memberCount = null, $executorCorporationID = null, $information = null)
     {
-        if(!empty($allianceID))
-        {
-            $exists = $this->getAllByID($allianceID);
-            if($exists)
-            {
-                if($allianceName) $this->db->execute("UPDATE alliances SET allianceName = :allianceName WHERE allianceID = :allianceID", array(
-                 "allianceName" => $allianceName,
-                 ":allianceID"  => $allianceID,
-                ));
-                if($allianceTicker) $this->db->execute("UPDATE alliances SET allianceTicker = :allianceTicker WHERE allianceID = :allianceID", array(
-                 ":allianceTicker" => $allianceTicker,
-                 ":allianceID"  => $allianceID,
-                ));
-                if($memberCount) $this->db->execute("UPDATE alliances SET memberCount = :memberCount WHERE allianceID = :allianceID", array(
-                 ":memberCount" => $memberCount,
-                 ":allianceID"  => $allianceID,
-                ));
-                if($executorCorporationID) $this->db->execute("UPDATE alliances SET executorCorporationID = :executorCorporationID WHERE allianceID = :allianceID", array(
-                 ":executorCorporationID" => $executorCorporationID,
-                 ":allianceID"  => $allianceID,
-                ));
-                if($information) $this->db->execute("UPDATE alliances SET information = :information WHERE allianceID = :allianceID", array(
-                 ":information"      => $information,
-                 ":allianceID" => $allianceID,
-                ));
-
-            } elseif(!empty($allianceID) && !empty($allianceName) && !empty($allianceTicker) && !empty($memberCount) && !empty($executorCorporationID) && !empty($information))
-            {
-                $this->db->execute("INSERT INTO alliances (allianceID, allianceName, allianceTicker, memberCount, executorCorporationID, information) VALUES (:allianceID, :allianceName, :allianceTicker, :memberCount, :executorCorporationID, :information)", array(
-                 ":allianceID"    => $allianceID,
-                 ":allianceName" => $allianceName,
-                 ":allianceTicker" => $allianceTicker,
-                 ":memberCount" => $memberCount,
-                 ":executorCorporationID" => $executorCorporationID,
-                 ":information" => $information,
-                ));
-            }
-        }
+        $this->db->execute("INSERT INTO alliances (allianceID, allianceName, allianceTicker, memberCount, executorCorporationID, information) VALUES (:allianceID, :allianceName, :allianceTicker, :memberCount, :executorCorporationID, :information) ON DUPLICATE KEY UPDATE allianceID = :allianceID, allianceName = :allianceName, allianceTicker = :allianceTicker, memberCount = :memberCount, executorCorporationID = :executorCorporationID, information = :information", array(
+            ":allianceID"    => $allianceID,
+            ":allianceName" => $allianceName,
+            ":allianceTicker" => $allianceTicker,
+            ":memberCount" => $memberCount,
+            ":executorCorporationID" => $executorCorporationID,
+            ":information" => $information,
+            ));
     }
 
     /**

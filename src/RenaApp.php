@@ -17,6 +17,7 @@ use ProjectRena\Lib\OAuth\EVEOAuth;
 use ProjectRena\Model\ApiKeyCharacters;
 use ProjectRena\Model\ApiKeys;
 use ProjectRena\Model\Config;
+use ProjectRena\Model\Groups;
 use ProjectRena\Model\Paste;
 use ProjectRena\Model\Storage;
 use ProjectRena\Model\Users;
@@ -138,6 +139,7 @@ use ProjectRena\Model\EVEApi\Server\ServerStatus as EVEServerServerStatus;
  * @property ApiKeyCharacters ApiKeyCharacters
  * @property ApiKeys ApiKeys
  * @property Config Config
+ * @property Groups Groups
  * @property Paste Paste
  * @property Storage Storage
  * @property Users Users

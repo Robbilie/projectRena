@@ -29,7 +29,7 @@ class updateApiKeys
         $expires = $data["result"]["key"]["expires"];
 
         // Update the api key info in the table
-        $this->app->Db->execute("UPDATE apiKeys SET accessMask = :accessMask, expires = :expires, lastValidation = :lastValidation WHERE keyID = :keyID AND vCode = :vCode", array(":accessMask" => $accessMask, ":expires" => $expires, ":lastValidation" => date("Y-m-d H:i:s"), ":keyID" => $keyID, ":vCode" => $vCode));
+        $this->app->Db->execute("UPDATE apiKeys SET accessMask = :accessMask, expires = :expires, lastValidation = :lastValidation, errorCode = :errorCode WHERE keyID = :keyID AND vCode = :vCode", array(":accessMask" => $accessMask, ":expires" => $expires, ":lastValidation" => date("Y-m-d H:i:s"), ":errorCode" => 0, ":keyID" => $keyID, ":vCode" => $vCode));
 
         // Insert the key data to the apiKeyCharacters table
         foreach($data["result"]["key"]["characters"] as $c)

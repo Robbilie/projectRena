@@ -19,6 +19,7 @@ class UsersGroups extends AbstractMigration
         $usersGroups
             ->addColumn("userID", "integer", array("limit" => 11))
             ->addColumn("groupID", "integer", array("limit" => 11))
+            ->addColumn("groupType", "string", array("limit" => 255))
             ->addColumn("created", "datetime", array("default" => "CURRENT_TIMESTAMP"))
             ->addIndex(array("userID", "groupID"), array("unique" => true))
             ->addIndex(array("userID"))

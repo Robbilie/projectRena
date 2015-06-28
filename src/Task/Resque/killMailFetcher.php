@@ -29,9 +29,9 @@ class killMailFetcher
         $isDirector = $fetchData["isDirector"];
 
         if($isDirector)
-            $data = $this->getData($keyID, $vCode, $maxKillID);
+            $data = $this->getData($keyID, $vCode);
         else
-            $data = $this->getData($keyID, $vCode, $characterID, $maxKillID);
+            $data = $this->getData($keyID, $vCode, $characterID);
 
         $cachedUntil = $data["cachedUntil"];
         $maxKillID = 0;
@@ -41,9 +41,6 @@ class killMailFetcher
         {
             foreach($kills as $kill)
             {
-                // Increment statsd
-                $this->app->StatsD->increment("killmailsAdded");
-
                 // Remove that bloody string value thing
                 unset($kill["_stringValue"]);
 
@@ -60,17 +57,22 @@ class killMailFetcher
                 $json = json_encode($kill);
 
                 // insert the killData to the killmails table
-                $this->app->Db->execute("INSERT IGNORE INTO killmails (killID, hash, source, kill_json) VALUES (:killID, :hash, :source, :json)", array(":killID" => $killID, ":hash" => $hash, ":source" => $source, ":json" => $json));
+                $inserted = $this->app->Db->execute("INSERT IGNORE INTO killmails (killID, hash, source, kill_json) VALUES (:killID, :hash, :source, :json)", array(":killID" => $killID, ":hash" => $hash, ":source" => $source, ":json" => $json));
 
                 // Update the maxKillID
                 $maxKillID = max($maxKillID, $killID);
 
-                // Push it over zmq to the websocket
-                $context = new ZMQContext();
-                $socket = $context->getSocket(ZMQ::SOCKET_PUSH, "rena");
-                $socket->connect("tcp://localhost:5555");
-                $socket->send($json);
+                // Push it to the queue if it inserted, also poke statsd to increment the tracker for it
+                if($inserted > 0)
+                {
+                    $this->app->StatsD->increment("killmailsAdded");
 
+                    // Push it over zmq to the websocket
+                    $context = new ZMQContext();
+                    $socket = $context->getSocket(ZMQ::SOCKET_PUSH, "rena");
+                    $socket->connect("tcp://localhost:5555");
+                    $socket->send($json);
+                }
             }
         }
 

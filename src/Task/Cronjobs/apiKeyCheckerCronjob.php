@@ -18,7 +18,7 @@ class apiKeyCheckerCronjob
      */
     public static function execute($pid, $md5, RenaApp $app)
     {
-        $apiKeys = $app->Db->query("SELECT keyID, vCode FROM apiKeys WHERE lastValidation < date_sub(now(), INTERVAL 2 HOUR) ORDER BY lastValidation DESC LIMIT 500", array(), 0);
+        $apiKeys = $app->Db->query("SELECT keyID, vCode FROM apiKeys WHERE lastValidation < date_sub(now(), INTERVAL 6 HOUR) ORDER BY lastValidation DESC LIMIT 500", array(), 0);
         if($apiKeys)
         {
             foreach($apiKeys as $api)

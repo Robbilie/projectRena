@@ -77,12 +77,13 @@ class UsersGroups
     /**
      * @param $userID
      * @param $groupID
+     * @param $groupType
      *
      * @return bool|int|string
      */
-    public function setGroup($userID, $groupID)
+    public function setGroup($userID, $groupID, $groupType)
     {
-        return $this->db->execute("INSERT INTO usersGroups (userID, groupID) VALUES (:userID, :groupID) ON DUPLICATE KEY UPDATE groupID = :groupID", array(":userID" => $userID, ":groupID" => $groupID));
+        return $this->db->execute("INSERT INTO usersGroups (userID, groupID, groupType) VALUES (:userID, :groupID, :groupType) ON DUPLICATE KEY UPDATE groupID = :groupID, groupType = :groupType", array(":userID" => $userID, ":groupID" => $groupID, ":groupType" => $groupType));
     }
 
     /**

@@ -24,7 +24,7 @@ class Groups extends AbstractMigration
             ->addColumn("moderators", "text", array("limit" => MysqlAdapter::TEXT_MEDIUM)) // Json array with userIDs that can moderate the group (Add/Kick users)
             ->addColumn("created", "datetime", array("default" => "CURRENT_TIMESTAMP"))
             ->addIndex(array("groupName"), array("unique" => true))
-            ->addIndex(array("groupID"))
+            ->addIndex(array("groupID"), array("unique" => true))
             ->addIndex(array("ownerID"))
             ->save();
 
