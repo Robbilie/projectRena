@@ -68,7 +68,7 @@
         width: 100%;
         overflow: hidden;
     }
-    
+
     #container:before {
         content: " ";
         position: absolute;
@@ -175,7 +175,7 @@
     #loggedincard > img {
         border: 2px solid #E7E3E3;
         float: left;
-        position: relative; 
+        position: relative;
     }
 
     #loggedincard a {
@@ -912,7 +912,7 @@
     #intelPasteArea {
         min-height: 200px;
     }
-    
+
     #intelConti {
         height: 100%;
     }
@@ -1033,5 +1033,13 @@
         width: auto;
     }
 
-
-
+    #unreadcount {
+      position: absolute;
+      background-color: rgba(150, 150, 150, 0.25);
+      height: 24px;
+      width: 24px;
+      text-align: center;
+      line-height: 24px;
+      right: 4px;
+      top: 4px;
+    }
