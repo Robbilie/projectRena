@@ -30,10 +30,10 @@
                     <h2>Profile</h2>
                     <img src="./img/icons/charactersheet.png"/>
                 </a>
-                <!--<a class="sidebarrow" onclick="click(this);" href="#!/notifications/">
+                <a class="sidebarrow" onclick="click(this);" href="#!/notifications/">
                     <h2>Notifications</h2>
                     <img src="./img/icons/attention.png"/>
-                </a>-->
+                </a>
                 <!--<a class="sidebarrow" onclick="click(this);" href="#!/mails/">
                     <h2>Mails</h2>
                     <img src="./img/icons/evemail.png"/>
@@ -124,7 +124,7 @@
             var loginurl = "{{ EVESSOURL|e('js') }}";
 
             var $ = function (id, el) {
-                var c = el ? el : document; 
+                var c = el ? el : document;
                 switch(id.substr(0,1)) {
                     case "#":
                         return c.getElementById(id.slice(1));
@@ -229,9 +229,9 @@
                     el.innerHTML = '';
                     for (var i = r.length - 1; i >= 0; i--) {
                         if(r[i]['characterID'] == charid) continue;
-                        el.innerHTML += '<div class="hover row">' + 
-                            '<img src="https://image.eveonline.com/Character/' + r[i]['characterID'] + '_32.jpg" alt="' + r[i]['characterName'] + '"/>' + 
-                            '<span onclick="switchCharacter(' + r[i]['characterID'] + ');">' + r[i]['characterName'] + '</span>' + 
+                        el.innerHTML += '<div class="hover row">' +
+                            '<img src="https://image.eveonline.com/Character/' + r[i]['characterID'] + '_32.jpg" alt="' + r[i]['characterName'] + '"/>' +
+                            '<span onclick="switchCharacter(' + r[i]['characterID'] + ');">' + r[i]['characterName'] + '</span>' +
                         '</div>';
                     };
                 }, "json");
@@ -272,7 +272,7 @@
 
             String.prototype.format = function() {
                 var args = arguments;
-                return this.replace(/{(\d+)}/g, function(match, number) { 
+                return this.replace(/{(\d+)}/g, function(match, number) {
                     return typeof args[number] != 'undefined'
                         ? args[number]
                         : match
@@ -324,7 +324,7 @@
 
                 var dropdown = document.createElement("div");
                 dropdown.className = "dropdowntf";
-                
+
                 this.input = document.createElement("input");
                 this.input.className = oldel.className;
                 this.input.type = "text";

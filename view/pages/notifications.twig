@@ -1,0 +1,31 @@
+<div class="contentConti" id="notificationsConti">
+	<div class="card">
+		<div class="chead">
+			<h3 class="blue" id="notificationsHead"></h3>
+		</div>
+		<div class="cbody" id="notificationsList"></div>
+	</div>
+	<div style="display: none;">
+		<div id="notificationTemplate">
+			<div class="hover paddedp"><a {0} onclick="click(this);">{1}({2})</a></div>
+		</div>
+	</div>
+</div>
+<label id="maxBtn" for="checkMaxed">+</label>
+<script type="text/javascript">
+	notificationsJS();
+	function notificationsJS () {
+		ajax("/json/notifications/", function (r) {
+			console.log(r);
+      /*
+			$("#contentsname").innerHTML = r.name;
+			var tmpl = $("#contentsTemplate").innerHTML;
+			var el = $("#contentlist");
+			el.innerHTML = "";
+			for(var i = 0; i < r.list.length; i++)
+				el.innerHTML += tmpl.format(r.list[i]['flag'] == 0 ? 'href="#!/corporation/' + r.list[i]['ownerID'] + '/container/' + r.list[i]['itemID'] + '/"' : '', r.list[i]['name'] ? r.list[i]['name'] : "", r.list[i]['typeName']);
+*/
+			fadeOn($("#contentsConti"), 1);
+		}, "json");
+	}
+</script>

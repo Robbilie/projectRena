@@ -40,13 +40,11 @@ $app->get('/json/structures/controltower/:towerID/', function($towerID) use ($ap
 });
 
 $app->get('/json/notifications/', function() use ($app){
-    $app->response->headers->set('Content-Type', 'application/json');
-    $app->response->body(json_encode(array()));
+    (new \ProjectRena\Controller\NotificationsController($app))->getNotifications();
 });
 
-$app->get('/json/notifications/:id/', function($id) use ($app){
-    $app->response->headers->set('Content-Type', 'application/json');
-    $app->response->body(json_encode(array(array("text" => "Fuel running empty in 10h."))));
+$app->get('/json/notifications/:notificationID/', function($notificationID) use ($app){
+    (new \ProjectRena\Controller\NotificationsController($app))->getNotification($notificationID);
 });
 
 $app->get('/json/groups/', function() use ($app){
