@@ -159,9 +159,13 @@ $app->get('/json/characternames/:name', function ($name) use ($app){
  */
 
 
-$app->get('/json/notifications/', function() use ($app){
-    (new \ProjectRena\Controller\NotificationsController($app))->getNotifications();
-});
+ $app->get('/json/notifications/', function() use ($app){
+     (new \ProjectRena\Controller\NotificationsController($app))->getNotifications();
+ });
+
+ $app->get('/json/notifications/unread/', function() use ($app){
+     (new \ProjectRena\Controller\NotificationsController($app))->getUnreadCount();
+ });
 
 $app->get('/json/notifications/templates/', function() use ($app){
    (new \ProjectRena\Controller\NotificationsController($app))->getTemplates();
