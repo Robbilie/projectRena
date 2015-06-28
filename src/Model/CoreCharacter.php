@@ -177,6 +177,7 @@ class CoreCharacter extends CoreBase {
 
 	public function getNotifications () {
 		if(is_null($this->notifications)) {
+			$permString = implode(",", $this->getPermissions());
 			$this->notifications = $this->db->query(
 				"SELECT easNotifications.*, (SELECT 1 as i FROM easNotificationReaders WHERE notificationID = easNotifications.id AND readerID = :characterID) as readState
 				FROM
@@ -189,7 +190,7 @@ class CoreCharacter extends CoreBase {
 				WHERE
 					easNotifications.typeID = easNotificationTypes.typeID
 				AND
-					easNotificationTypes.permissionID IN (:permissions)
+					easNotificationTypes.permissionID IN ({$permString})
 				AND
 					easNotificationTypes.permissionID = easPermissions.id
 				AND
@@ -229,7 +230,6 @@ class CoreCharacter extends CoreBase {
 						)
 					)",
 					array(
-						":permissions" => implode(",", $this->getPermissions()),
 						":characterID" => $this->getCharId(),
 						":corporationID" => $this->getCorpId(),
 						":allianceID" => $this->getAlliId()
