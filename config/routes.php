@@ -131,14 +131,6 @@ $app->get('/json/intel/region/:regionID/', function($regionID) use ($app){
     (new \ProjectRena\Controller\IntelController($app))->getRegionIntel($regionID);
 });
 
-$app->get('/json/systemnames/:name', function ($name) use ($app){
-	(new \ProjectRena\Controller\JSONController($app))->findSystemNames($name);
-});
-
-$app->get('/json/characternames/:name', function ($name) use ($app){
-	(new \ProjectRena\Controller\JSONController($app))->findCharacterNames($name);
-});
-
 $app->get('/json/fleets/', function () use ($app){
 	(new \ProjectRena\Controller\FleetsController($app))->getFleets();
 });
@@ -158,8 +150,25 @@ $app->get('/json/fleets/confirm/:hash/', function ($hash) use ($app){
 
 
 /*
- * Fetcher
+ * Search
  */
+
+
+$app->get('/json/systemnames/:name', function ($name) use ($app){
+  (new \ProjectRena\Controller\SearchController($app))->findSystemNames($name);
+});
+
+$app->get('/json/characternames/:name', function ($name) use ($app){
+  (new \ProjectRena\Controller\SearchController($app))->findCharacterNames($name);
+});
+
+
+
+
+
+ /*
+  * Fetcher
+  */
 
 
 $app->get('/fetcher/postapifetch/', function () use ($app) {

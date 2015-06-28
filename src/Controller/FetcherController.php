@@ -24,6 +24,8 @@ class FetcherController
     }
 
     public function postApiFetch () {
+      echo " init postApiFetch\n";
+      echo " + Step 1 : Convert new Notifications\n";
       $this->convertNotifications();
     }
 
@@ -53,5 +55,7 @@ class FetcherController
           )
         );
       }
+      echo " + - ".count($notificationRows)." Notifications converted\n";
     }
+    
 }
