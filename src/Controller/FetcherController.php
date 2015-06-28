@@ -39,7 +39,7 @@ class FetcherController
       foreach ($notificationRows as $notificationRow) {
         $recipient = $this->app->CoreManager->getCharacter($notificationRow['recipientID']);
         $this->db->execute(
-          "INSER INTO easNotifications (eveID, state, typeID, creatorID, recipientID, locationID, body, created, requested) VALUES (:eveID, :state, :typeID, :creatorID, :recipientID, :locationID, :body, :created, :requested)",
+          "INSERT INTO easNotifications (eveID, state, typeID, creatorID, recipientID, locationID, body, created, requested) VALUES (:eveID, :state, :typeID, :creatorID, :recipientID, :locationID, :body, :created, :requested)",
           array(
             ":eveID" => $notificationRow['notificationID'],
             ":state" => 0,
