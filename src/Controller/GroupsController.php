@@ -30,7 +30,18 @@ class GroupsController
             $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
             $group['group'] = $this->app->CoreManager->getGroup((int)$groupID);
             $group['group']->getPermissions();
-            $group['canEdit'] = $this->app->CoreManager->charCanEditPermissionsGroup($char, $group['group']);
+            $group['canEdit'] = 
+                $group['group']->getScope() == "corporation" ? 
+                    $char->hasPermission("editPermissionsCorporationGroup") : 
+                    $group['group']->getScope() == "alliance" ? 
+                        $char->hasPermission("editPermissionsAllianceGroup") : 
+                        false;
+            $group['canAdd'] = 
+                $group['group']->getScope() == "corporation" ? 
+                    $char->hasPermission("editMembersCorporationGroup") : 
+                    $group['group']->getScope() == "alliance" ? 
+                        $char->hasPermission("editMembersAllianceGroup") : 
+                        false;
         }
         $this->app->response->headers->set('Content-Type', 'application/json');
         $this->app->response->body(json_encode($group));

@@ -57,8 +57,9 @@
 			groupCustom = r.group.custom;
 			groupPermissions = r.group.permissions;
 			groupCanEdit = r.canEdit;
+			groupCanAdd = r.canAdd;
 
-			if(!r.group.custom || !r.canEdit) {
+			if(!r.group.custom || !r.canAdd) {
 				$("#charAddCard").parentNode.removeChild($("#charAddCard"));
 			} else {
 	            namedd = new AutoComplete("charId");

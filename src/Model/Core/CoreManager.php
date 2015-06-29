@@ -37,7 +37,7 @@ class CoreManager {
 
     public function createCharacter ($characterID) {
         $char = null;
-        $apiChar = (new \ProjectRena\Model\EVEApi\EVE\CharacterAffiliation($this->app))->getData([$characterID])["result"]["characters"][0];
+        $apiChar = $this->app->EVEEVECharacterAffiliation->getData([$characterID])["result"]["characters"][0];
         $charRow = $this->db->queryRow("SELECT * FROM easCharacters WHERE characterID = :characterID", array(":characterID" => $characterID));
         if(!$charRow) {
             $this->db->execute("INSERT INTO easCharacters (characterID, characterName, corporationID, corporationName, allianceID, allianceName) VALUE (:characterID, :characterName, :corporationID, :corporationName, :allianceID, :allianceName)",
@@ -463,30 +463,33 @@ class CoreManager {
     }
 
     public function setBaseGroups ($char) {
-
+        
         // remove old groups
         $oldgroups = $char->getCGroups();
         for($i = 0; $i < count($oldgroups); $i++)
           $oldgroups[i]->removeCharacter($char->getCharId());
 
-        // add to new groups
-        $allianceRow = $this->db->queryRow("SELECT * FROM easGroups WHERE name = :name", array(":name" => $char->getAlliName()));
-        if($allianceRow) {
-            $allianceGroup = new CoreGroup($this->app, $allianceRow);
-            $allianceGroup->addCharacter($char->getCharId());
-        } else {
-            $allianceGroup = $this->createGroup($char->getAlliName(), "alliance", $char->getAlliId(), 0);
-            $allianceGroup->addCharacter($char->getCharId());
-        }
+        $char->resetGroups();
 
-        $corporationRow = $this->db->queryRow("SELECT * FROM easGroups WHERE name = :name", array(":name" => $char->getCorpName()));
-        if($corporationRow) {
-            $corporationGroup = new CoreGroup($this->app, $corporationRow);
-            $corporationGroup->addCharacter($char->getCharId());
-        } else {
-            $corporationGroup = $this->createGroup($char->getCorpName(), "corporation", $char->getCorpId(), 0);
-            $corporationGroup->addCharacter($char->getCharId());
+        $corporation = $char->getCCorporation();
+        $corporationGroup = $this->getGroup($char->getCorpName());
+        if(is_null($corporationGroup)) {
+            $corporationGroup = $this->createGroup($corporation->getName(), "corporation", $char->getCorpId(), 0);
         }
+        $corporationGroup->addCharacter($char->getCharId());
+
+        if($corporation->getCeoCharacterId() == $char->getCharId())
+            $this->getGroup("CEO")->addCharacter($char->getCharId());
+
+        $alliance = $char->getCAlliance();
+        $allianceGroup = $this->getGroup($char->getAlliName());
+        if(is_null($allianceGroup)) {
+            $allianceGroup = $this->createGroup($alliance>getName(), "alliance", $char->getAlliId(), 0);
+        }
+        $allianceGroup->addCharacter($char->getCharId());
+
+        if($alliance->getExecCorp()->getCeoCharacterId() == $char->getCharId())
+            $this->getGroup("Alliance CEO")->addCharacter($char->getCharId());
     }
 
     public function createGroup ($groupName, $scope, $owner = null, $custom = 0) {
