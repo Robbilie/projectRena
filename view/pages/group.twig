@@ -44,18 +44,21 @@
 	var groupScope = "default";
 	var groupCustom = 0;
 	var groupPermissions = 0;
+	var groupCanEdit = false;
+	var groupCanAdd = false;
     var namedd;
     var charToAdd = null;
 	groupJS();
 	function groupJS () {
 		ajax("/json/group/" + location.hash.split("/")[2] + "/", function (r) {
 			console.log(r);
-			$("#groupName").innerHTML = r.name + '<span class="fr">[' + (r.custom == 1 ? 'custom ' : '') + r.scope + ']</span>';
-			groupScope = r.scope;
-			groupCustom = r.custom;
-			groupPermissions = r.permissions;
+			$("#groupName").innerHTML = r.group.name + '<span class="fr">[' + (r.group.custom == 1 ? 'custom ' : '') + r.group.scope + ']</span>';
+			groupScope = r.group.scope;
+			groupCustom = r.group.custom;
+			groupPermissions = r.group.permissions;
+			groupCanEdit = r.canEdit;
 
-			if(!r.custom) {
+			if(!r.group.custom || !r.canEdit) {
 				$("#charAddCard").parentNode.removeChild($("#charAddCard"));
 			} else {
 	            namedd = new AutoComplete("charId");
@@ -79,7 +82,7 @@
 			var el = $("#permissionList");
 			el.innerHTML = "";
 			for(var i = 0; i < s.length; i++)
-				el.innerHTML += tmpl.format((groupPermissions.indexOf(parseInt(s[i].id)) >= 0) ? 'checked="true"' : '', s[i].name, s[i].id, location.hash.split("/")[2]);
+				el.innerHTML += tmpl.format(((groupPermissions.indexOf(parseInt(s[i].id)) >= 0) ? 'checked="true"' : '') + (groupCanEdit ? '' : ' disabled'), s[i].name, s[i].id, location.hash.split("/")[2]);
 		}, "json");
 	}
 

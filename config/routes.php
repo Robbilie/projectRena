@@ -39,38 +39,6 @@ $app->get('/json/structures/controltower/:towerID/', function($towerID) use ($ap
     (new \ProjectRena\Controller\JSONController($app))->getControltower($towerID);
 });
 
-$app->get('/json/groups/', function() use ($app){
-    (new \ProjectRena\Controller\JSONController($app))->getGroups();
-});
-
-$app->get('/json/group/:groupid/', function($groupID) use ($app){
-    (new \ProjectRena\Controller\JSONController($app))->getGroup($groupID);
-});
-
-$app->get('/json/group/:groupid/members/', function($groupID) use ($app){
-    (new \ProjectRena\Controller\JSONController($app))->getGroupMembers($groupID);
-});
-
-$app->get('/json/group/:groupid/remove/permission/:id/', function($groupid, $id) use ($app){
-    (new \ProjectRena\Controller\JSONController($app))->removePermissionFromGroup($groupid, $id);
-});
-
-$app->get('/json/group/:groupid/add/permission/:id/', function($groupid, $id) use ($app){
-    (new \ProjectRena\Controller\JSONController($app))->addPermissionToGroup($groupid, $id);
-});
-
-$app->get('/json/group/:groupid/remove/character/:id/', function($groupid, $id) use ($app){
-    (new \ProjectRena\Controller\JSONController($app))->removeCharacterFromGroup($groupid, $id);
-});
-
-$app->get('/json/group/:groupid/add/character/:id/', function($groupid, $id) use ($app){
-    (new \ProjectRena\Controller\JSONController($app))->addCharacterToGroup($groupid, $id);
-});
-
-$app->get('/json/group/create/:name/:scope/:private/', function($name, $scope, $private) use ($app){
-    (new \ProjectRena\Controller\JSONController($app))->createGroup($name, $scope, $private == "true");
-});
-
 $app->get('/json/corporation/:corporationID/', function($corporationID) use ($app){
     (new \ProjectRena\Controller\JSONController($app))->getCorporation($corporationID);
 });
@@ -137,6 +105,44 @@ $app->get('/json/fleet/:fleetID/', function ($fleetID) use ($app){
 
 $app->get('/json/fleets/confirm/:hash/', function ($hash) use ($app){
 	(new \ProjectRena\Controller\FleetsController($app))->confirmFleet($hash);
+});
+
+
+/*
+ * Groups
+ */
+
+
+$app->get('/json/groups/', function() use ($app){
+    (new \ProjectRena\Controller\GroupsController($app))->getGroups();
+});
+
+$app->get('/json/group/:groupid/', function($groupID) use ($app){
+    (new \ProjectRena\Controller\GroupsController($app))->getGroup($groupID);
+});
+
+$app->get('/json/group/:groupid/members/', function($groupID) use ($app){
+    (new \ProjectRena\Controller\GroupsController($app))->getGroupMembers($groupID);
+});
+
+$app->get('/json/group/:groupid/remove/permission/:id/', function($groupid, $id) use ($app){
+    (new \ProjectRena\Controller\GroupsController($app))->removePermissionFromGroup($groupid, $id);
+});
+
+$app->get('/json/group/:groupid/add/permission/:id/', function($groupid, $id) use ($app){
+    (new \ProjectRena\Controller\GroupsController($app))->addPermissionToGroup($groupid, $id);
+});
+
+$app->get('/json/group/:groupid/remove/character/:id/', function($groupid, $id) use ($app){
+    (new \ProjectRena\Controller\GroupsController($app))->removeCharacterFromGroup($groupid, $id);
+});
+
+$app->get('/json/group/:groupid/add/character/:id/', function($groupid, $id) use ($app){
+    (new \ProjectRena\Controller\GroupsController($app))->addCharacterToGroup($groupid, $id);
+});
+
+$app->get('/json/group/create/:name/:scope/:private/', function($name, $scope, $private) use ($app){
+    (new \ProjectRena\Controller\GroupsController($app))->createGroup($name, $scope, $private == "true");
 });
 
 

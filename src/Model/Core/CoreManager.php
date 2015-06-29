@@ -172,7 +172,7 @@ class CoreManager {
 
     public function getGroupsByOwnerAndScope ($owner, $scope) {
         $groups = array();
-        $groupRows = $this->db->query("SELECT id FROM easGroups WHERE (owner = :owner OR owner IS NULL) AND scope = :scope", array(":owner" => $owner, ":scope" => $scope));
+        $groupRows = $this->db->query("SELECT id FROM easGroups WHERE (owner = :owner OR (owner IS NULL AND custom = 1)) AND scope = :scope", array(":owner" => $owner, ":scope" => $scope));
         foreach ($groupRows as $groupRow)
             array_push($groups, $this->getGroup((int)$groupRow['id']));
         return $groups;
@@ -501,6 +501,34 @@ class CoreManager {
 
     public function getDGMAttribute ($typeID, $attributeID) {
         return $this->db->queryRow("SELECT * FROM dgmTypeAttributes WHERE typeID = :typeID AND attributeID = :attributeID", array(":typeID" => $typeID, ":attributeID" => $attributeID));
+    }
+
+    public function charCanEditMembersGroup ($char, $group) {
+
+    }
+
+    public function charCanEditPermissionsGroup ($char, $group) {
+        if(
+            (
+                is_null($group->getOwner()) && $group->isCustom() && $char->getCUser()->isAdmin()
+            ) ||
+            (
+                $group->getScope() == "corporation" &&
+                $group->getOwner() == $char->getCorpId() &&
+                $char->getCCorporation()->getCeoCharacterId() == $char->getCharId()
+            ) ||
+            (
+                $group->getScope() == "alliance" &&
+                $group->getOwner() == $char->getAlliId() &&
+                $char->getCCorporation()->getCAlliance()->getExecCorp()->getCeoCharacterId() == $char->getCharId()
+            ) ||
+            (
+                $char->getCUser()->isAdmin()
+            )
+        ) {
+            return true;
+        }
+        return false;
     }
 
     public function charHasGroupPrivs ($char, $group) {

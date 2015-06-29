@@ -120,7 +120,7 @@ class CoreCharacter extends CoreBase {
 			return in_array($perm, $this->getPermissions());
 		} else if(is_string($perm)) {
 			$permission = $this->app->CoreManager->getPermission($perm);
-			return in_array($permission->getId(), $this->getPermissions());
+			return !(is_null($permission) || !in_array($permission->getId(), $this->getPermissions()));
 		}
 	}
 
