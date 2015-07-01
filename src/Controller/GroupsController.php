@@ -30,17 +30,17 @@ class GroupsController
             $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
             $group['group'] = $this->app->CoreManager->getGroup((int)$groupID);
             $group['group']->getPermissions();
-            $group['canEdit'] = 
-                $group['group']->getScope() == "corporation" ? 
-                    $char->hasPermission("editPermissionsCorporationGroup") : 
-                    $group['group']->getScope() == "alliance" ? 
-                        $char->hasPermission("editPermissionsAllianceGroup") : 
+            $group['canEdit'] =
+                $group['group']->getScope() == "corporation" ?
+                    $char->hasPermission("editPermissionsCorporationGroup") :
+                    $group['group']->getScope() == "alliance" ?
+                        $char->hasPermission("editPermissionsAllianceGroup") :
                         false;
-            $group['canAdd'] = 
-                $group['group']->getScope() == "corporation" ? 
-                    $char->hasPermission("editMembersCorporationGroup") : 
-                    $group['group']->getScope() == "alliance" ? 
-                        $char->hasPermission("editMembersAllianceGroup") : 
+            $group['canAdd'] =
+                $group['group']->getScope() == "corporation" ?
+                    $char->hasPermission("editMembersCorporationGroup") :
+                    $group['group']->getScope() == "alliance" ?
+                        $char->hasPermission("editMembersAllianceGroup") :
                         false;
         }
         $this->app->response->headers->set('Content-Type', 'application/json');
@@ -79,8 +79,17 @@ class GroupsController
     public function getGroupMembers ($groupID) {
         $members = array();
         if(isset($_SESSION["loggedIn"])) {
+            $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
             $group = $this->app->CoreManager->getGroup((int)$groupID);
-            $members = $group->getCCharacters();
+            if($group->getScope() == "corporation") {
+              $corpID = $char->getCorpId();
+              $members = $group->getCCharacters(function ($i) use ($corpID) { return $i->getCorpId() == $corpID; });
+            } else if($group->getScope() == "alliance") {
+              $alliID = $char->getAlliId();
+              $members = $group->getCCharacters(function ($i) use ($alliID) { return $i->getAlliId() == $alliID; });
+            } else {
+              $members = $group->getCCharacters();
+            }
         }
         $this->app->response->headers->set('Content-Type', 'application/json');
         $this->app->response->body(json_encode($members));
@@ -212,25 +221,25 @@ class GroupsController
                             $name,
                             $scope,
                             (
-                                $private ? 
+                                $private ?
                                     (
-                                        $scope == "corporation" ? 
-                                            $char->getCorpId() : 
+                                        $scope == "corporation" ?
+                                            $char->getCorpId() :
                                             (
-                                                $scope == "alliance" ? 
-                                                    $char->getAlliId() : 
+                                                $scope == "alliance" ?
+                                                    $char->getAlliId() :
                                                     null
                                             )
-                                    ) : 
+                                    ) :
                                     (
-                                        $char->getCUser()->isAdmin() ? 
-                                            null : 
+                                        $char->getCUser()->isAdmin() ?
+                                            null :
                                             (
-                                                $scope == "corporation" ? 
-                                                    $char->getCorpId() : 
+                                                $scope == "corporation" ?
+                                                    $char->getCorpId() :
                                                     (
-                                                        $scope == "alliance" ? 
-                                                            $char->getAlliId() : 
+                                                        $scope == "alliance" ?
+                                                            $char->getAlliId() :
                                                             null
                                                     )
                                             )

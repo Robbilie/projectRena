@@ -72,12 +72,17 @@ class CoreGroup extends CoreBase {
 		return $this->characters;
 	}
 
-	public function getCCharacters () {
+	public function getCCharacters ($ck = null) {
 		if(is_null($this->ccharacters)) {
 			$characters = $this->getCharacters();
 			$this->ccharacters = array();
-			foreach ($characters as $character)
-				array_push($this->ccharacters, $this->app->CoreManager->getCharacter($character));
+			foreach ($characters as $character) {
+				$char = $this->app->CoreManager->getCharacter($character);
+				if(!is_null($ck))
+					if(!$ck($char))
+						continue;
+				array_push($this->ccharacters, $char);
+			}
 		}
 		return $this->ccharacters;
 	}
