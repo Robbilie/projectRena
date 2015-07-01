@@ -277,7 +277,6 @@
             String.prototype.format = function() {
                 var args = arguments;
                 return this.replace(/{([a-zA-Z\d]+)}/g, function(match, varname) {
-                    console.log(match + " : " + varname);
                     return typeof args[0] != 'undefined' && args[0][varname]
                         ? args[0][varname]
                         : ""
