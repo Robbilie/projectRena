@@ -76,7 +76,7 @@ class JSONController
             if(!$xmldata) {
                 $resp['msg'] = 'The data you entered is invalid.';
             } else {
-                $xml = new SimpleXMLElement($xmldata);
+                $xml = simplexml_load_string($xmldata);
                 if($xml->result->key['expires'] != "") {
                     $resp['msg'] = 'Please use a Key that doesnt expire.';
                 } else {
