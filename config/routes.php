@@ -199,103 +199,103 @@ $app->get('/fetcher/postapifetch/', function () use ($app) {
 
 
 $app->get('/home/', function() use ($app){
-    $app->render("/pages/home.twig");
+    $app->render("/pages/home.html");
 });
 
 $app->get('/profile/', function() use ($app){
-    $app->render("/pages/charactersheet.twig");
+    $app->render("/pages/charactersheet.html");
 });
 
 $app->get('/profile/:characterID/', function($characterID) use ($app){
-    $app->render("/pages/profile.twig");
+    $app->render("/pages/profile.html");
 });
 
 $app->get('/notifications/', function() use ($app){
-    $app->render("/pages/notifications.twig");
+    $app->render("/pages/notifications.html");
 });
 
 $app->get('/mails/', function() use ($app){
-    $app->render("/pages/mails.twig");
+    $app->render("/pages/mails.html");
 });
 
 $app->get('/intel/', function() use ($app){
-    $app->render("/pages/intel.twig");
+    $app->render("/pages/intel.html");
 });
 
 $app->get('/intel/:intel/', function($intel) use ($app){
-    $app->render("/pages/intel.twig");
+    $app->render("/pages/intel.html");
 });
 
 $app->get('/intel/:intel/:id/', function($intel, $id) use ($app){
-    $app->render("/pages/intel.twig");
+    $app->render("/pages/intel.html");
 });
 
 $app->get('/logistic/', function() use ($app){
-    $app->render("/pages/logistic.twig");
+    $app->render("/pages/logistic.html");
 });
 
 $app->get('/corporation/', function() use ($app){
-    $app->render("/pages/corporation.twig");
+    $app->render("/pages/corporation.html");
 });
 
 $app->get('/structures/', function() use ($app){
-    $app->render("/pages/structures.twig", array("structure" => ""));
+    $app->render("/pages/structures.html", array("structure" => ""));
 });
 
 $app->get('/structures/:structure/', function($structure) use ($app){
-    $app->render("/pages/structures.twig");
+    $app->render("/pages/structures.html");
 });
 
 $app->get('/corporation/:corporationID/container/:containerID/', function($corporationID, $containerID) use ($app){
-    $app->render("/pages/contents.twig");
+    $app->render("/pages/contents.html");
 });
 
 $app->get('/assets/', function() use ($app){
-    $app->render("/pages/assets.twig");
+    $app->render("/pages/assets.html");
 });
 
 $app->get('/assets/:asset/', function($asset) use ($app){
-    $app->render("/pages/assets.twig");
+    $app->render("/pages/assets.html");
 });
 
 $app->get('/fittings/', function() use ($app){
-    $app->render("/pages/fittings.twig");
+    $app->render("/pages/fittings.html");
 });
 
 $app->get('/members/', function() use ($app){
-    $app->render("/pages/members.twig");
+    $app->render("/pages/members.html");
 });
 
 $app->get('/members/:member/', function($member) use ($app){
-    $app->render("/pages/members.twig");
+    $app->render("/pages/members.html");
 });
 
 $app->get('/members/:member/:id/', function($member, $id) use ($app){
-    $app->render("/pages/members.twig");
+    $app->render("/pages/members.html");
 });
 
 $app->get('/groups/', function() use ($app){
-    $app->render("/pages/groups.twig");
+    $app->render("/pages/groups.html");
 });
 
 $app->get('/group/:groupID/', function($groupID) use ($app){
-    $app->render("/pages/group.twig");
+    $app->render("/pages/group.html");
 });
 
 $app->get('/settings/', function() use ($app){
-    $app->render("/pages/settings.twig");
+    $app->render("/pages/settings.html");
 });
 
 $app->get('/help/', function() use ($app){
-    $app->render("/pages/help.twig");
+    $app->render("/pages/help.html");
 });
 
 $app->get('/about/', function() use ($app){
-    $app->render("/pages/about.twig");
+    $app->render("/pages/about.html");
 });
 
 $app->get('/structures/controltower/:towerID/', function($towerID) use ($app){
-    $app->render("/pages/controltower.twig");
+    $app->render("/pages/controltower.html");
 });
 
 $app->get('/map/region/:regionID/', function($regionID) use ($app){
@@ -307,26 +307,30 @@ $app->get('/map/region/:regionID/', function($regionID) use ($app){
 });
 
 $app->get('/fleets/', function() use ($app){
-	$app->render("/pages/fleets.twig");
+	$app->render("/pages/fleets.html");
 });
 
 $app->get('/fleet/:fleetID/', function($fleetID) use ($app){
-	$app->render("/pages/fleet.twig");
+	$app->render("/pages/fleet.html");
 });
 
 $app->get('/fleets/confirm/:hash/', function($hash) use ($app){
-	$app->render("/pages/fleetsconfirm.twig");
+	$app->render("/pages/fleetsconfirm.html");
+});
+
+$app->get('/', function() use ($app){
+	$app->render("/index.html");
 });
 
 
 
 
-
+/*
 $app->get('/', function () use ($app)
 {
                 (new \ProjectRena\Controller\IndexController($app))->index();
 });
-
+*/
 // Paste Page
 $app->get("/paste/", function () use ($app)
 {
