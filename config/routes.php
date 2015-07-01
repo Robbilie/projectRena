@@ -188,8 +188,8 @@ $app->get('/json/notifications/:notificationID/', function($notificationID) use 
 
 
  $app->get('/json/timers/', function() use ($app){
-   $this->app->response->headers->set('Content-Type', 'application/json');
-   $this->app->response->body(json_encode(array()));
+   $app->response->headers->set('Content-Type', 'application/json');
+   $app->response->body(json_encode(array()));
  });
 
 
