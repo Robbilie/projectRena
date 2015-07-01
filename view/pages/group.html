@@ -83,7 +83,7 @@
 			var el = $("#permissionList");
 			el.innerHTML = "";
 			for(var i = 0; i < s.length; i++)
-				el.innerHTML += tmpl.format(((groupPermissions.indexOf(parseInt(s[i].id)) >= 0) ? 'checked="true"' : '') + (groupCanEdit ? '' : ' disabled'), s[i].name, s[i].id, location.hash.split("/")[2]);
+				el.innerHTML += tmpl.format([]((groupPermissions.indexOf(parseInt(s[i].id)) >= 0) ? 'checked="true"' : '') + (groupCanEdit ? '' : ' disabled'), s[i].name, s[i].id, location.hash.split("/")[2]]);
 		}, "json");
 	}
 
@@ -93,7 +93,7 @@
 			var el = $("#memberList");
 			el.innerHTML = "";
 			for(var i = 0; i < t.length; i++)
-				el.innerHTML += tmpl.format(t[i].characterID, t[i].characterName, groupCustom == 1 ? '<span class="fr hover" onclick="removeCharacter(' + t[i]['characterID'] + ');">&times;</span>' : '');
+				el.innerHTML += tmpl.format([t[i].characterID, t[i].characterName, groupCustom == 1 ? '<span class="fr hover" onclick="removeCharacter(' + t[i]['characterID'] + ');">&times;</span>' : '']);
 		}, "json");
 	}
 

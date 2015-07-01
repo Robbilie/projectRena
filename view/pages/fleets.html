@@ -49,7 +49,7 @@
             el.innerHTML = "";
 
             for(var i = 0; i < r.fleets.length; i++)
-                el.innerHTML += tmpl.format(r.fleets[i].id, r.fleets[i].name, "");
+                el.innerHTML += tmpl.format([r.fleets[i].id, r.fleets[i].name, ""]);
 
             fadeOn($("#fleetsConti"), 1);
         }, "json");

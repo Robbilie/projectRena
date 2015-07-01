@@ -111,11 +111,11 @@
             }
             refreshDom();
             $("#intelRegion").className = "";
-            
+
             checkRegionStatus();
 
         });
-        
+
         cb();
     }
 
@@ -147,13 +147,13 @@
                 warns.innerHTML = "";
                 for(var i = 0; i < systemStatus.neighbours.length; i++)
                     if(systemStatus.neighbours[i].hostilecount > 0)
-                        warns.innerHTML += wtpl.format(systemStatus.neighbours[i].systemID, systemStatus.neighbours[i].systemName, systemStatus.neighbours[i].hostilecount);
+                        warns.innerHTML += wtpl.format([systemStatus.neighbours[i].systemID, systemStatus.neighbours[i].systemName, systemStatus.neighbours[i].hostilecount]);
 
                 var tmpl = $("#" + (systemStatus.membertype == "characters" ? "char" : "alli") + "Template").innerHTML;
                 var el = $("#intelMemberlist");
                 el.innerHTML = "";
                 for(var i = 0; i < systemStatus.members.length; i++)
-                    el.innerHTML += tmpl.format(systemStatus.members[i].id, systemStatus.members[i].name + (systemStatus.members[i].count ? " [" + systemStatus.members[i].count + "]" : ""), systemStatus.members[i].standing + "Standing");
+                    el.innerHTML += tmpl.format([systemStatus.members[i].id, systemStatus.members[i].name + (systemStatus.members[i].count ? " [" + systemStatus.members[i].count + "]" : ""), systemStatus.members[i].standing + "Standing"]);
             }
 
             setTimeout(checkSystemStatus, 100);

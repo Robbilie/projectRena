@@ -85,7 +85,7 @@
 						stront += (r[i]['content'][j]['volume'] * r[i]['content'][j]['quantity']);
 					}
 				}
-				ctn += tmpl.format(r[i]['id'], r[i]['name'], r[i]['moonName'], states[r[i]['state']], r[i]['typeName'], fuel / r[i]['capacity'] * 100, stront / r[i]['secondaryCapacity'] * 100);
+				ctn += tmpl.format([r[i]['id'], r[i]['name'], r[i]['moonName'], states[r[i]['state']], r[i]['typeName'], fuel / r[i]['capacity'] * 100, stront / r[i]['secondaryCapacity'] * 100]);
 				chngd = false;
 			};
 			ctn += '</table>'

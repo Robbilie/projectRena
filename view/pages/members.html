@@ -59,11 +59,11 @@
 				var el = $("#corporationList");
 				el.innerHTML = "";
 				for(var i = 0; i < s.length; i++)
-					el.innerHTML += tmpl.format(s[i].characterID, s[i].characterName, '');
+					el.innerHTML += tmpl.format([s[i].characterID, s[i].characterName, '']);
 				cb();
 			}, "json");
 		}, "json");
-		
+
 	}
 
 	function membersallianceJS (cb) {
@@ -84,7 +84,7 @@
 				var el = $("#allianceList");
 				el.innerHTML = "";
 				for(var i = 0; i < s.length; i++)
-					el.innerHTML += tmpl.format(s[i].characterID, s[i].characterName, '');
+					el.innerHTML += tmpl.format([s[i].characterID, s[i].characterName, '']);
 				cb();
 			}, "json");
 		}, "json");
