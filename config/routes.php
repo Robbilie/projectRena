@@ -182,9 +182,20 @@ $app->get('/json/notifications/:notificationID/', function($notificationID) use 
 });
 
 
- /*
-  * Fetcher
-  */
+/*
+ * Timerboard
+ */
+
+
+ $app->get('/json/timers/', function() use ($app){
+   $this->app->response->headers->set('Content-Type', 'application/json');
+   $this->app->response->body(json_encode(array()));
+ });
+
+
+/*
+ * Fetcher
+ */
 
 
 $app->get('/fetcher/postapifetch/', function () use ($app) {
@@ -316,6 +327,10 @@ $app->get('/fleet/:fleetID/', function($fleetID) use ($app){
 
 $app->get('/fleets/confirm/:hash/', function($hash) use ($app){
 	$app->render("/pages/fleetsconfirm.html");
+});
+
+$app->get('/timerboard/', function() use ($app){
+	$app->render("/timerboard.html");
 });
 
 $app->get('/', function() use ($app){
