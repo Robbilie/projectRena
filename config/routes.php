@@ -330,7 +330,7 @@ $app->get('/fleets/confirm/:hash/', function($hash) use ($app){
 });
 
 $app->get('/timerboard/', function() use ($app){
-	$app->render("/timerboard.html");
+	$app->render("/pages/timerboard.html");
 });
 
 $app->get('/', function() use ($app){
