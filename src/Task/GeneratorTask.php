@@ -295,7 +295,7 @@ EOF;
 																->setVisibility("protected")
 																->addParameter(PhpParameter::create("input")->setType("InputInterface"))
 																->addParameter(PhpParameter::create("output")->setType("OutputInterface"))
-																->setBody("//Init rena\n\$app = RenaApp::geTInstance();")
+																->setBody("//Init rena\n\$app = RenaApp::getInstance();")
 												)
 												->declareUses('ProjectRena\RenaApp', 'Cilex\Command\Command', 'ProjectRena\Lib', 'Symfony\Component\Console\Input\InputInterface', 'Symfony\Component\Console\Output\OutputInterface');
 
@@ -355,7 +355,7 @@ EOF;
 				 */
 				private function resque($name, $output)
 				{
-								$path = __DIR__ . "/../Task/Resque/{$name}Resque.php";
+								$path = __DIR__ . "/../Task/Resque/{$name}.php";
 								if(file_exists($path))
 								{
 												return $output->writeln("Error, file already exists");
@@ -363,10 +363,15 @@ EOF;
 
 								$class = new PhpClass();
 								$class->setQualifiedName("ProjectRena\\Task\\Resque\\{$name}")
+												->setProperty(PhpProperty::create("app")
+																->setVisibility("private")
+																->setDescription("The Slim Application")
+												)
 												->setDescription($this->descr)
 												->setMethod(PhpMethod::create("setUp")
 																->setVisibility("public")
 																->setDescription("Sets up the task (Setup \$this->crap and such here)")
+																->setBody("\$this->app = \\ProjectRena\\RenaApp::getInstance();")
 												)
 												->setMethod(PhpMethod::create("perform")
 																->setVisibility("public")
@@ -375,6 +380,7 @@ EOF;
 												->setMethod(PhpMethod::create("tearDown")
 																->setVisibility("public")
 																->setDescription("Tears the task down, unset \$this->crap and such")
+																->setBody("\$this->app = null;")
 												);
 
 								$generator = new CodeFileGenerator();

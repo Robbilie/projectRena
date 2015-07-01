@@ -111,7 +111,7 @@ class Pheal
             case 201: // Character does not belong to account.
                 // Typically caused by a character transfer
 
-                break;
+            break;
 
             case 207: // Not available for NPC corporations.
             case 209:

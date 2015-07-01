@@ -62,12 +62,19 @@ class Groups
      * @param $groupID
      * @param $groupName
      * @param int $ownerID
+     * @param int $open
+     * @param int $closed
      *
      * @return bool|int|string
      */
-    public function updateGroup($groupID, $groupName, $ownerID = 0)
+    public function updateGroup($groupID, $groupName, $ownerID = 0, $open = 0, $closed = 0)
     {
-        return $this->db->execute("INSERT INTO groups (groupID, groupName, ownerID) VALUES (:groupID, :groupName, :ownerID) ON DUPLICATE KEY UPDATE groupID = :groupID, groupName = :groupName, ownerID = :ownerID", array(":groupID" => $groupID, ":groupName" => $groupName, ":ownerID" => $ownerID));
+        $execute =  $this->db->execute("INSERT INTO groups (groupID, groupName, ownerID, open, closed) VALUES (:groupID, :groupName, :ownerID, :open, :closed) ON DUPLICATE KEY UPDATE groupID = :groupID, groupName = :groupName, ownerID = :ownerID, open = :open, closed = :closed", array(":groupID" => $groupID, ":groupName" => $groupName, ":ownerID" => $ownerID, ":hash" => $hash, ":open" => $open, ":closed" => $closed));
+        $hash = sha1(time());
+        if(!$this->db->queryField("SELECT hash FROM groups WHERE groupID = :groupID", "hash", array(":groupID" => $groupID)))
+            $this->db->execute("UPDATE groups SET hash = :hash WHERE groupID = :groupID", array(":hash" => $hash, ":groupID" => $groupID));
+
+        return $execute;
     }
 
     /**

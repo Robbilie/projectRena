@@ -7,8 +7,8 @@ class baseConfig
 				 * @param string $key
 				 * @param string $type
 				 * @param null $default
-				 *
-				 * @return null
+					*
+     * @return null
 				 */
 				public function getConfig($key, $type = null, $default = null)
 				{

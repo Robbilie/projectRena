@@ -66,12 +66,7 @@ class UsersGroups
      */
     public function getGroup($userID)
     {
-        $groupIDs = array();
-        $data = $this->db->query("SELECT groupID FROM usersGroups WHERE userID = :userID", array(":userID" => $userID));
-        foreach($data as $grpID)
-            $groupIDs[] = $grpID["groupID"];
-
-        return $groupIDs;
+        return $this->db->query("SELECT * FROM usersGroups u, groups g  WHERE u.groupID = g.groupID AND u.userID = :userID", array(":userID" => $userID));
     }
 
     /**

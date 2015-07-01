@@ -30,6 +30,6 @@ class IndexController
 				 */
 				public function index()
 				{
-								$this->app->render('index.twig');
+								$this->app->out->toTwig('index.twig');
 				}
 }

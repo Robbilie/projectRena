@@ -28,14 +28,16 @@ class characters
         $this->db = $this->app->Db;
     }
 
+
     /**
      * @param $characterID
+     * @param int $cacheTime
      *
      * @return array
      */
-    public function getAllByID($characterID)
+    public function getAllByID($characterID, $cacheTime = 3600)
     {
-        return $this->db->queryRow("SELECT * FROM characters WHERE characterID = :id", array(":id" => $characterID), 3600);
+        return $this->db->queryRow("SELECT * FROM characters WHERE characterID = :id", array(":id" => $characterID), $cacheTime);
     }
 
     /**

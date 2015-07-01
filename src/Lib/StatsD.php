@@ -38,8 +38,8 @@ class StatsD
 				/**
 				 * Increments a value in statsd.
 				 *
-				 * @static
-				 *
+					* @static
+     *
 				 * @param string $name the name of the key
 				 * @param int $amount the amount it's incremented
 				 */

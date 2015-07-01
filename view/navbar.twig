@@ -25,7 +25,7 @@
                     </ul>
                 </li>
 
-                {% if LoggedIN %}
+                {% if loggedIn %}
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                             <strong>{{ characterName }}</strong>
@@ -46,7 +46,7 @@
                                         <div class="col-lg-8">
                                             <p class="text-left"><strong>{{ characterName }}</strong></p>
 
-                                            <p class="text-left small">Some Corp | Triumvirate.</p>
+                                            <p class="text-left small">{{ charInfo.corporation.corporationName }} | {% if charInfo.alliance.allianceName %}{{ charInfo.alliance.allianceName }}{% endif %}</p>
 
                                             <p class="text-left">
                                                 <a href="#" class="btn btn-primary btn-block btn-sm">Settings</a>

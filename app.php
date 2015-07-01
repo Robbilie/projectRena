@@ -39,6 +39,7 @@ $app->add(new WhoopsMiddleware());
 
 // Prepare view
 $app->view(new Twig());
+$app->view->parserExtensions = array(new \Slim\Views\TwigExtension());
 $app->view->parserOptions = $config['twig'];
 
 // Load the lib/Model loader

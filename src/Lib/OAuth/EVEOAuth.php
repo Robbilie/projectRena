@@ -96,32 +96,48 @@ class EVEOAuth
         // Setup the groups (corp and alli)
         $data = $this->app->characters->getAllByID($characterID);
 
-        // Check if the user is in groups they're not allowed to be in.. this goes for corporation and alliance only!
-        $validGroups = array("corporation" => $data["corporationID"], "alliance" => $data["allianceID"]);
-        foreach($validGroups as $type => $id)
+        // Tell resque to do stuff
+        if(!$data["characterID"])
         {
-            $innerData = $this->db->query("SELECT groupID, groupType FROM usersGroups WHERE userID = :id", array(":id" => $this->app->Users->getUserByName($characterName)["id"]));
-            foreach($innerData as $check)
-                if($check["groupType"] == $type)
-                    if($check["groupID"] != $id)
-                        $this->db->execute("DELETE FROM usersGroups WHERE userID = :id AND groupID = :groupID", array(":id" => $this->app->Users->getUserByName($characterName)["id"], ":groupID" => $check["groupID"]));
+            \Resque::enqueue("now", "\\ProjectRena\\Task\\Resque\\updateCharacter", array("characterID" => $characterID));
+            sleep(6); // Sleep for 6 seconds, not ideal but whatever
+            $data = $this->app->characters->getAllByID($characterID, 0); // Refetch the data, just this time we skip the cache!
         }
 
-        // Now add the user to the groups they're allowed to be in, this doesn't happen on anything but login so that we are a bit sql heavy there is fine!
-        $this->app->Groups->updateGroup($data["corporationID"], $this->app->corporations->getAllByID($data["corporationID"])["corporationName"], 0);
-        $this->app->UsersGroups->setGroup($this->app->Users->getUserByName($characterName)["id"], $data["corporationID"], "corporation");
-        $this->app->Groups->setAdmins($data["corporationID"], array($this->app->corporations->getAllByID($data["corporationID"])["ceoID"]));
-        if($data["allianceID"] > 0)
+        // Only do all of the group stuff if the character exists in the database.. if said character doesn't exist, we'll push the character to resque and do it all there!
+        if($data)
         {
-            $this->app->Groups->updateGroup($data["allianceID"], $this->app->alliances->getAllByID($data["allianceID"])["allianceName"], 0);
-            $this->app->UsersGroups->setGroup($this->app->Users->getUserByName($characterName)["id"], $data["allianceID"], "alliance");
-            $this->app->Groups->setAdmins($data["allianceID"], array($this->app->corporations->getAllByID($this->app->alliances->getAllByID($data["allianceID"])["executorCorporationID"])["ceoID"]));
+            // Check if the user is in groups they're not allowed to be in.. this goes for corporation and alliance only!
+            $validGroups = array("corporation" => $data["corporationID"], "alliance" => $data["allianceID"]);
+            foreach($validGroups as $type => $id)
+            {
+                $innerData = $this->db->query("SELECT groupID, groupType FROM usersGroups WHERE userID = :id", array(":id" => $this->app->Users->getUserByName($characterName)["id"]));
+                foreach($innerData as $check) if($check["groupType"] == $type) if($check["groupID"] != $id) $this->db->execute("DELETE FROM usersGroups WHERE userID = :id AND groupID = :groupID", array(":id"      => $this->app->Users->getUserByName($characterName)["id"],
+                                                                                                                                                                                                          ":groupID" => $check["groupID"]
+                ));
+            }
+
+            // Now add the user to the groups they're allowed to be in, this doesn't happen on anything but login so that we are a bit sql heavy there is fine!
+            $this->app->Groups->updateGroup($data["corporationID"], $this->app->corporations->getAllByID($data["corporationID"])["corporationName"]);
+            $this->app->UsersGroups->setGroup($this->app->Users->getUserByName($characterName)["id"], $data["corporationID"], "corporation");
+            $this->app->Groups->setAdmins($data["corporationID"], array($this->app->corporations->getAllByID($data["corporationID"])["ceoID"]));
+            if($data["allianceID"] > 0)
+            {
+                $this->app->Groups->updateGroup($data["allianceID"], $this->app->alliances->getAllByID($data["allianceID"])["allianceName"]);
+                $this->app->UsersGroups->setGroup($this->app->Users->getUserByName($characterName)["id"], $data["allianceID"], "alliance");
+                $this->app->Groups->setAdmins($data["allianceID"], array($this->app->corporations->getAllByID($this->app->alliances->getAllByID($data["allianceID"])["executorCorporationID"])["ceoID"]));
+            }
         }
 */
+
         // Set the session
         $_SESSION["characterName"] = $characterName;
         $_SESSION["characterID"] = $characterID;
         $_SESSION["loggedIn"] = true;
+
+        // Insert the IP
+        //$this->app->UsersLogins->updateIP($this->app->Users->getUserByName($characterName)["id"], $this->app->request->getIp());
+        //\Resque::enqueue("now", "\\ProjectRena\\Task\\Resque\\ipUpdater", array("userID" => $this->app->Users->getUserByName($characterName)["id"], "ip" => $this->app->request->getIp()));
 
         // Redirect back to where the person came from
         $this->app->redirect($state);

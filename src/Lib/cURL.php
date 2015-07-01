@@ -11,8 +11,8 @@ class cURL
 {
 				/**
 				 * @var Cache
-				 */
-				private $cache;
+					*/
+    private $cache;
 				private $app;
 
 				function __construct(RenaApp $app)

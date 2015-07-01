@@ -15,7 +15,7 @@ class Db
 				 * @var int
 				 */
 				protected $queryCount = 0;
-				/**
+    /**
 				 * @var RenaApp
 				 */
 				private $app;

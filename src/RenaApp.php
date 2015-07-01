@@ -13,6 +13,7 @@ use ProjectRena\Lib\StatsD;
 use ProjectRena\Lib\Timer;
 use ProjectRena\Lib\baseConfig;
 use ProjectRena\Lib\cURL;
+use ProjectRena\Lib\out;
 use ProjectRena\Lib\OAuth\EVEOAuth;
 use ProjectRena\Model\ApiKeyCharacters;
 use ProjectRena\Model\ApiKeys;
@@ -22,6 +23,7 @@ use ProjectRena\Model\Paste;
 use ProjectRena\Model\Storage;
 use ProjectRena\Model\Users;
 use ProjectRena\Model\UsersGroups;
+use ProjectRena\Model\UsersLogins;
 use ProjectRena\Model\CCP\dgmAttributeCategories;
 use ProjectRena\Model\CCP\dgmAttributeTypes;
 use ProjectRena\Model\CCP\dgmEffects;
@@ -135,6 +137,7 @@ use ProjectRena\Model\EVEApi\Server\ServerStatus as EVEServerServerStatus;
  * @property Timer Timer
  * @property baseConfig baseConfig
  * @property cURL cURL
+ * @property out out
  * @property EVEOAuth EVEOAuth
  * @property ApiKeyCharacters ApiKeyCharacters
  * @property ApiKeys ApiKeys
@@ -144,6 +147,7 @@ use ProjectRena\Model\EVEApi\Server\ServerStatus as EVEServerServerStatus;
  * @property Storage Storage
  * @property Users Users
  * @property UsersGroups UsersGroups
+ * @property UsersLogins UsersLogins
  * @property dgmAttributeCategories dgmAttributeCategories
  * @property dgmAttributeTypes dgmAttributeTypes
  * @property dgmEffects dgmEffects

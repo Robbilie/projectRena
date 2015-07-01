@@ -28,7 +28,7 @@ class PasteController
      */
     public function pastePage()
     {
-        $this->app->render('/paste/paste.twig');
+        $this->app->out->toTwig('/paste/paste.twig');
     }
 
     /**
@@ -47,7 +47,7 @@ class PasteController
             $this->app->redirect("/paste/{$hash}/");
         } else
         {
-            $this->app->render("/paste/paste.twig", array("error" => "Error, you need to be logged in to post data"));
+            $this->app->out->toTwig("/paste/paste.twig", array("error" => "Error, you need to be logged in to post data"));
         }
     }
 
@@ -60,6 +60,6 @@ class PasteController
         $pasteData = $data["data"];
         $pasteCreated = $data["created"];
         $userID = $data["userID"]; // attach user data for the user that created it
-        $this->app->render("/paste/pasteShow.twig", array("pasteData" => $pasteData, "pasteCreated" => $pasteCreated));
+        $this->app->out->toTwig("/paste/pasteShow.twig", array("pasteData" => $pasteData, "pasteCreated" => $pasteCreated));
     }
 }
