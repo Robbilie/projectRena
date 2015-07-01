@@ -264,7 +264,7 @@
                     console.log("Request Timed out");
                     if(options && options.retry == true)
                         ajax(url, callback, format, options);
-                }, 30000);
+                }, options && options.timeout ? options.timeout : 30000);
                 return xmlhttp;
             }
 

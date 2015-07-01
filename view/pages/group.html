@@ -83,7 +83,7 @@
 			var el = $("#permissionList");
 			el.innerHTML = "";
 			for(var i = 0; i < s.length; i++)
-				el.innerHTML += tmpl.format([]((groupPermissions.indexOf(parseInt(s[i].id)) >= 0) ? 'checked="true"' : '') + (groupCanEdit ? '' : ' disabled'), s[i].name, s[i].id, location.hash.split("/")[2]]);
+				el.innerHTML += tmpl.format([((groupPermissions.indexOf(parseInt(s[i].id)) >= 0) ? 'checked="true"' : '') + (groupCanEdit ? '' : ' disabled'), s[i].name, s[i].id, location.hash.split("/")[2]]);
 		}, "json");
 	}
 
