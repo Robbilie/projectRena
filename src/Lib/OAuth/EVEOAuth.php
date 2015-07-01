@@ -121,7 +121,7 @@ class EVEOAuth
         // Set the session
         $_SESSION["characterName"] = $characterName;
         $_SESSION["characterID"] = $characterID;
-        $_SESSION["loggedin"] = true;
+        $_SESSION["loggedIn"] = true;
 
         // Redirect back to where the person came from
         $this->app->redirect($state);

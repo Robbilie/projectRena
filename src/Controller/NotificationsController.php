@@ -30,7 +30,7 @@ class NotificationsController
 
     public function getUnreadCount () {
       $unreadcount = 0;
-      if(isset($_SESSION['loggedin'])) {
+      if(isset($_SESSION["loggedIn"])) {
         $character = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
         $readcnt = $this->db->queryField(
           "SELECT count(id) as cnt
@@ -44,7 +44,7 @@ class NotificationsController
 
     public function getNotifications () {
       $notifications = array();
-      if(isset($_SESSION['loggedin'])) {
+      if(isset($_SESSION["loggedIn"])) {
         $character = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
         $notifications = $character->getCNotifications();
       }
@@ -54,7 +54,7 @@ class NotificationsController
 
     public function getNotification ($notificationID) {
       $notification = null;
-      if(isset($_SESSION['loggedin'])) {
+      if(isset($_SESSION["loggedIn"])) {
         $notification = $this->app->CoreManager->getNotification($notificationID);
       }
       $this->app->response->headers->set('Content-Type', 'application/json');

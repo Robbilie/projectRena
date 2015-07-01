@@ -35,7 +35,7 @@ class IntelController
                 "neighbours" => array(),
                 "members" => array()
             );
-        if(isset($_SESSION['loggedin'])) {
+        if(isset($_SESSION["loggedIn"])) {
 
             // set system id
             if(is_null($systemID) && isset($_SERVER['HTTP_EVE_TRUSTED']) && $_SERVER['HTTP_EVE_TRUSTED'] == "Yes")
@@ -244,7 +244,7 @@ class IntelController
             $char = $this->app->CoreManager->getCharacter($_POST['characterID']);
             if($user && $char) {
                 if($char->getUser() == $user->getId()) {
-                    $_SESSION['loggedin'] = true;
+                    $_SESSION["loggedIn"] = true;
                     $_SESSION['characterID'] = $char->getCharId();
                     $_SESSION['characterName'] = $char->getCharName();
                 } else {
@@ -258,7 +258,7 @@ class IntelController
         }
 
         $systemID = $psystemID;
-        if(isset($_SESSION['loggedin'])) {
+        if(isset($_SESSION["loggedIn"])) {
             // set system id
             if(is_null($systemID) && isset($_SERVER['HTTP_EVE_TRUSTED']) && $_SERVER['HTTP_EVE_TRUSTED'] == "Yes")
                 $systemID = (int)$_SERVER['HTTP_EVE_SOLARSYSTEMID'];
@@ -362,7 +362,7 @@ class IntelController
     public function getRegionIntel ($pregionID = null) {
         $regionID = $pregionID;
         $intel = array();
-        if(isset($_SESSION['loggedin'])) {
+        if(isset($_SESSION["loggedIn"])) {
 
             // set system id
             if(is_null($regionID) && isset($_SERVER['HTTP_EVE_TRUSTED']) && $_SERVER['HTTP_EVE_TRUSTED'] == "Yes")

@@ -60,7 +60,7 @@ class JSONController
         if(isset($_SESSION['characterID']))
             $user = $this->app->CoreManager->getCharacter($_SESSION['characterID'])->getCUser();
         $status = array(
-            "isLoggedin" => isset($_SESSION["loggedin"]) ? $_SESSION["loggedin"] : false,
+            "isLoggedin" => isset($_SESSION["loggedIn"]) ? $_SESSION["loggedIn"] : false,
             "isAdmin" => !is_null($user) && $user->isAdmin() ? true : false,
             "charname" => isset($_SESSION["characterName"]) ? $_SESSION["characterName"] : '',
             "charid" => isset($_SESSION["characterID"]) ? $_SESSION["characterID"] : 0
@@ -71,7 +71,7 @@ class JSONController
     // save api key to the db after check
     public function submitAPIKey ($keyID, $vCode) {
         $rep = array("msg" => "", "state" => "error");
-        if(isset($_SESSION['loggedin'])) {
+        if(isset($_SESSION["loggedIn"])) {
             $xmldata = @file_get_contents("https://api.eveonline.com/account/APIKeyInfo.xml.aspx?keyID={$keyID}&vCode={$vCode}");
             if(!$xmldata) {
                 $resp['msg'] = 'The data you entered is invalid.';
@@ -93,7 +93,7 @@ class JSONController
     // return a character
     public function getCharacter ($characterID) {
         $character = array();
-        if(isset($_SESSION['loggedin']))
+        if(isset($_SESSION["loggedIn"]))
             $character = $this->app->CoreManager->getCharacter($characterID);
         $this->app->response->headers->set('Content-Type', 'application/json');
         $this->app->response->body(json_encode($character));
@@ -102,7 +102,7 @@ class JSONController
     // return characters associated to user
     public function getCharacters () {
         $characters = array();
-        if(isset($_SESSION['loggedin']))
+        if(isset($_SESSION["loggedIn"]))
             $characters = $this->app->CoreManager->getCharacter($_SESSION['characterID'])->getCUser()->getChars();
         $this->app->response->headers->set('Content-Type', 'application/json');
         $this->app->response->body(json_encode($characters));
@@ -111,7 +111,7 @@ class JSONController
     // switch to a different character on user
     public function switchCharacter ($characterID) {
         $resp = array("state" => "error");
-        if(isset($_SESSION['loggedin'])) {
+        if(isset($_SESSION["loggedIn"])) {
             $char = $this->app->CoreManager->getCharacter($characterID);
             if($char->getCUser()->getId() == $this->app->CoreManager->getCharacter($_SESSION['characterID'])->getCUser()->getId()) {
                 $this->app->CoreManager->createCharacter($char->getCharId());
@@ -127,7 +127,7 @@ class JSONController
     // remove character bound to user
     public function removeCharacter ($characterID) {
         $resp = array("state" => "error");
-        if(isset($_SESSION['loggedin'])) {
+        if(isset($_SESSION["loggedIn"])) {
             $char = $this->app->CoreManager->getCharacter($characterID);
             $inChar = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
             if($char->getUser() && $char->getCUser()->getId() == $inChar->getCUser()->getId() && $char->getId() != $inChar->getId()) {
@@ -142,7 +142,7 @@ class JSONController
     // get the groups a character is in
     public function getCharacterGroups ($characterID) {
         $groups = array();
-        if(isset($_SESSION['loggedin']))
+        if(isset($_SESSION["loggedIn"]))
             $groups = $this->app->CoreManager->getCharacter($characterID)->getCGroups();
         $this->app->response->headers->set('Content-Type', 'application/json');
         $this->app->response->body(json_encode($groups));
@@ -151,7 +151,7 @@ class JSONController
     // return the controltower visible to the character
     public function getControltowers () {
         $controlTower = array();
-        if(isset($_SESSION['loggedin'])) {
+        if(isset($_SESSION["loggedIn"])) {
             $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
             if($char->hasPermission("viewAllianceControltower")) {
                 $controlTower = $char->getCCorporation()->getCAlliance()->getControltower();
@@ -166,7 +166,7 @@ class JSONController
     // get content of a container owned by a corporation
     public function getCorporationContents ($corporationID, $containerID) {
         $resp = array("name" => "", "list" => array());
-        if(isset($_SESSION['loggedin'])) {
+        if(isset($_SESSION["loggedIn"])) {
             $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
             $corp = $this->app->CoreManager->getCorporation($corporationID);
             $item = $this->app->CoreManager->getItem($containerID);
@@ -187,7 +187,7 @@ class JSONController
     // return a controltower
     public function getControltower ($towerID) {
         $resp = array("name" => "", "moonname" => "", "state" => "", "typename" => "", "fuel" => "", "strontium" => "", "modules" => array());
-        if(isset($_SESSION['loggedin'])) {
+        if(isset($_SESSION["loggedIn"])) {
             $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
             $tower = $this->app->CoreManager->getControlTower($towerID);
             if(
@@ -204,7 +204,7 @@ class JSONController
     // return all permission with a special scope
     public function getPermissionsByScope ($scope) {
         $permissions = array();
-        if(isset($_SESSION['loggedin']))
+        if(isset($_SESSION["loggedIn"]))
             $permissions = $this->app->CoreManager->getPermissionsByScope(str_replace("private", "", $scope));
         $this->app->response->headers->set('Content-Type', 'application/json');
         $this->app->response->body(json_encode($permissions));
@@ -213,7 +213,7 @@ class JSONController
     // return a special corporation
     public function getCorporation ($corporationID) {
         $corp = array();
-        if(isset($_SESSION['loggedin'])) {
+        if(isset($_SESSION["loggedIn"])) {
             $corp = $this->app->CoreManager->getCorporation($corporationID);
         }
         $this->app->response->headers->set('Content-Type', 'application/json');
@@ -223,7 +223,7 @@ class JSONController
     // return the members of a corporation
     public function getCorporationMembers ($corporationID) {
         $members = array();
-        if(isset($_SESSION['loggedin'])) {
+        if(isset($_SESSION["loggedIn"])) {
             $corp = $this->app->CoreManager->getCorporation($corporationID);
             $members = $corp->getFullMemberList();
         }
@@ -234,7 +234,7 @@ class JSONController
     // return a  special alliance
     public function getAlliance ($allianceID) {
         $alliance = array();
-        if(isset($_SESSION['loggedin'])) {
+        if(isset($_SESSION["loggedIn"])) {
             $alliance = $this->app->CoreManager->getAlliance($allianceID);
         }
         $this->app->response->headers->set('Content-Type', 'application/json');
@@ -244,7 +244,7 @@ class JSONController
     // return the members of an alliance
     public function getAllianceMembers ($allianceID) {
         $members = array();
-        if(isset($_SESSION['loggedin'])) {
+        if(isset($_SESSION["loggedIn"])) {
             $alliance = $this->app->CoreManager->getAlliance($allianceID);
             $corporations = $alliance->getCorpList();
             foreach ($corporations as $corporation)
@@ -257,7 +257,7 @@ class JSONController
     // return the corporations in an alliance
     public function getAllianceCorporations ($allianceID) {
         $corporations = array();
-        if(isset($_SESSION['loggedin'])) {
+        if(isset($_SESSION["loggedIn"])) {
             $alliance = $this->app->CoreManager->getAlliance($allianceID);
             $corporations = $alliance->getCorpList();
         }

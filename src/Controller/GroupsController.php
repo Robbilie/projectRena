@@ -26,7 +26,7 @@ class GroupsController
     // get a special group
     public function getGroup ($groupID) {
         $group = array("group" => null, "canEdit" => false, "canAdd" => false);
-        if(isset($_SESSION['loggedin'])) {
+        if(isset($_SESSION["loggedIn"])) {
             $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
             $group['group'] = $this->app->CoreManager->getGroup((int)$groupID);
             $group['group']->getPermissions();
@@ -50,7 +50,7 @@ class GroupsController
     // get availbale groups
     public function getGroups () {
         $groups = array("owned" => array(), "corporation" => array(), "alliance" => array(), "groups" => array());
-        if(isset($_SESSION['loggedin'])) {
+        if(isset($_SESSION["loggedIn"])) {
             $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
             $groups['cancreate'] = $char->hasPermission("createCorporationGroup") || $char->hasPermission("createAllianceGroup");
             $groups['groups'] = $char->getGroups();
@@ -78,7 +78,7 @@ class GroupsController
     // return the members of a group
     public function getGroupMembers ($groupID) {
         $members = array();
-        if(isset($_SESSION['loggedin'])) {
+        if(isset($_SESSION["loggedIn"])) {
             $group = $this->app->CoreManager->getGroup((int)$groupID);
             $members = $group->getCCharacters();
         }
@@ -89,7 +89,7 @@ class GroupsController
     // remove a permission from a group
     public function removePermissionFromGroup ($groupID, $permissionID) {
         $resp = array("msg" => "", "state" => "error");
-        if(isset($_SESSION['loggedin'])) {
+        if(isset($_SESSION["loggedIn"])) {
             $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
             $group = $this->app->CoreManager->getGroup((int)$groupID);
             if($group->hasPermission($permissionID)) {
@@ -117,7 +117,7 @@ class GroupsController
     // add a permission to a group
     public function addPermissionToGroup ($groupID, $permissionID) {
         $resp = array("msg" => "", "state" => "error");
-        if(isset($_SESSION['loggedin'])) {
+        if(isset($_SESSION["loggedIn"])) {
             $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
             $group = $this->app->CoreManager->getGroup((int)$groupID);
             $permission = $this->app->CoreManager->getPermission((int)$permissionID);
@@ -142,7 +142,7 @@ class GroupsController
     // remove a character from a group
     public function removeCharacterFromGroup ($groupID, $characterID) {
         $resp = array("msg" => "", "state" => "error");
-        if(isset($_SESSION['loggedin'])) {
+        if(isset($_SESSION["loggedIn"])) {
             $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
             $otherchar = $this->app->CoreManager->getCharacter($characterID);
             $group = $this->app->CoreManager->getGroup((int)$groupID);
@@ -171,7 +171,7 @@ class GroupsController
     // add a character to a group
     public function addCharacterToGroup ($groupID, $characterID) {
         $resp = array("msg" => "", "state" => "error");
-        if(isset($_SESSION['loggedin'])) {
+        if(isset($_SESSION["loggedIn"])) {
             $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
             $otherchar = $this->app->CoreManager->getCharacter($characterID);
             $group = $this->app->CoreManager->getGroup((int)$groupID);
@@ -196,7 +196,7 @@ class GroupsController
     // create a group
     public function createGroup ($name, $scope, $private) {
         $resp = array("msg" => "", "state" => "error");
-        if(isset($_SESSION['loggedin'])) {
+        if(isset($_SESSION["loggedIn"])) {
             $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
             if(
                 (

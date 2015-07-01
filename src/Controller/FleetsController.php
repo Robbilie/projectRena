@@ -25,7 +25,7 @@ class FleetsController
 
     public function getFleets () {
       $fleets = array("fleets" => array(), "cancreate" => false);
-      if(isset($_SESSION['loggedin'])) {
+      if(isset($_SESSION["loggedIn"])) {
         $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
 	      $fleets['cancreate'] = $char->hasPermission("createFleet");
         $fleets['fleets'] = $char->getCFleets();
@@ -36,7 +36,7 @@ class FleetsController
 
     public function getFleet ($fleetID) {
       $rfleet = array();
-      if(isset($_SESSION['loggedin'])) {
+      if(isset($_SESSION["loggedIn"])) {
         $fleet = $this->app->CoreManager->getFleet($fleetID);
         if($fleet->hasParticipant($_SESSION['characterID'])) {
           $rfleet = $fleet;
@@ -50,7 +50,7 @@ class FleetsController
 
     public function confirmFleet ($hash) {
       $resp = array("state" => "error", "msg" => "");
-      if(isset($_SESSION['loggedin'])) {
+      if(isset($_SESSION["loggedIn"])) {
         $fleet = $this->app->CoreManager->getFleetByHash($hash);
         if($fleet->isExpired()) {
           $resp['msg'] = "Participation Link has expired.";
@@ -69,7 +69,7 @@ class FleetsController
 
     public function createFleet () {
       $resp = array("state" => "error", "msg" => "");
-      if(isset($_SESSION['loggedin'])) {
+      if(isset($_SESSION["loggedIn"])) {
 		  if(isset($_POST['scope']) && $_POST['scope'] != "" && isset($_POST['name']) && $_POST['name'] != "" && isset($_POST['comment']) && $_POST['comment'] != "" && isset($_POST['expiresin']) && $_POST['expiresin'] != "" && isset($_POST['participants']) && $_POST['participants'] != "") {
 			  $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
 			  if ($char->hasPermission("createFleet")) {
