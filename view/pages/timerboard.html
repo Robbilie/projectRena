@@ -58,6 +58,12 @@
           self.input.setAttribute("data-id", el.getAttribute("data-dat"));
       };
 
+			if(r.cancreate.length > 0)
+				$("#timerScope").innerHTML = '<option>' + r.cancreate.join('</option><option>') + '</option>';
+
+			if(r.cancreate.length == 0)
+				$("#createTimerForm").parentNode.removeChild($("#createTimerForm"));
+
 
 			fadeOn($("#timersConti"), 1);
 		}, "json");
