@@ -46,7 +46,7 @@
 			el.innerHTML = "";
 
 			for(var i = 0; i < r.timers.length; i++)
-					el.innerHTML += tmpl.format(["", r.timers[i].typeID, r.timers[i].locationID]);
+					el.innerHTML += tmpl.format(["", r.timers[i].typeName, r.timers[i].locationName]);
 
       var acType = new AutoComplete("timerStrucure");
       acType.oncomplete = function (self, el) {
