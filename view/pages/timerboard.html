@@ -14,11 +14,11 @@
 					<h4 class="mbn">Timer Scope</h4>
 					<select id="timerScope"></select>
 					<h4 class="mbn">Structure</h4>
-					<input type="text" id="timerStrucure"/>
+					<input type="text" id="timerStrucure" data-url="/json/invnames/:param"/>
 					<h4 class="mbn">Location</h4>
-					<input type="text" id="timerLocation"/>
+					<input type="text" id="timerLocation" data-url="/json/invnames/:param"/>
 					<h4 class="mbn">Reinforce</h4>
-					<input type="numer" min="0" max="3" id="timerRf"/>
+					<input type="number" min="0" max="3" id="timerRf"/>
 					<h4 class="mbn">Time</h4>
 					<input type="text" id="timerTime" placeholder="dd-mm-yyyy hh:mm"/>
 					<h4 class="mbn">Comment</h4>
@@ -47,6 +47,17 @@
 
 			for(var i = 0; i < r.timers.length; i++)
 					el.innerHTML += tmpl.format(["", r.timers[i].typeID, r.timers[i].locationID]);
+
+      var acType = new AutoComplete("timerStrucure");
+      acType.oncomplete = function (self, el) {
+          self.input.setAttribute("data-id", el.getAttribute("data-dat"));
+      };
+
+      var acLoca = new AutoComplete("timerLocation");
+      acLoca.oncomplete = function (self, el) {
+          self.input.setAttribute("data-id", el.getAttribute("data-dat"));
+      };
+
 
 			fadeOn($("#timersConti"), 1);
 		}, "json");

@@ -171,6 +171,10 @@ $app->get('/json/characternames/:name', function ($name) use ($app){
   (new \ProjectRena\Controller\SearchController($app))->findCharacterNames($name);
 });
 
+$app->get('/json/invnames/:name', function ($name) use ($app){
+  (new \ProjectRena\Controller\SearchController($app))->findInvNames($name);
+});
+
 
 /*
  * Notifications

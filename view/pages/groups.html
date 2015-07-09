@@ -29,10 +29,7 @@
 			<h4 class="mbn">Group Name</h4>
 			<input type="text" id="groupName"/>
 			<h4 class="mbn">Group Scope</h4>
-			<select id="groupScope">
-				<option>corporation</option>
-				<option>alliance</option>
-			</select>
+			<select id="groupScope"></select>
 			<h4 class="mbn">Group State</h4>
 			<div class="hover row">
 				<input type="checkbox" id="groupState" checked="true" /><label for="groupState">Is Private?</label>
@@ -54,10 +51,12 @@
 		resetGroupFrom();
 		ajax("/json/groups/", function (r) {
 			console.log(r);
+			
+      if(r.cancreate.length > 0)
+        $("#groupScope").innerHTML = '<option>' + r.cancreate.join('</option><option>') + '</option>';
 
-            if(!r.cancreate) {
-                $("#createGroupForm").parentNode.removeChild($("#createGroupForm"));
-            }
+      if(r.cancreate.length == 0)
+          $("#createGroupForm").parentNode.removeChild($("#createGroupForm"));
 
 			var tmpl = $("#groupsTemplate").innerHTML;
 			var el1 = $("#groupslist");
@@ -90,7 +89,7 @@
 
 	function resetGroupFrom () {
 		$("#groupName").value = "";
-		$("#groupScope").value = "corporation";
+		$("#groupScope").value = "";
 		$("#groupState").checked = true;
 	}
 </script>

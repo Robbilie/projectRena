@@ -49,10 +49,13 @@ class GroupsController
 
     // get availbale groups
     public function getGroups () {
-        $groups = array("owned" => array(), "corporation" => array(), "alliance" => array(), "groups" => array());
+        $groups = array("owned" => array(), "corporation" => array(), "alliance" => array(), "groups" => array(), "cancreate" => array());
         if(isset($_SESSION["loggedIn"])) {
             $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
-            $groups['cancreate'] = $char->hasPermission("writeGroups", "corporation") || $char->hasPermission("writeGroups", "alliance");
+            if($char->hasPermission("writeGroups", "corporation"))
+              array_push($groups['cancreate'], "corporation");
+            if($char->hasPermission("writeGroups", "alliance"))
+              array_push($groups['cancreate'], "alliance");
             $groups['groups'] = $char->getGroups();
             // corp group if ceo and corp scoped groups
             if($char->getCCorporation()->getCeoCharacterId() == $char->getCharId()) {

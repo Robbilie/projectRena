@@ -37,4 +37,11 @@ class SearchController
         $this->app->response->body(json_encode($characterRows));
     }
 
+    // search for an item named like
+    public function findInvNames ($name) {
+        $invRows = $this->db->query("SELECT itemName as name, itemID as data FROM invNames WHERE itemName LIKE :name", array(":name" => $name."%"));
+        $this->app->response->headers->set('Content-Type', 'application/json');
+        $this->app->response->body(json_encode($invRows));
+    }
+
 }
