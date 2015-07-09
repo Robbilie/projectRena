@@ -45,7 +45,7 @@
 			var el = $("#timersList");
 			el.innerHTML = "";
 
-			for(var i = 0; i < r.fleets.length; i++)
+			for(var i = 0; i < r.timers.length; i++)
 					el.innerHTML += tmpl.format(["", r.timers[i].typeID, r.timers[i].locationID]);
 
 			fadeOn($("#timersConti"), 1);
