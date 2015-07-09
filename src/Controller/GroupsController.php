@@ -52,7 +52,7 @@ class GroupsController
         $groups = array("owned" => array(), "corporation" => array(), "alliance" => array(), "groups" => array());
         if(isset($_SESSION["loggedIn"])) {
             $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
-            $groups['cancreate'] = $char->hasPermission("writeGroup", "corporation") || $char->hasPermission("writeGroup", "alliance");
+            $groups['cancreate'] = $char->hasPermission("writeGroups", "corporation") || $char->hasPermission("writeGroups", "alliance");
             $groups['groups'] = $char->getGroups();
             // corp group if ceo and corp scoped groups
             if($char->getCCorporation()->getCeoCharacterId() == $char->getCharId()) {
@@ -209,10 +209,10 @@ class GroupsController
             $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
             if(
                 (
-                    $scope == "corporation" && $char->hasPermission("writeGroup", "corporation")
+                    $scope == "corporation" && $char->hasPermission("writeGroups", "corporation")
                 ) ||
                 (
-                    $scope == "alliance" && $char->hasPermission("writeGroup", "alliance")
+                    $scope == "alliance" && $char->hasPermission("writeGroups", "alliance")
                 )
             ) {
                 if(trim($name) != "") {
