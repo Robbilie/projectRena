@@ -347,7 +347,9 @@
 
             AutoComplete.prototype.pollAutoComplete = function (self, event) {
                 if(self.input.value != "")
-                    ajax(self.url.replace(":param", self.input.value), function (r) {
+              		if(self.poll)
+              			self.poll.abort();
+                  self.poll = ajax(self.url.replace(":param", self.input.value), function (r) {
                         var conti = self.dropdownConti;
                         conti.innerHTML = "";
                         for(var i = 0; i < r.length; i++) {
