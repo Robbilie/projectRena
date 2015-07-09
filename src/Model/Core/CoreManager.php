@@ -422,6 +422,12 @@ class CoreManager {
         foreach ($this->locations as $location)
             if($location->getId() == $locationID)
                 return $location;
+        $invnameLocRow = $this->db->queryRow("SELECT * FROM invNames WHERE itemID = :itemID", array(":itemID" => $locationID));
+        if($invnameLocRow) {
+            $invnameLoc = new CoreLocation($this->app, $invnameLocRow);
+            array_push($this->locations, $invnameLoc);
+            return $invnameLoc;
+        }
         return null;
     }
 
