@@ -27,7 +27,14 @@ class FleetsController
       $fleets = array("fleets" => array(), "cancreate" => false);
       if(isset($_SESSION["loggedIn"])) {
         $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
-	      $fleets['cancreate'] = $char->hasPermission("writeFleet");
+	      $fleets['cancreate'] = [];
+        if($char->hasPermission("writeFleet", "corporation")) {
+          array_push($fleets['cancreate'], "corporation");
+        }
+        if($char->hasPermission("writeFleet", "alliance")) {
+          array_push($fleets['cancreate'], "alliance");
+            array_push($fleets['cancreate'], "blue");
+        }
         $fleets['fleets'] = $char->getCFleets();
       }
 		$this->app->response->headers->set('Content-Type', 'application/json');
@@ -72,7 +79,7 @@ class FleetsController
       if(isset($_SESSION["loggedIn"])) {
 		  if(isset($_POST['scope']) && $_POST['scope'] != "" && isset($_POST['name']) && $_POST['name'] != "" && isset($_POST['comment']) && $_POST['comment'] != "" && isset($_POST['expiresin']) && $_POST['expiresin'] != "" && isset($_POST['participants']) && $_POST['participants'] != "") {
 			  $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
-			  if ($char->hasPermission("writeFleet")) {
+			  if ($char->hasPermission("writeFleet", $_POST['scope'] == "blue" ? "alliance" : $_POST['scope'])) {
 				  $fleet = $this->app->CoreManager->createFleet($_POST['scope'], $_POST['name'], $_POST['comment'], $_SESSION['characterID'], (int)$_POST['expiresin'], $_POST['participants']);
 				  if (!is_null($fleet)) {
 					  $resp['state'] = "success";

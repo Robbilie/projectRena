@@ -153,9 +153,9 @@ class JSONController
         $controlTower = array();
         if(isset($_SESSION["loggedIn"])) {
             $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
-            if($char->hasPermission("readControltowerAlliance")) {
+            if($char->hasPermission("readControltower", "alliance")) {
                 $controlTower = $char->getCCorporation()->getCAlliance()->getControltower();
-            } else if($char->hasPermission("readControltowerCorporation")) {
+            } else if($char->hasPermission("readControltower", "corporation")) {
                 $controlTower = $char->getCCorporation()->getControltower();
             }
         }
@@ -173,8 +173,8 @@ class JSONController
             if($item)
                 $resp['name'] = $item->getName();
             if(
-                ($corp->getId() == $char->getCorpId() && $char->hasPermission("readAssetsCorporation")) ||
-                ($corp->getAlliance() == $char->getAlliId() && $char->hasPermission("readAssetsAlliance"))
+                ($corp->getId() == $char->getCorpId() && $char->hasPermission("readAssets", "corporation")) ||
+                ($corp->getAlliance() == $char->getAlliId() && $char->hasPermission("readAssets", "alliance"))
             ) {
                 $resp['list'] = $corp->getItems(function ($i) use ($containerID) { return $i->getLocationId() == $containerID; });
             }
@@ -191,8 +191,8 @@ class JSONController
             $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
             $tower = $this->app->CoreManager->getControlTower($towerID);
             if(
-                ($tower->getOwner()->getCAlliance()->getId() == $char->getAlliId() && $char->hasPermission("readControltowerAlliance")) ||
-                ($tower->getOwner()->getId() == $char->getCorpId() && $char->hasPermission("readControltowerCorporation"))
+                ($tower->getOwner()->getCAlliance()->getId() == $char->getAlliId() && $char->hasPermission("readControltower", "alliance")) ||
+                ($tower->getOwner()->getId() == $char->getCorpId() && $char->hasPermission("readControltower", "corporation"))
             ) {
                 $resp = array("id" => $tower->getId(),"name" => $tower->getName(), "moonname" => $tower->getMoon()->getName(), "state" => $tower->getState(), "typename" => $tower->getType()->getName(), "fuel" => $tower->getFuelLevel(), "strontium" => $tower->getStrontiumLevel(), "modules" => $tower->getModules());
             }
