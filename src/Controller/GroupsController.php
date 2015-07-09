@@ -32,15 +32,15 @@ class GroupsController
             $group['group']->getPermissions();
             $group['canEdit'] =
                 $group['group']->getScope() == "corporation" ?
-                    $char->hasPermission("editPermissionsCorporationGroup") :
+                    $char->hasPermission("writePermissionsGroupCorporation") :
                     $group['group']->getScope() == "alliance" ?
-                        $char->hasPermission("editPermissionsAllianceGroup") :
+                        $char->hasPermission("writePermissionsGroupAlliance") :
                         false;
             $group['canAdd'] =
                 $group['group']->getScope() == "corporation" ?
-                    $char->hasPermission("editMembersCorporationGroup") :
+                    $char->hasPermission("writeMembersGroupCorporation") :
                     $group['group']->getScope() == "alliance" ?
-                        $char->hasPermission("editMembersAllianceGroup") :
+                        $char->hasPermission("writeMembersGroupAlliance") :
                         false;
         }
         $this->app->response->headers->set('Content-Type', 'application/json');
@@ -52,7 +52,7 @@ class GroupsController
         $groups = array("owned" => array(), "corporation" => array(), "alliance" => array(), "groups" => array());
         if(isset($_SESSION["loggedIn"])) {
             $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
-            $groups['cancreate'] = $char->hasPermission("createCorporationGroup") || $char->hasPermission("createAllianceGroup");
+            $groups['cancreate'] = $char->hasPermission("writeGroupCorporation") || $char->hasPermission("writeGroupAlliance");
             $groups['groups'] = $char->getGroups();
             // corp group if ceo and corp scoped groups
             if($char->getCCorporation()->getCeoCharacterId() == $char->getCharId()) {
@@ -104,10 +104,10 @@ class GroupsController
             if($group->hasPermission($permissionID)) {
                 if(
                     (
-                        $group->getScope() == "corporation" && $char->hasPermission("editPermissionsCorporationGroup")
+                        $group->getScope() == "corporation" && $char->hasPermission("writePermissionsGroupCorporation")
                     ) ||
                     (
-                        $group->getScope() == "alliance" && $char->hasPermission("editPermissionsAllianceGroup")
+                        $group->getScope() == "alliance" && $char->hasPermission("writePermissionsGroupAlliance")
                     )
                 ) {
                     $group->removePermission($permissionID);
@@ -132,10 +132,10 @@ class GroupsController
             $permission = $this->app->CoreManager->getPermission((int)$permissionID);
             if(
                 (
-                    $group->getScope() == "corporation" && $char->hasPermission("editPermissionsCorporationGroup")
+                    $group->getScope() == "corporation" && $char->hasPermission("writePermissionsGroupCorporation")
                 ) ||
                 (
-                    $group->getScope() == "alliance" && $char->hasPermission("editPermissionsAllianceGroup")
+                    $group->getScope() == "alliance" && $char->hasPermission("writePermissionsGroupAlliance")
                 )
             ) {
                 $group->addPermission($permissionID);
@@ -157,10 +157,10 @@ class GroupsController
             $group = $this->app->CoreManager->getGroup((int)$groupID);
             if(
                 (
-                    $group->getScope() == "corporation" && $char->hasPermission("editMembersCorporationGroup")
+                    $group->getScope() == "corporation" && $char->hasPermission("writeMembersGroupCorporation")
                 ) ||
                 (
-                    $group->getScope() == "alliance" && $char->hasPermission("editMembersAllianceGroup")
+                    $group->getScope() == "alliance" && $char->hasPermission("writeMembersGroupAlliance")
                 )
             ) {
                 if(in_array($group->getId(), $otherchar->getGroups())) {
@@ -186,10 +186,10 @@ class GroupsController
             $group = $this->app->CoreManager->getGroup((int)$groupID);
             if(
                 (
-                    $group->getScope() == "corporation" && $char->hasPermission("editMembersCorporationGroup")
+                    $group->getScope() == "corporation" && $char->hasPermission("writeMembersGroupCorporation")
                 ) ||
                 (
-                    $group->getScope() == "alliance" && $char->hasPermission("editMembersAllianceGroup")
+                    $group->getScope() == "alliance" && $char->hasPermission("writeMembersGroupAlliance")
                 )
             ) {
                 $group->addCharacter($otherchar->getCharId());
@@ -209,10 +209,10 @@ class GroupsController
             $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
             if(
                 (
-                    $scope == "corporation" && $char->hasPermission("createCorporationGroup")
+                    $scope == "corporation" && $char->hasPermission("writeGroupCorporation")
                 ) ||
                 (
-                    $scope == "alliance" && $char->hasPermission("createAllianceGroup")
+                    $scope == "alliance" && $char->hasPermission("writeGroupAlliance")
                 )
             ) {
                 if(trim($name) != "") {
