@@ -52,6 +52,22 @@ class CoreTimer extends CoreBase {
     return $this->citemtype;
   }
 
+	public function jsonSerialize() {
+		return array(
+      "id" => (int)$this->id,
+      "scope" => $this->scope,
+      "creatorID" => (int)$this->id,
+      "ownerID" => (int)$this->ownerID,
+      "typeID" => (int)$this->typeID,
+      "typeName" => $this->app->CoreManager->getItemType($this->typeID)->getName(),
+      "locationID" => (int)$this->locationID,
+      "locationName" => $this->app->CoreManager->getLocation($this->locationID)->getName(),
+      "rf" => (int)$this->rf,
+			"comment" => $this->comment,
+      "timestamp" => (int)$this->timestamp
+		);
+	}
+
   // default
 
   public function getId () {
