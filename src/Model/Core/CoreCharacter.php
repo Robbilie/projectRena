@@ -114,12 +114,12 @@ class CoreCharacter extends CoreBase {
 		$this->cpermissions = null;
 	}
 
-	public function hasPermission ($perm) {
+	public function hasPermission ($perm, $scope = null) {
 		if($this->getCUser()->isAdmin()) return true;
 		if(is_int($perm)) {
 			return in_array($perm, $this->getPermissions());
 		} else if(is_string($perm)) {
-			$permission = $this->app->CoreManager->getPermission($perm);
+			$permission = $this->app->CoreManager->getPermission($perm, $scope);
 			return !(is_null($permission) || !in_array($permission->getId(), $this->getPermissions()));
 		}
 	}

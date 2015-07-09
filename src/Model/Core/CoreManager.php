@@ -179,13 +179,13 @@ class CoreManager {
     }
 
     protected $permissions = array();
-    public function getPermission ($perm) {
+    public function getPermission ($perm, $scope = null) {
         foreach ($this->permissions as $permission) {
             if(is_int($perm)) {
                 if($permission->getId() == $perm)
                     return $permission;
             } else if(is_string($perm)) {
-                if($permission->getName() == $perm)
+                if($permission->getName() == $perm && (is_null($scope) || $permission->getScope() == $scope))
                     return $permission;
             }
         }
@@ -193,7 +193,11 @@ class CoreManager {
         if(is_int($perm)) {
             $permissionRow = $this->db->queryRow("SELECT * FROM easPermissions WHERE id = :bi", array(":bi" => $perm));
         } else if(is_string($perm)) {
+          if(is_null($scope)) {
             $permissionRow = $this->db->queryRow("SELECT * FROM easPermissions WHERE name = :bi", array(":bi" => $perm));
+          } else {
+            $permissionRow = $this->db->queryRow("SELECT * FROM easPermissions WHERE name = :bi AND scope = :scope", array(":bi" => $perm, ":scope" => $scope));
+          }
         }
         if($permissionRow) {
             $permission = new CorePermission($this->app, $permissionRow);
@@ -463,7 +467,7 @@ class CoreManager {
     }
 
     public function setBaseGroups ($char) {
-        
+
         // remove old groups
         $oldgroups = $char->getCGroups();
         for($i = 0; $i < count($oldgroups); $i++)
