@@ -6,6 +6,7 @@ use ProjectRena\RenaApp;
 class CoreTimer extends CoreBase {
 
   protected $id;
+  protected $scope;
   protected $creatorID;
   protected $ownerID;
   protected $typeID;
@@ -55,6 +56,10 @@ class CoreTimer extends CoreBase {
 
   public function getId () {
     return $this->id;
+  }
+
+  public function getScope () {
+    return $this->scope;
   }
 
   public function getCreatorId () {

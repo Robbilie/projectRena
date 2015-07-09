@@ -306,13 +306,13 @@ class CoreManager {
     public function createFleet ($scope, $name, $comment, $creator, $expiresin, $participants) {
       $id = $this->db->execute("INSERT INTO easFleets (scope, name, comment, creator, time, expires, hash) VALUES (:scope, :name, :comment, :creator, :time, :expires, :hash)",
         array(
-          ":scope" => $scope,
-          ":name" => $name,
-          ":comment" => $comment,
-          ":creator" => $creator,
-          ":time" => time(),
-          ":expires" => time() + (60*60*$expiresin),
-          ":hash" => md5($creator.$name.$comment.time().$this->config->getConfig("fleetsalt", "secrets"))
+          ":scope"    => $scope,
+          ":name"     => $name,
+          ":comment"  => $comment,
+          ":creator"  => $creator,
+          ":time"     => time(),
+          ":expires"  => time() + (60*60*$expiresin),
+          ":hash"     => md5($creator.$name.$comment.time().$this->config->getConfig("fleetsalt", "secrets"))
         ), true
       );
 
@@ -449,9 +449,51 @@ class CoreManager {
             if($controltower->getId() == $towerID)
                 return $controltower;
         $controltowerRow = $this->db->queryRow("SELECT ntItem.ownerID,ntItem.itemID,ntItem.typeID,ntItem.locationID,ntItem.quantity,ntItem.flag,ntLocation.name,ntLocation.x,ntLocation.y,ntLocation.z,ntItemStarbase.state,ntItemStarbase.moonID FROM ntItem,ntLocation,ntItemStarbase WHERE ntItem.itemID = :itemID AND ntLocation.itemID = ntItem.itemID AND ntItemStarbase.itemID = ntItem.itemID", array(":itemID" => $towerID));
-        if($controltowerRow)
-            return new CoreControltower($this->app, $controltowerRow);
+        if($controltowerRow) {
+          $controlTower = new CoreControltower($this->app, $controltowerRow);
+          array_push($this->controltowers, $controlTower);
+          return $controlTower;
+        }
         return null;
+    }
+
+    protected $timers = array();
+    public function getTimer ($timerID) {
+      foreach ($this->timers as $timer)
+        if($timer->getId() == $timerID)
+          return $timer;
+        $timerRow = $this->db->queryRow("SELECT * FROM easTimers WHERE id = :timerID", array(":timerID" => $timerID));
+        if($timerRow) {
+          $ctimer = new CoreTimer($this->app, $timerRow);
+          array_push($this->timers, $ctimer);
+          return $ctimer;
+        }
+        return null;
+    }
+
+    public function createTimer ($scope, $creatorID, $ownerID, $typeID, $locationID, $rf, $comment, $timestamp) {
+        $id = $this->db->execute("INSERT INTO easTimers (scope, creatorID, ownerID, typeID, locationID, rf, comment, timestamp) VALUES (:scope, :creatorID, :ownerID, :typeID, :locationID, :rf, :comment, :timestamp)",
+          array(
+            ":scope"      => $scope,
+            ":creatorID"  => $creatorID,
+            ":ownerID"    => $ownerID,
+            ":typeID"     => $typeID,
+            ":locationID" => $locationID,
+            ":rf"         => $rf,
+            ":comment"    => $comment,
+            ":timestamp"  => $timestamp,
+          ), true
+        );
+        return $this->getTimer($id);
+    }
+
+    public function getTimers ($ownerID) {
+      $timers = array();
+      $timerRows = $this->db->query("SELECT * FROM easTimers WHERE ownerID = :ownerID", array(":ownerID" => $ownerID));
+      foreach ($timerRows as $timerRow) {
+        array_push($timers, new CoreTimer($this->app, $timerRow));
+      }
+      return $timers;
     }
 
     public function charChanged ($char, $apiChar) {

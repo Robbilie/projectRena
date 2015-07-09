@@ -15,11 +15,7 @@
             <h4 class="mbn">Fleet Name</h4>
             <input type="text" id="fleetName"/>
       			<h4 class="mbn">Fleet Scope</h4>
-      			<select id="fleetScope">
-      				<option>corporation</option>
-      				<option>alliance</option>
-      				<option>blue</option>
-      			</select>
+      			<select id="fleetScope"></select>
             <h4 class="mbn">Comment</h4>
             <textarea id="fleetComment"></textarea>
             <h4 class="mbn">Fleet expires in (hours)</h4>
@@ -50,6 +46,12 @@
 
             for(var i = 0; i < r.fleets.length; i++)
                 el.innerHTML += tmpl.format([r.fleets[i].id, r.fleets[i].name, ""]);
+
+            if(r.cancreate.length > 0)
+              $("#fleetScope").innerHTML = '<option>' + r.cancreate.join('</option><option>') + '</option>';
+
+            if(r.cancreate.length == 0)
+                $("#createFleetForm").parentNode.removeChild($("#createFleetForm"));
 
             fadeOn($("#fleetsConti"), 1);
         }, "json");

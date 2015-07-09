@@ -67,6 +67,12 @@ $app->get('/json/corporation/:corporationID/container/:containerID/', function($
     (new \ProjectRena\Controller\JSONController($app))->getCorporationContents($corporationID, $containerID);
 });
 
+
+/*
+ * Intel
+ */
+
+
 $app->get('/json/intel/system/', function() use ($app){
     (new \ProjectRena\Controller\IntelController($app))->getSystemIntel();
 });
@@ -90,6 +96,12 @@ $app->get('/json/intel/region/', function() use ($app){
 $app->get('/json/intel/region/:regionID/', function($regionID) use ($app){
     (new \ProjectRena\Controller\IntelController($app))->getRegionIntel($regionID);
 });
+
+
+/*
+ * Fleets
+ */
+
 
 $app->get('/json/fleets/', function () use ($app){
 	(new \ProjectRena\Controller\FleetsController($app))->getFleets();
@@ -188,8 +200,11 @@ $app->get('/json/notifications/:notificationID/', function($notificationID) use 
 
 
  $app->get('/json/timers/', function() use ($app){
-   $app->response->headers->set('Content-Type', 'application/json');
-   $app->response->body(json_encode(array()));
+   (new \ProjectRena\Controller\TimersController($app))->getTimers();
+ });
+
+ $app->post('/json/timer/create/', function() use ($app){
+     (new \ProjectRena\Controller\TimersController($app))->createTimer();
  });
 
 

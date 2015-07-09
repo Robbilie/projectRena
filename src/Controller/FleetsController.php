@@ -24,7 +24,7 @@ class FleetsController
     }
 
     public function getFleets () {
-      $fleets = array("fleets" => array(), "cancreate" => false);
+      $fleets = array("fleets" => array(), "cancreate" => array());
       if(isset($_SESSION["loggedIn"])) {
         $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
 	      $fleets['cancreate'] = [];
@@ -77,21 +77,21 @@ class FleetsController
     public function createFleet () {
       $resp = array("state" => "error", "msg" => "");
       if(isset($_SESSION["loggedIn"])) {
-		  if(isset($_POST['scope']) && $_POST['scope'] != "" && isset($_POST['name']) && $_POST['name'] != "" && isset($_POST['comment']) && $_POST['comment'] != "" && isset($_POST['expiresin']) && $_POST['expiresin'] != "" && isset($_POST['participants']) && $_POST['participants'] != "") {
-			  $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
-			  if ($char->hasPermission("writeFleets", $_POST['scope'] == "blue" ? "alliance" : $_POST['scope'])) {
-				  $fleet = $this->app->CoreManager->createFleet($_POST['scope'], $_POST['name'], $_POST['comment'], $_SESSION['characterID'], (int)$_POST['expiresin'], $_POST['participants']);
-				  if (!is_null($fleet)) {
-					  $resp['state'] = "success";
-				  } else {
-					  $resp['msg'] = "Something went wrong.";
-				  }
-			  } else {
-				  $resp['msg'] = "You are not permitted to do this.";
-			  }
-		  } else {
-			  $resp['msg'] = "Missing Parameters.";
-		  }
+  		  if(isset($_POST['scope']) && $_POST['scope'] != "" && isset($_POST['name']) && $_POST['name'] != "" && isset($_POST['comment']) && $_POST['comment'] != "" && isset($_POST['expiresin']) && $_POST['expiresin'] != "" && isset($_POST['participants']) && $_POST['participants'] != "") {
+  			  $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
+  			  if ($char->hasPermission("writeFleets", $_POST['scope'] == "blue" ? "alliance" : $_POST['scope'])) {
+  				  $fleet = $this->app->CoreManager->createFleet($_POST['scope'], $_POST['name'], $_POST['comment'], $_SESSION['characterID'], (int)$_POST['expiresin'], $_POST['participants']);
+  				  if (!is_null($fleet)) {
+  					  $resp['state'] = "success";
+  				  } else {
+  					  $resp['msg'] = "Something went wrong.";
+  				  }
+  			  } else {
+  				  $resp['msg'] = "You are not permitted to do this.";
+  			  }
+  		  } else {
+  			  $resp['msg'] = "Missing Parameters.";
+  		  }
       }
       $this->app->response->headers->set('Content-Type', 'application/json');
       $this->app->response->body(json_encode($resp));
