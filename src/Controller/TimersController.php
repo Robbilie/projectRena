@@ -29,7 +29,7 @@ class TimersController
         $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
         if($char->hasPermission("readTimers", "corporation")) {
           $corpTimers = $this->app->CoreManager->getTimers($char->getCorpId());
-          $timers = array_merge($timers['timers'], $corpTimers);
+          $timers['timers'] = array_merge($timers['timers'], $corpTimers);
           array_push($timers['cancreate'], "corporation");
         }
         if($char->hasPermission("readTimers", "alliance")) {
