@@ -33,7 +33,7 @@ class FleetsController
         }
         if($char->hasPermission("writeFleets", "alliance")) {
           array_push($fleets['cancreate'], "alliance");
-            array_push($fleets['cancreate'], "blue");
+          array_push($fleets['cancreate'], "blue");
         }
         $fleets['fleets'] = $char->getCFleets();
       }

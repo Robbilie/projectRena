@@ -24,15 +24,17 @@ class TimersController
     }
 
     public function getTimers () {
-      $timers = array();
+      $timers = array("timers" => array(), "cancreate" => array());
       if(isset($_SESSION["loggedIn"])) {
         $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
         if($char->hasPermission("readTimers", "corporation")) {
           $corpTimers = $this->app->CoreManager->getTimers($char->getCorpId());
-          $timers = array_merge($timers, $corpTimers);
+          $timers = array_merge($timers['timers'], $corpTimers);
+          array_push($timers['cancreate'], "corporation");
         }
         if($char->hasPermission("readTimers", "alliance")) {
-
+          array_push($timers['cancreate'], "alliance");
+          array_push($timers['cancreate'], "blue");
         }
       }
       $this->app->response->headers->set('Content-Type', 'application/json');

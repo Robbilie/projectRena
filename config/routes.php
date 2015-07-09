@@ -107,7 +107,7 @@ $app->get('/json/fleets/', function () use ($app){
 	(new \ProjectRena\Controller\FleetsController($app))->getFleets();
 });
 
-$app->post('/json/fleets/create/', function () use ($app){
+$app->post('/json/fleet/create/', function () use ($app){
 	(new \ProjectRena\Controller\FleetsController($app))->createFleet();
 });
 

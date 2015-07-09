@@ -1,9 +1,31 @@
 <div class="contentConti" id="timersConti">
 	<div class="card">
 		<div class="chead">
-			<h3 class="blue" id="timersHead"></h3>
+			<h3 class="blue" id="timersHead">Timers</h3>
 		</div>
 		<div class="cbody" id="timersList"></div>
+	</div>
+	<div class="card" id="createTimerForm">
+			<div class="chead">
+					<h2 class="blue">Create Timer</h2>
+			</div>
+			<div id="groupform" class="cbody paddedp">
+					<h4 id="createresponse"></h4>
+					<h4 class="mbn">Timer Scope</h4>
+					<select id="timerScope"></select>
+					<h4 class="mbn">Structure</h4>
+					<input type="text" id="timerStrucure"/>
+					<h4 class="mbn">Location</h4>
+					<input type="text" id="timerLocation"/>
+					<h4 class="mbn">Reinforce</h4>
+					<input type="numer" min="0" max="3" id="timerRf"/>
+					<h4 class="mbn">Time</h4>
+					<input type="text" id="timerTime" placeholder="dd-mm-yyyy hh:mm"/>
+					<h4 class="mbn">Comment</h4>
+					<textarea id="timerComment"></textarea>
+					<div class="divider"></div>
+					<span class="btn" onclick="createTimer();">Create</span>
+			</div>
 	</div>
 	<div style="display: none;">
 		<div id="timerTemplate">
@@ -15,17 +37,45 @@
 <script type="text/javascript">
 	timersJS();
 	function timersJS () {
+		resetTimerForm();
 		ajax("/json/timers/", function (r) {
 			console.log(r);
-      /*
-			$("#contentsname").innerHTML = r.name;
-			var tmpl = $("#contentsTemplate").innerHTML;
-			var el = $("#contentlist");
+
+			var tmpl = $("#timerTemplate").innerHTML;
+			var el = $("#timersList");
 			el.innerHTML = "";
-			for(var i = 0; i < r.list.length; i++)
-				el.innerHTML += tmpl.format([r.list[i]['flag'] == 0 ? 'href="#!/corporation/' + r.list[i]['ownerID'] + '/container/' + r.list[i]['itemID'] + '/"' : '', r.list[i]['name'] ? r.list[i]['name'] : "", r.list[i]['typeName']]);
-*/
+
+			for(var i = 0; i < r.fleets.length; i++)
+					el.innerHTML += tmpl.format(["", r.timers[i].typeID, r.timers[i].locationID]);
+
 			fadeOn($("#timersConti"), 1);
 		}, "json");
+	}
+
+	function createFleet () {
+			var req = new XMLHttpRequest();
+			req.onreadystatechange = function () {
+					if(req.readyState == 4 && req.status == 200) {
+							var r = JSON.parse(req.responseText);
+							$("#createresponse").innerHTML = r['msg'];
+							if(r.state == "success") {
+									timersJS();
+							} else {
+								$("#createresponse").innerHTML = r.msg;
+							}
+					}
+			};
+			req.open("POST", "/json/timer/create/", true);
+			req.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+			req.send(encodeURI("scope=" + $("#timerScope").value + "&typeID=" + $("#timerStrucure").getAttribute("data-id") + "&locationID=" + $("#timerLocation").getAttribute("data-id") + "&rf=" + $("#timerRf").value + "&comment=" + $("#timerComment").value + "&timestamp=" + Date.parse($("#timerTime").value)));
+	}
+
+	function resetTimerForm () {
+		$("#timerScope").value = "";
+		$("#timerStrucure").value = "";
+		$("#timerLocation").value = "";
+		$("#timerRf").value = "";
+		$("#timerTime").value = "";
+		$("#timerComment").value = "";
 	}
 </script>
