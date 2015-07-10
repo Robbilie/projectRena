@@ -418,15 +418,17 @@ class CoreManager {
     }
 
     protected $locations = array();
-    public function getLocation ($locationID) {
+    public function getLocation ($locationID, $invName = false) {
         foreach ($this->locations as $location)
             if($location->getId() == $locationID)
                 return $location;
-        $invnameLocRow = $this->db->queryRow("SELECT itemName as name, itemID as id FROM invNames WHERE itemID = :itemID", array(":itemID" => $locationID));
-        if($invnameLocRow) {
+        if($invName) {
+          $invnameLocRow = $this->db->queryRow("SELECT itemName as name, itemID as id FROM invNames WHERE itemID = :itemID", array(":itemID" => $locationID));
+          if($invnameLocRow) {
             $invnameLoc = new CoreLocation($this->app, $invnameLocRow);
             array_push($this->locations, $invnameLoc);
             return $invnameLoc;
+          }
         }
         return null;
     }

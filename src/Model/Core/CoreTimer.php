@@ -40,7 +40,7 @@ class CoreTimer extends CoreBase {
 
   public function getCLocation () {
     if(is_null($this->clocation)) {
-      $this->clocation = $this->app->CoreManager->getCLocation($this->locationID);
+      $this->clocation = $this->app->CoreManager->getCLocation($this->locationID, true);
     }
     return $this->clocation;
   }
@@ -61,7 +61,7 @@ class CoreTimer extends CoreBase {
       "typeID" => (int)$this->typeID,
       "typeName" => $this->app->CoreManager->getItemType($this->typeID)->getName(),
       "locationID" => (int)$this->locationID,
-      "locationName" => $this->app->CoreManager->getLocation($this->locationID)->getName(),
+      "locationName" => $this->getCLocation()->getName(),
       "rf" => (int)$this->rf,
 			"comment" => $this->comment,
       "timestamp" => (int)$this->timestamp
