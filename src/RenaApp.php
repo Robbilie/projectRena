@@ -20,6 +20,7 @@ use ProjectRena\Model\ApiKeys;
 use ProjectRena\Model\Config;
 use ProjectRena\Model\Groups;
 use ProjectRena\Model\Paste;
+use ProjectRena\Model\Search;
 use ProjectRena\Model\Storage;
 use ProjectRena\Model\Users;
 use ProjectRena\Model\UsersGroups;
@@ -144,6 +145,7 @@ use ProjectRena\Model\EVEApi\Server\ServerStatus as EVEServerServerStatus;
  * @property Config Config
  * @property Groups Groups
  * @property Paste Paste
+ * @property Search Search
  * @property Storage Storage
  * @property Users Users
  * @property UsersGroups UsersGroups

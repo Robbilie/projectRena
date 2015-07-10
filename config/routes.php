@@ -415,6 +415,11 @@ $app->get("/controlpanel/(/:subPage)/", function($subPage = null) use ($app)
 				(new \ProjectRena\Controller\ControlPanelController($app))->index();
 });
 
+// Search
+$app->map("/search(/:term).json", function($searchTerm = null) use ($app){
+				var_dump($app->Search->search($searchTerm));
+})->via("POST", "GET");
+
 // Logout
 $app->get('/logout/', function () use ($app)
 {
