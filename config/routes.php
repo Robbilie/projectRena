@@ -67,6 +67,14 @@ $app->get('/json/corporation/:corporationID/container/:containerID/', function($
     (new \ProjectRena\Controller\JSONController($app))->getCorporationContents($corporationID, $containerID);
 });
 
+$app->get('/json/corporation/:corporationID/wallet/', function($corporationID) use ($app){
+    (new \ProjectRena\Controller\JSONController($app))->getCorporationRattingTax(null, null);
+});
+
+$app->get('/json/corporation/:corporationID/wallet/:from/', function($corporationID, $from) use ($app){
+    (new \ProjectRena\Controller\JSONController($app))->getCorporationRattingTax($from, null);
+});
+
 $app->get('/json/corporation/:corporationID/wallet/:from/:till/', function($corporationID, $from, $till) use ($app){
     (new \ProjectRena\Controller\JSONController($app))->getCorporationRattingTax($from, $till);
 });
