@@ -222,7 +222,7 @@ class JSONController
             $taxes['global'] += $journalRow['amount'];
             $tmpuser[$journalRow['ownerID2']] = $journalRow['ownerName2'];
           }
-          asort($tmpdata);
+          arsort($tmpdata);
           foreach($tmpdata as $key => $value) {
             array_push($taxes['entries'], array("ownerID" => $key, "ownerName" => $tmpuser[$key], "valuestr" => number_format($tmpdata[$key], 2, ',', '.'), "value" => $tmpdata[$key]));
           }

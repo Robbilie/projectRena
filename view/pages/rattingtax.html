@@ -4,8 +4,8 @@
 			<h3 class="blue" id="taxesHead">Ratting Taxes</h3>
       <div>
         <input type="text" id="taxesFrom" placeholder="From (dd.mm.yyyy)"/>
-          <input type="text" id="taxesTill" placeholder="Till (dd.mm.yyyy)"/>
-          <button onclick="taxesJS();">Update</button>
+        <input type="text" id="taxesTill" placeholder="Till (dd.mm.yyyy)"/>
+        <span class="btn" onclick="taxesJS();">Create</span>
       </div>
 		</div>
 		<div class="cbody" id="taxesList"></div>
@@ -20,7 +20,7 @@
 <script type="text/javascript">
 	taxesJS();
 	function taxesJS () {
-		ajax("/json/corporation/0/wallet/", function (r) {
+		ajax("/json/corporation/0/wallet/" + ($("#taxesFrom").value != "" ? ($("#taxesFrom").value + ($("#taxesTill").value != "" ? "/" + $("#taxesTill").value : "")) + '/' : ''), function (r) {
 			console.log(r);
 
 			var tmpl = $("#journalTemplate").innerHTML;
