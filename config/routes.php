@@ -67,7 +67,7 @@ $app->get('/json/corporation/:corporationID/container/:containerID/', function($
     (new \ProjectRena\Controller\JSONController($app))->getCorporationContents($corporationID, $containerID);
 });
 
-$app->get('/json/corporation/wallet/:from/:till/', function($from, $till) use ($app){
+$app->get('/json/corporation/:corporationID/wallet/:from/:till/', function($corporationID, $from, $till) use ($app){
     (new \ProjectRena\Controller\JSONController($app))->getCorporationRattingTax($from, $till);
 });
 
@@ -278,6 +278,10 @@ $app->get('/logistic/', function() use ($app){
 
 $app->get('/corporation/', function() use ($app){
     $app->render("/pages/corporation.html");
+});
+
+$app->get('/corporation/wallet/', function() use ($app){
+    $app->render("/pages/rattingtax.html");
 });
 
 $app->get('/structures/', function() use ($app){
