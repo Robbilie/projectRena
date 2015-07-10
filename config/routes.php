@@ -67,6 +67,10 @@ $app->get('/json/corporation/:corporationID/container/:containerID/', function($
     (new \ProjectRena\Controller\JSONController($app))->getCorporationContents($corporationID, $containerID);
 });
 
+$app->get('/json/corporation/wallet/:from/:till/', function($from, $till) use ($app){
+    (new \ProjectRena\Controller\JSONController($app))->getCorporationRattingTax($from, $till);
+});
+
 
 /*
  * Intel
