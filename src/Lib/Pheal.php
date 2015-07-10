@@ -38,13 +38,8 @@ class Pheal
         Config::getInstance()->log = new \ProjectRena\Lib\PhealLogger();
         Config::getInstance()->api_customkeys = true;
         Config::getInstance()->api_base = $app->baseConfig->getConfig("apiServer", "ccp", "https://api.eveonline.com/");
-    }
-
-    /**
-     *
-     */
-    function RunAsNew()
-    {
+        $rateLimit = new \Pheal\RateLimiter\FileLockRateLimiter(__DIR__ . "/../../cache/", 30, 10, 10);
+        Config::getInstance()->rateLimiter = $rateLimit->rateLimit(true);
     }
 
     /**
@@ -61,7 +56,8 @@ class Pheal
             $this->app->Logging->log("ERROR", "904ed till: " . $this->app->Storage->get("Api904"));
             throw new \Exception("Error, CCP has 904ed us till " . $this->app->Storage->get("Api904"));
         }
-       return new \Pheal\Pheal($apiKey, $vCode);
+
+        return new \Pheal\Pheal($apiKey, $vCode);
     }
 
     /**
@@ -111,12 +107,14 @@ class Pheal
             case 201: // Character does not belong to account.
                 // Typically caused by a character transfer
 
-            break;
+                break;
 
             case 207: // Not available for NPC corporations.
             case 209:
                 $this->app->ApiKeyCharacters->setIsDirector($keyID, $characterID, 0);
-                $this->app->Db->execute("DELETE FROM apiKeyCharacters WHERE keyID = :keyID AND characterID = :characterID", array(":keyID" => $keyID, ":characterID" => $characterID));
+                $this->app->Db->execute("DELETE FROM apiKeyCharacters WHERE keyID = :keyID AND characterID = :characterID", array(":keyID"       => $keyID,
+                                                                                                                                  ":characterID" => $characterID,
+                ));
                 break;
 
             case 222: // account has expired

@@ -6,17 +6,26 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a href="#" class="navbar-brand">Project Rena</a>
+            <a href="#" class="navbar-brand">EVSCO</a>
         </div>
+
         <div class="collapse navbar-collapse">
-            <ul class="nav navbar-nav navbar-right">
+            <ul class="nav navbar-nav navbar-left">
                 <li><a href="#">Home</a></li>
-                <li><a href="#">Services</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        Services
+                        <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">asdf</a></li>
+                    </ul>
+                </li>
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         Tools
-                        <span class="caret"></span>
+                        <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu">
                         <li><a href="/paste/">Paste</a></li>
@@ -24,14 +33,117 @@
                         <li><a href="#">Link 3</a></li>
                     </ul>
                 </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <form name="search" id="search" class="navbar-form navbar-right" action="/search/" method="post">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Search" autocomplete="off" id="searchbox" name="searchbox">
+                        </div>
+                    </form>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="fa fa-info"></i>
+                        <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">asdf</a></li>
+                    </ul>
+                </li>
 
                 {% if loggedIn %}
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-envelope fa-fw"></i> (0) <i class="fa fa-caret-down"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-messages" style="width: 450px;">
+                            <li>
+                                <a href="#">
+                                    <div>
+                                        <strong>Karbowiak</strong>
+                                    <span class="pull-right text-muted">
+                                        <em>2015-08-07 16:11:10</em>
+                                    </span>
+                                    </div>
+                                    <div>You sir are awesome.. or somethi ...</div>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="#">
+                                    <div>
+                                        <strong>Elo Knight | Black Legion.</strong>
+                                    <span class="pull-right text-muted">
+                                        <em>2015-08-07 16:11:10</em>
+                                    </span>
+                                    </div>
+                                    <div>Elo is on fire, quick, form a fleet to sa ...</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-bell fa-fw"></i> (0) <i class="fa fa-caret-down"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-alerts" style="width: 325px;">
+                            <li>
+                                <a href="#">
+                                    <div>
+                                        <i class="fa fa-comment fa-fw"></i> New Comment
+                                        <span class="pull-right text-muted small">4 minutes ago</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="#">
+                                    <div>
+                                        <i class="fa fa-twitter fa-fw"></i> 3 New Followers
+                                        <span class="pull-right text-muted small">12 minutes ago</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="#">
+                                    <div>
+                                        <i class="fa fa-envelope fa-fw"></i> Message Sent
+                                        <span class="pull-right text-muted small">4 minutes ago</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="#">
+                                    <div>
+                                        <i class="fa fa-tasks fa-fw"></i> New Task
+                                        <span class="pull-right text-muted small">4 minutes ago</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="#">
+                                    <div>
+                                        <i class="fa fa-upload fa-fw"></i> Server Rebooted
+                                        <span class="pull-right text-muted small">4 minutes ago</span>
+                                    </div>
+                                </a>
+                            </li>
+                        </ul>
+                        <!-- /.dropdown-alerts -->
+                    </li>
+
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                             <strong>{{ characterName }}</strong>
                             <img src="{{ imageServer }}/Character/{{ characterID }}_32.jpg" class="img-circle"
                                  width="18px">
-                            <span class="caret"></span>
+                            <i class="fa fa-caret-down"></i>
                         </a>
                         <ul class="dropdown-menu">
                             <li>
@@ -49,8 +161,8 @@
                                             <p class="text-left small">{{ charInfo.corporation.corporationName }} | {% if charInfo.alliance.allianceName %}{{ charInfo.alliance.allianceName }}{% endif %}</p>
 
                                             <p class="text-left">
-                                                <a href="#" class="btn btn-primary btn-block btn-sm">Settings</a>
-                                                <a href="#" class="btn btn-primary btn-block btn-sm">API Settings</a>
+                                                <a href="/controlpanel/" class="btn btn-primary btn-block btn-sm">Control Panel</a>
+                                                <a href="/controlpanel/apisettings/" class="btn btn-primary btn-block btn-sm">API Settings</a>
                                             </p>
                                         </div>
                                     </div>

@@ -24,6 +24,9 @@ class updateCharacter
 				 */
 				public function perform()
 				{
+								if($this->app->Storage->get("Api904") >= date("Y-m-d H:i:s"))
+												return;
+
 								$this->app->StatsD->increment("ccpRequests");
 								$this->app->StatsD->increment("charactersUpdated");
 								$characterID = $this->args["characterID"];

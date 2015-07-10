@@ -14,6 +14,9 @@ class updateCorporationsCronjob
 
     public static function execute($pid, $md5, RenaApp $app)
     {
+        if($app->Storage->get("Api904") >= date("Y-m-d H:i:s"))
+            return;
+
         $corporations = $app->Db->query("SELECT corporationID FROM corporations WHERE lastUpdated < date_sub(now(), interval 7 day) AND corporationID != 0 ORDER BY lastUpdated LIMIT 500", array(), 0);
         if($corporations)
         {

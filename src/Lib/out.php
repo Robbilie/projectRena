@@ -8,7 +8,6 @@ use ProjectRena\RenaApp;
  */
 class out
 {
-
     /**
      * The Slim Application
      */
@@ -22,6 +21,13 @@ class out
         $this->app = $app;
     }
 
+    /**
+     * Outputs the template file together with the default twig data
+     *
+     * @param $templateFile
+     * @param array $dataArray
+     * @param null $status
+     */
     public function toTwig($templateFile, $dataArray = array(), $status = null)
     {
         // Generate character Information array data
@@ -47,6 +53,11 @@ class out
         $this->app->render($templateFile, $dataArray, $status);
     }
 
+    /**
+     * Outputs the dataArray to JSON
+     *
+     * @param array $dataArray
+     */
     public function toJson($dataArray = array())
     {
         $this->app->contentType("application/javascript; charset=utf-8");
@@ -58,6 +69,11 @@ class out
         echo json_encode($dataArray, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     }
 
+    /**
+     * Outputs the dataArray to XML
+     *
+     * @param array $dataArray
+     */
     public function toXML($dataArray = array())
     {
         $this->app->contentType("application/xml");
@@ -71,5 +87,8 @@ class out
         echo $xml->asXML();
     }
 
+    /**
+     *
+     */
     public function RunAsNew(){}
 }

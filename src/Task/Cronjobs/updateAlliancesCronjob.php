@@ -26,6 +26,9 @@ class updateAlliancesCronjob
      */
     public static function execute($pid, $md5, RenaApp $app)
     {
+        if($app->Storage->get("Api904") >= date("Y-m-d H:i:s"))
+            return;
+
         \Resque::enqueue("now", "\\ProjectRena\\Task\\Resque\\updateAlliances");
         exit();
     }

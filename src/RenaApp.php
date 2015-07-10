@@ -253,13 +253,4 @@ use ProjectRena\Model\EVEApi\Server\ServerStatus as EVEServerServerStatus;
 
 class RenaApp extends Slim
 {
-    /**
-     * Var_dumps and dies, quicker than var_dump($input); die();
-     *
-     * @param $input
-     */
-    public function dd($input)
-    {
-        var_dump($input); die();
-    }
 }

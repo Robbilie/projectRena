@@ -389,6 +389,12 @@ $app->get('/login/eve/', function () use ($app)
                 (new \ProjectRena\Controller\LoginController($app))->loginEVE();
 });
 
+// Admin
+$app->get("/controlpanel/(/:subPage)/", function($subPage = null) use ($app)
+{
+				(new \ProjectRena\Controller\ControlPanelController($app))->index();
+});
+
 // Logout
 $app->get('/logout/', function () use ($app)
 {

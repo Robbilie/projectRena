@@ -63,3 +63,13 @@ $app->Users->tryAutologin();
 
 // Run app
 $app->run();
+
+/**
+	* Var_dumps and dies, quicker than var_dump($input); die();
+	*
+	* @param $input
+	*/
+function dd($input)
+{
+				var_dump($input); die();
+}

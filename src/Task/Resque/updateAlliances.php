@@ -24,6 +24,9 @@ class updateAlliances
 				 */
 				public function perform()
 				{
+								if($this->app->Storage->get("Api904") >= date("Y-m-d H:i:s"))
+												return;
+
 								$this->app->StatsD->increment("ccpRequests");
 								$data = $this->app->EVEEVEAllianceList->getData();
 								if(isset($data["result"]["alliances"]))

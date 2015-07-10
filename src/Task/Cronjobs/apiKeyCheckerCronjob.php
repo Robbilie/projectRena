@@ -18,6 +18,9 @@ class apiKeyCheckerCronjob
      */
     public static function execute($pid, $md5, RenaApp $app)
     {
+        if($app->Storage->get("Api904") >= date("Y-m-d H:i:s"))
+            return;
+
         $apiKeys = $app->Db->query("SELECT keyID, vCode FROM apiKeys WHERE lastValidation < date_sub(now(), INTERVAL 6 HOUR) ORDER BY lastValidation DESC LIMIT 500", array(), 0);
         if($apiKeys)
         {
