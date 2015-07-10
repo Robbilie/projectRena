@@ -51,4 +51,11 @@ class SearchController
         $this->app->response->body(json_encode($invRows));
     }
 
+    // search for corp/alli names like
+    public function findCorpAlliNames ($name) {
+        $corpAlliRows = $this->db->query("SELECT name, id FROM ntCorporation WHERE name LIKE :name UNION SELECT name, id FROM ntAlliance WHERE name LIKE :name", array(":name" => $name."%"));
+        $this->app->response->headers->set('Content-Type', 'application/json');
+        $this->app->response->body(json_encode($corpAlliRows));
+    }
+
 }

@@ -13,6 +13,8 @@
 					<h4 id="createresponse"></h4>
 					<h4 class="mbn">Timer Scope</h4>
 					<select id="timerScope"></select>
+					<h4 class="mbn">Owner</h4>
+					<input type="text" id="timerOwner" data-url="/json/corpallinames/:param"/>
 					<h4 class="mbn">Structure</h4>
 					<input type="text" id="timerStrucure" data-url="/json/invtypenames/:param"/>
 					<h4 class="mbn">Location</h4>
@@ -84,11 +86,12 @@
 			};
 			req.open("POST", "/json/timer/create/", true);
 			req.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-			req.send(encodeURI("scope=" + $("#timerScope").value + "&typeID=" + $("#timerStrucure").getAttribute("data-id") + "&locationID=" + $("#timerLocation").getAttribute("data-id") + "&rf=" + $("#timerRf").value + "&comment=" + $("#timerComment").value + "&timestamp=" + Date.parse($("#timerTime").value)));
+			req.send(encodeURI("scope=" + $("#timerScope").value + "&ownerID=" + $("#timerOwner").value + "&typeID=" + $("#timerStrucure").getAttribute("data-id") + "&locationID=" + $("#timerLocation").getAttribute("data-id") + "&rf=" + $("#timerRf").value + "&comment=" + $("#timerComment").value + "&timestamp=" + Date.parse($("#timerTime").value)));
 	}
 
 	function resetTimerForm () {
 		$("#timerScope").value = "";
+		$("#timerOwner").value = "";
 		$("#timerStrucure").value = "";
 		$("#timerLocation").value = "";
 		$("#timerRf").value = "";

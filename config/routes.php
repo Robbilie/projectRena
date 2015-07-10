@@ -179,6 +179,10 @@ $app->get('/json/invtypenames/:name', function ($name) use ($app){
   (new \ProjectRena\Controller\SearchController($app))->findInvTypeNames($name);
 });
 
+$app->get('/json/corpallinames/:name', function ($name) use ($app){
+  (new \ProjectRena\Controller\SearchController($app))->findCorpAlliNames($name);
+});
+
 
 /*
  * Notifications

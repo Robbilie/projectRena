@@ -493,9 +493,9 @@ class CoreManager {
         return $this->getTimer($id);
     }
 
-    public function getTimers ($ownerID) {
+    public function getTimers ($creatorID) {
       $timers = array();
-      $timerRows = $this->db->query("SELECT * FROM easTimers WHERE ownerID = :ownerID", array(":ownerID" => $ownerID));
+      $timerRows = $this->db->query("SELECT * FROM easTimers WHERE creatorID = :creatorID", array(":creatorID" => $creatorID));
       foreach ($timerRows as $timerRow) {
         array_push($timers, new CoreTimer($this->app, $timerRow));
       }
