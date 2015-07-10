@@ -2,6 +2,11 @@
 	<div class="card">
 		<div class="chead">
 			<h3 class="blue" id="taxesHead">Ratting Taxes</h3>
+      <div>
+        <input type="text" id="taxesFrom" placeholder="From (dd.mm.yyyy)"/>
+          <input type="text" id="taxesTill" placeholder="Till (dd.mm.yyyy)"/>
+          <button onclick="taxesJS();">Update</button>
+      </div>
 		</div>
 		<div class="cbody" id="taxesList"></div>
 	</div>
@@ -15,7 +20,6 @@
 <script type="text/javascript">
 	taxesJS();
 	function taxesJS () {
-		resetTimerForm();
 		ajax("/json/corporation/0/wallet/", function (r) {
 			console.log(r);
 
