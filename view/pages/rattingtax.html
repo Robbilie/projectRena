@@ -1,0 +1,34 @@
+<div class="contentConti" id="taxesConti">
+	<div class="card">
+		<div class="chead">
+			<h3 class="blue" id="taxesHead">Ratting Taxes</h3>
+		</div>
+		<div class="cbody" id="taxesList"></div>
+	</div>
+	<div style="display: none;">
+		<div id="journalTemplate">
+			<div class="hover paddedp"><span>{0}</span><span class="fr">{1}</span></div>
+		</div>
+	</div>
+</div>
+<label id="maxBtn" for="checkMaxed">+</label>
+<script type="text/javascript">
+	taxesJS();
+	function taxesJS () {
+		resetTimerForm();
+		ajax("/json/corporation/0/wallet/", function (r) {
+			console.log(r);
+
+			var tmpl = $("#journalTemplate").innerHTML;
+			var el = $("#taxesList");
+			el.innerHTML = "";
+
+			for(var i = 0; i < r.entries.length; i++)
+					el.innerHTML += tmpl.format([r.entries[i].ownerName, r.entries[i].valuestr]);
+
+      el.innerHTML += tmpl.format(["Global", r.globalstr]);
+
+			fadeOn($("#taxesConti"), 1);
+		}, "json");
+	}
+</script>
