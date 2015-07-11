@@ -31,7 +31,7 @@
 	</div>
 	<div style="display: none;">
 		<div id="timerTemplate">
-			<div class="hover paddedp"><a {0} onclick="click(this);">{1} ({2})</a></div>
+			<div class="hover paddedp {standing}Standing"><a {0} onclick="click(this);">&lt;{typeName}&gt; {ownerName} [{locationName}] RF {rf} ({timestamp})</a></div>
 		</div>
 	</div>
 </div>
@@ -48,7 +48,7 @@
 			el.innerHTML = "";
 
 			for(var i = 0; i < r.timers.length; i++)
-					el.innerHTML += tmpl.format(["", r.timers[i].typeName, r.timers[i].locationName]);
+					el.innerHTML += tmpl.format(r.timers[i]);
 
       var acOwner = new AutoComplete("timerOwner");
       acOwner.oncomplete = function (self, el) {
