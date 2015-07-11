@@ -1,0 +1,77 @@
+  @media (max-width: 800px) {
+
+      #righthead:before, #lefthead:after {
+          display: none;
+      }
+
+      #checkLoggedin:checked ~ #container #midhead {
+          height: 50px;
+      }
+
+      .sidebarrow {
+          margin-left: 0px;
+          width: auto;
+      }
+
+      #title {
+          margin-left: 0px;
+          margin-right: 0px;
+      }
+
+      #title, #content {
+          left: 10px;
+          right: 10px;
+      }
+
+      #navigationBtn {
+          display: block;
+      }
+
+      #checkLoggedin:checked ~ #container #logincard {
+          right: 5px;
+          left: 5px;
+          width: auto;
+          top: -700px;
+      }
+
+      #sidebar {
+          top: -700px;
+          bottom: 100%;
+          overflow-y: scroll;
+          -webkit-transition: left .3s, top .3s, bottom .3s;
+          transition: left .3s, top .3s, bottom .3s;
+      }
+
+      #logincard {
+          top: 100px;
+          -webkit-transition: height .25s, top .3s, right .25s, margin-right .25s;
+          transition: height .25s, top .3s, right .25s, margin-right .25s;
+      }
+
+      #checkLoggedin:checked ~ #container #sidebar {
+          right: 5px;
+          left: 5px;
+          width: auto;
+          top: -700px;
+      }
+
+      #checkSidebar:checked ~ #container #logincard {
+          top: 55px;
+      }
+
+      #checkSidebar:checked ~ #container #sidebar { top: 140px; bottom: 0%; }
+      #checkLoggedin:not(:checked) ~ #container #sidebar { top: -700px; }
+
+      #checkSidebar:checked ~ #container #mobilebg { bottom: 0%; }
+      #checkLoggedin:not(:checked) ~ #container #mobilebg { bottom: 100%; }
+      #mobilebg {
+          position: absolute;
+          top: 50px;
+          left: 0px;
+          right: 0px;
+          bottom: 100%;
+          background-color: rgba(0,0,0,.8);
+          -webkit-transition: bottom .3s;
+          transition: bottom .3s;
+      }
+  }
