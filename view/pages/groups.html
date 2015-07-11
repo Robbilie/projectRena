@@ -51,7 +51,7 @@
 		resetGroupFrom();
 		ajax("/json/groups/", function (r) {
 			console.log(r);
-			
+
       if(r.cancreate.length > 0)
         $("#groupScope").innerHTML = '<option>' + r.cancreate.join('</option><option>') + '</option>';
 
@@ -69,9 +69,9 @@
 				if(r.owned[i].owner != null || (r.owned[i].owner == null && coreStatus.isAdmin))
 					el1.innerHTML += tmpl.format([r.owned[i].id,(r.owned[i].custom == 1 ? '[custom] ' : '') + r.owned[i].name, ""]);
 			for(var i = 0; i < r.corporation.length; i++)
-				el2.innerHTML += tmpl.format([r.corporation[i].id,(r.corporation[i].custom == 1 ? '[custom] ' : '') + r.corporation[i].name, '<span class="fr">[' + ((r.groups.indexOf(parseInt(r.corporation[i].id)) >= 0) ? "member" : (r.corporation[i].custom ? '<a href="#!/group/' + r.corporation[i].id + '/apply/" onclick="click(this);">apply</a>' : "static")) + ']</span>']);
+				el2.innerHTML += tmpl.format([r.corporation[i].id,(r.corporation[i].custom == 1 ? '[custom] ' : '') + r.corporation[i].name, '<span class="fr">[' + ((r.groups.indexOf(parseInt(r.corporation[i].id)) >= 0) ? "member" : (r.corporation[i].custom ? '<span onclick="apply(' + r.corporation[i].id + ');">apply</span>' : "static")) + ']</span>']);
 			for(var i = 0; i < r.alliance.length; i++)
-				el3.innerHTML += tmpl.format([r.alliance[i].id,(r.alliance[i].custom == 1 ? '[custom] ' : '') + r.alliance[i].name, '<span class="fr">[' + ((r.groups.indexOf(parseInt(r.alliance[i].id)) >= 0) ? "member" : (r.alliance[i].custom ? '<a href="#!/group/' + r.alliance[i].id + '/apply/" onclick="click(this);">apply</a>' : "static")) + ']</span>']);
+				el3.innerHTML += tmpl.format([r.alliance[i].id,(r.alliance[i].custom == 1 ? '[custom] ' : '') + r.alliance[i].name, '<span class="fr">[' + ((r.groups.indexOf(parseInt(r.alliance[i].id)) >= 0) ? "member" : (r.alliance[i].custom ? '<span onclick="apply(' + r.alliance[i].id + ');">apply</span>' : "static")) + ']</span>']);
 
 			fadeOn($("#groupsConti"), 1);
 		}, "json");
@@ -91,5 +91,14 @@
 		$("#groupName").value = "";
 		$("#groupScope").value = "";
 		$("#groupState").checked = true;
+	}
+
+	function apply(groupID) {
+		ajax("/json/group/" + groupID + "/apply/", function (r) {
+			if(r.state == "success") {
+				//groupJS();
+				alert("applied");
+			}
+		});
 	}
 </script>
