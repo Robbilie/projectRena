@@ -26,7 +26,7 @@
             console.log(r);
 
             $("#fleetName").innerHTML = ((r.hash == "") ? r.name : '<a href="#/fleets/confirm/' + r.hash + '/">' + r.name + '</a>') + ((r.expired) ? '<span class="fr">[expired]</span>' : '');
-            $("#fleetComment").innerHTML = r.comment != "" ? '<div class="paddedp">' + r.comment + '</div>';
+            $("#fleetComment").innerHTML = r.comment != "" ? '<div class="paddedp">' + r.comment + '</div>' : '';
 
             var tmpl = $("#memberTemplate").innerHTML;
             var el = $("#memberList");
