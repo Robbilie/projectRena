@@ -85,7 +85,7 @@
   var coreStatus = {};
 
   function checkStatus (cb, poll) {
-      ajax("/json/status/?hash=" +md5(JSON.stringify(coreStatus)), function (r) {
+      ajax("/json/status/?hash=" + md5(JSON.stringify(coreStatus)), function (r) {
           $("#checkLoggedin").checked = !(!r.isLoggedin);
           if(r.isLoggedin) {
               setLoggedinCard(r.charid, r.charname);
@@ -93,6 +93,8 @@
           setTimeout(function () {
               checkStatus(null, poll);
           }, 1000);
+          if(coreStatus != r)
+            hashChange();
           coreStatus = r;
           refreshDom();
           if(cb)
@@ -182,8 +184,8 @@
   function switchCharacter (charid) {
       if(charid == coreStatus.charid) return;
       ajax("/json/character/switch/" + charid + "/", function (r) {
-          if(r.state == "success")
-              hashChange();
+          //if(r.state == "success")
+              //hashChange();
       }, "json");
   }
 
