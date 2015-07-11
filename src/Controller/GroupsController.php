@@ -32,16 +32,16 @@ class GroupsController
             $group['group']->getPermissions();
             $group['canEdit'] =
                 $group['group']->getScope() == "corporation" ?
-                    $char->hasPermission("writePermissionsGroup", "corporation") :
-                    $group['group']->getScope() == "alliance" ?
+                    ($char->hasPermission("writePermissionsGroup", "corporation")) :
+                    ($group['group']->getScope() == "alliance" ?
                         $char->hasPermission("writePermissionsGroup", "alliance") :
-                        false;
+                        false);
             $group['canAdd'] =
                 $group['group']->getScope() == "corporation" ?
-                    $char->hasPermission("writeMembersGroup", "corporation") :
-                    $group['group']->getScope() == "alliance" ?
+                    ($char->hasPermission("writeMembersGroup", "corporation")) :
+                    ($group['group']->getScope() == "alliance" ?
                         $char->hasPermission("writeMembersGroup", "alliance") :
-                        false;
+                        false);
         }
         $this->app->response->headers->set('Content-Type', 'application/json');
         $this->app->response->body(json_encode($group));
