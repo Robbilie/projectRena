@@ -150,8 +150,10 @@
 
 	function acceptApplication (characterID) {
 		ajax("/json/group/" + location.hash.split("/")[2] + "/application/" + characterID + "/accept/", function (r) {
-			if(r.state == "success")
+			if(r.state == "success") {
 				loadApplications();
+				loadMembers();
+			}
 		}, "json");
 	}
 
