@@ -45,7 +45,7 @@
 			<div class="hover row"><a href="#!/profile/{0}/" onclick="click(this);">{1}</a>{2}</div>
 		</div>
 		<div id="applicationTemplate">
-			<div class="hover row"><a href="#!/profile/{0}/" onclick="click(this);">{1}</a>{2}</div>
+			<div class="hover row"><a href="#!/profile/{0}/" onclick="click(this);">{1}</a><span class="fr"><span onclick="acceptApplication({0});">[accept]</span><span onclick="rejectApplication({0});">[reject]</span></span></div>
 		</div>
 	</div>
 </div>
@@ -148,4 +148,17 @@
 		}, "json");
 	}
 
+	function acceptApplication (characterID) {
+		ajax("/json/group/" + location.hash.split("/")[2] + "/application/" + characterID + "/accept/", function (r) {
+			if(r.state == "success")
+				loadApplications();
+		}, "json");
+	}
+
+	function rejectApplication (characterID) {
+		ajax("/json/group/" + location.hash.split("/")[2] + "/application/" + characterID + "/reject/", function (r) {
+			if(r.state == "success")
+				loadApplications();
+		}, "json");
+	}
 </script>

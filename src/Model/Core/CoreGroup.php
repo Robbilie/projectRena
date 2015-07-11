@@ -90,6 +90,7 @@ class CoreGroup extends CoreBase {
 
 	public function addCharacter ($characterID) {
 		if(!in_array($characterID, $this->getCharacters())) {
+			$this->db->execute("DELETE FROM easGroupApplications WHERE groupID = :groupID AND characterID = :characterID", array(":groupID" => $this->id, ":characterID" => $characterID));
 			$this->db->execute("INSERT INTO easGroupMembers (groupID, characterID) VALUES (:groupID, :characterID)", array(":groupID" => $this->id, ":characterID" => $characterID));
 			$this->resetCharacters();
 			$character = $this->app->CoreManager->getCharacter($characterID);
@@ -119,6 +120,14 @@ class CoreGroup extends CoreBase {
 					array_push($this->applications, $this->app->CoreManager->getCharacter($applicationRow['characterID']));
 			}
 			return $this->applications;
+	}
+
+	public function acceptApplication ($characterID) {
+		$this->addCharacter($characterID);
+	}
+
+	public function rejectApplication ($characterID) {
+		$this->db->execute("DELETE FROM easGroupApplications WHERE groupID = :groupID AND characterID = :characterID", array(":groupID" => $this->id, ":characterID" => $characterID));
 	}
 
 	public function isCustom () {

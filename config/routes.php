@@ -153,6 +153,14 @@ $app->get('/json/group/:groupid/applications/', function($groupID) use ($app){
     (new \ProjectRena\Controller\GroupsController($app))->getGroupApplications($groupID);
 });
 
+$app->get('/json/group/:groupid/application/:characterID/accept/', function($groupID, $characterID) use ($app){
+    (new \ProjectRena\Controller\GroupsController($app))->acceptApplication($groupID, $characterID);
+});
+
+$app->get('/json/group/:groupid/application/:characterID/reject/', function($groupID, $characterID) use ($app){
+    (new \ProjectRena\Controller\GroupsController($app))->rejectApplication($groupID, $characterID);
+});
+
 $app->get('/json/group/:groupid/apply/', function($groupID) use ($app){
     (new \ProjectRena\Controller\GroupsController($app))->apply($groupID);
 });

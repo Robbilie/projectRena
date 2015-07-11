@@ -157,6 +157,54 @@ class GroupsController
         $this->app->response->body(json_encode($resp));
     }
 
+    // accept application
+    public function acceptApplication ($groupID, $characterID) {
+        $resp = array("msg" => "", "state" => "error");
+        if(isset($_SESSION["loggedIn"])) {
+          $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
+          $group = $this->app->CoreManager->getGroup((int)$groupID);
+          if(
+              (
+                  $group->getScope() == "corporation" && $char->hasPermission("writeMembersGroup", "corporation")
+              ) ||
+              (
+                  $group->getScope() == "alliance" && $char->hasPermission("writeMembersGroup", "alliance")
+              )
+          ) {
+            $group->acceptApplication($characterID);
+            $resp['state'] = "success";
+          } else {
+            $resp['msg'] = "You are not permitted to do this.";
+          }
+        }
+        $this->app->response->headers->set('Content-Type', 'application/json');
+        $this->app->response->body(json_encode($resp));
+    }
+
+    // reject application
+    public function rejectApplication ($groupID, $characterID) {
+        $resp = array("msg" => "", "state" => "error");
+        if(isset($_SESSION["loggedIn"])) {
+          $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
+          $group = $this->app->CoreManager->getGroup((int)$groupID);
+          if(
+              (
+                  $group->getScope() == "corporation" && $char->hasPermission("writeMembersGroup", "corporation")
+              ) ||
+              (
+                  $group->getScope() == "alliance" && $char->hasPermission("writeMembersGroup", "alliance")
+              )
+          ) {
+            $group->rejectApplication($characterID);
+            $resp['state'] = "success";
+          } else {
+            $resp['msg'] = "You are not permitted to do this.";
+          }
+        }
+        $this->app->response->headers->set('Content-Type', 'application/json');
+        $this->app->response->body(json_encode($resp));
+    }
+
     // remove a permission from a group
     public function removePermissionFromGroup ($groupID, $permissionID) {
         $resp = array("msg" => "", "state" => "error");
