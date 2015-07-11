@@ -25,6 +25,8 @@ class CoreTimer extends CoreBase {
   public function getCCreator () {
     if(is_null($this->ccreator)) {
       $this->ccreator = $this->app->CoreManager->getCorporation($this->creatorID);
+      if(is_null($this->ccreator))
+        $this->ccreator = $this->app->CoreManager->getAlliance($this->creatorID);
     }
     return $this->ccreator;
   }
@@ -53,18 +55,54 @@ class CoreTimer extends CoreBase {
   }
 
 	public function jsonSerialize() {
+    $standing = "negative";
+    $owners = array();
+    if($this->getCOwner() instanceof CoreCorporation) {
+      array_push($owners, $this->getCOwner()->getAlliance());
+      array_push($owners, $this->ownerID);
+    } else {
+      array_push($owners, $this->ownerID);
+    }
+    $contacts = array();
+    if($this->getCCreator() instanceof CoreCorporation) {
+      array_push($contacts, $this->getCCreator()->getAlliance());
+      array_push($contacts, $this->creatorID);
+    } else {
+      array_push($contacts, $this->creatorID);
+    }
+
+    $rows = $this->db->query(
+      "SELECT * FROM ntContactList WHERE
+        ownerID IN (:owners) AND
+        contactID IN (:contacts) AND
+        standing > 0
+      ",
+      array(
+        ":owners"   => implode(",", $owners),
+        ":contacts" => implode(",", $contacts)
+      )
+    );
+    if(count($rows) == 0 && $owners[0] != $contacts[0]) {
+        $standing = "negative";
+    } else {
+        $standing = "positive";
+    }
+
 		return array(
-      "id" => (int)$this->id,
-      "scope" => $this->scope,
-      "creatorID" => (int)$this->id,
-      "ownerID" => (int)$this->ownerID,
-      "typeID" => (int)$this->typeID,
-      "typeName" => $this->app->CoreManager->getItemType($this->typeID)->getName(),
-      "locationID" => (int)$this->locationID,
-      "locationName" => $this->getCLocation()->getName(),
-      "rf" => (int)$this->rf,
-			"comment" => $this->comment,
-      "timestamp" => (int)$this->timestamp
+      "id"            => (int)$this->id,
+      "scope"         => $this->scope,
+      "creatorID"     => (int)$this->creatorID,
+      "creatorName"   => $this->getCCreator()->getName(),
+      "ownerID"       => (int)$this->ownerID,
+      "ownerName"     => $this->getCOwner()->getName(),
+      "typeID"        => (int)$this->typeID,
+      "typeName"      => $this->app->CoreManager->getItemType($this->typeID)->getName(),
+      "locationID"    => (int)$this->locationID,
+      "locationName"  => $this->getCLocation()->getName(),
+      "rf"            => (int)$this->rf,
+			"comment"       => $this->comment,
+      "timestamp"     => (int)$this->timestamp,
+      "standing"      => $standing
 		);
 	}
 
