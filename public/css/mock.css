@@ -46,8 +46,11 @@
     }
 
     body {
-        background: #000 url(../img/bg_main.jpg) no-repeat 50% 0;
         font-size: 14px;
+    }
+
+    body:not(.iframe) {
+        background: #000 url(../img/bg_main.jpg) no-repeat 50% 0;
     }
 
     html, button, input, select, textarea {
@@ -76,7 +79,10 @@
         left: 0;
         bottom: 0;
         right: 0;
-        background: -webkit-linear-gradient(rgba(255,255,255,.1), rgba(255,255,255,0));
+    }
+
+    body:not(.iframe) #container:before {
+      background: -webkit-linear-gradient(rgba(255,255,255,.1), rgba(255,255,255,0));
     }
 
     #checkLoggedin:checked ~ #container #header { opacity: 1; }
@@ -1064,4 +1070,93 @@
       .chead {
         margin-top: 0px !important;
       }
+    }
+
+    #iframeParent {
+      position: absolute;
+      left: 50%;
+      top: 0px;
+      bottom: 0px;
+      right: 0px;
+    }
+
+    #iframeParent iframe {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    body.iframe #righthead:before, #lefthead:after {
+        display: none;
+    }
+
+    body.iframe #checkLoggedin:checked ~ #container #midhead {
+        height: 50px;
+    }
+
+    body.iframe .sidebarrow {
+        margin-left: 0px;
+        width: auto;
+    }
+
+    body.iframe #title {
+        margin-left: 0px;
+        margin-right: 0px;
+    }
+
+    body.iframe #title, #content {
+        left: 10px;
+        right: 10px;
+    }
+
+    body.iframe #navigationBtn {
+        display: block;
+    }
+
+    body.iframe #checkLoggedin:checked ~ #container #logincard {
+        right: 5px;
+        left: 5px;
+        width: auto;
+        top: -700px;
+    }
+
+    body.iframe #sidebar {
+        top: -700px;
+        bottom: 100%;
+        overflow-y: scroll;
+        -webkit-transition: left .3s, top .3s, bottom .3s;
+        transition: left .3s, top .3s, bottom .3s;
+    }
+
+    body.iframe #logincard {
+        top: 100px;
+        -webkit-transition: height .25s, top .3s, right .25s, margin-right .25s;
+        transition: height .25s, top .3s, right .25s, margin-right .25s;
+    }
+
+    body.iframe #checkLoggedin:checked ~ #container #sidebar {
+        right: 5px;
+        left: 5px;
+        width: auto;
+        top: -700px;
+    }
+
+    body.iframe #checkSidebar:checked ~ #container #logincard {
+        top: 55px;
+    }
+
+    body.iframe #checkSidebar:checked ~ #container #sidebar { top: 140px; bottom: 0%; }
+    body.iframe #checkLoggedin:not(:checked) ~ #container #sidebar { top: -700px; }
+
+    body.iframe #checkSidebar:checked ~ #container #mobilebg { bottom: 0%; }
+    body.iframe #checkLoggedin:not(:checked) ~ #container #mobilebg { bottom: 100%; }
+    body.iframe #mobilebg {
+        position: absolute;
+        top: 50px;
+        left: 0px;
+        right: 0px;
+        bottom: 100%;
+        background-color: rgba(0,0,0,.8);
+        -webkit-transition: bottom .3s;
+        transition: bottom .3s;
     }
