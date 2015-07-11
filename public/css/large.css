@@ -17,4 +17,8 @@
     .chead {
       margin-top: 0px !important;
     }
+
+    #splitPane {
+      display: block;
+    }
   }

@@ -192,7 +192,7 @@
     var fr = document.createElement("div");
     fr.id = "iframeParent";
     fr.innerHTML = '<iframe src="/" frameBorder="0"></iframe>';
-    document.insertBefore(fr, $("#mobilebg"));
+    $("#splitPane").parentNode.insertBefore(fr, $("#splitPane"));
   }
 
   // autocomplete test
