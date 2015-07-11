@@ -1043,3 +1043,24 @@
       right: 4px;
       top: 4px;
     }
+
+    @media (min-width: 1200px) {
+      .card:nth-child(odd) {
+        margin-right: 1%;
+        clear: both;
+      }
+
+      .card:nth-child(even) {
+        margin-left: 1%;
+      }
+
+      .card {
+        width: 49%;
+        float: left;
+        margin-top: 20px;
+      }
+
+      .chead {
+        margin-top: 0px;
+      }
+    }
