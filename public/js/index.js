@@ -93,7 +93,7 @@
           setTimeout(function () {
               checkStatus(null, poll);
           }, 1000);
-          if(coreStatus != r)
+          if(coreStatus.charid != r.charid)
             hashChange();
           coreStatus = r;
           refreshDom();
