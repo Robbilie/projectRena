@@ -28,13 +28,33 @@ class TimersController
       if(isset($_SESSION["loggedIn"])) {
         $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
         if($char->hasPermission("readTimers", "corporation")) {
+          array_push($timers['cancreate'], "corporation");
           $corpTimers = $this->app->CoreManager->getTimers($char->getCorpId());
           $timers['timers'] = array_merge($timers['timers'], $corpTimers);
-          array_push($timers['cancreate'], "corporation");
         }
         if($char->hasPermission("readTimers", "alliance")) {
           array_push($timers['cancreate'], "alliance");
           array_push($timers['cancreate'], "blue");
+          $alliTimers = $this->app->CoreManager->getTimers($char->getAlliId());
+          $timers['timers'] = array_merge($timers['timers'], $alliTimers);
+          $r = $this->db->query(
+      				"SELECT ownerID FROM ntContactList WHERE
+      						(
+      								contactID = :characterID OR
+      								contactID = :corporationID OR
+      								contactID = :allianceID
+      						) AND
+      						standing > 0",
+      				array(
+      						":characterID" => $char->getCharId(),
+      						":corporationID" => $char->getCorpId(),
+      						":allianceID" => $char->getAlliId()
+      				)
+      		);
+          foreach ($r as $row) {
+            $blueTimers = $this->app->CoreManager->getTimers($row['ownerID']);
+            $timers['timers'] = array_merge($timers['timers'], $blueTimers);
+          }
         }
       }
       $this->app->response->headers->set('Content-Type', 'application/json');
