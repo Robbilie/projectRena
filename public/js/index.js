@@ -193,6 +193,15 @@
     fr.id = "iframeParent";
     fr.innerHTML = '<iframe src="/" frameBorder="0"></iframe>';
     $("#splitPane").parentNode.insertBefore(fr, $("#splitPane"));
+    $("#splitPane").setAttribute("onclick", "removePane();");
+    $("#splitPane").innerHTML = "-";
+  }
+
+  function removePane () {
+    document.body.className = "";
+    $("#container").removeChild($("#iframeParent"));
+    $("#splitPane").setAttribute("onclick", "splitPane();");
+    $("#splitPane").innerHTML = "+";
   }
 
   // autocomplete test
