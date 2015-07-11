@@ -16,6 +16,7 @@ class CoreGroup extends CoreBase {
 	protected $cpermissions;
 	protected $characters;
 	protected $ccharacters;
+	protected $applications;
 
 	// custom
 
@@ -110,8 +111,22 @@ class CoreGroup extends CoreBase {
 		$this->ccharacters = null;
 	}
 
+	public function getApplications () {
+			if(is_null($this->applications)) {
+				$applicationRows = $this->db->query("SELECT * FROM easGroupApplications WHERE groupID = :groupID", array(":groupID" => $this->id));
+				$this->applications = array();
+				foreach ($applicationRows as $applicationRow)
+					array_push($this->applications, $this->app->CoreManager->getCharacter($applicationRow['characterID']));
+			}
+			return $this->applications;
+	}
+
 	public function isCustom () {
 		return $this->custom == 1;
+	}
+
+	public function isPublic () {
+		return is_null($this->owner);
 	}
 
 	public function jsonSerialize() {

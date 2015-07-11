@@ -78,6 +78,7 @@ class GroupsController
         $this->app->response->headers->set('Content-Type', 'application/json');
         $this->app->response->body(json_encode($groups));
     }
+
     // return the members of a group
     public function getGroupMembers ($groupID) {
         $members = array();
@@ -96,6 +97,64 @@ class GroupsController
         }
         $this->app->response->headers->set('Content-Type', 'application/json');
         $this->app->response->body(json_encode($members));
+    }
+
+    // return application of a group
+    public function getGroupApplications ($groupID) {
+      $applications = array();
+      if(isset($_SESSION["loggedIn"])) {
+          $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
+          $group = $this->app->CoreManager->getGroup((int)$groupID);
+          if(
+              (
+                  $group->getScope() == "corporation" && $char->hasPermission("writeMembersGroup", "corporation")
+              ) ||
+              (
+                  $group->getScope() == "alliance" && $char->hasPermission("writeMembersGroup", "alliance")
+              )
+          ) {
+              $apps = $group->getApplications();
+              if($group->isPublic()) {
+                foreach ($apps as $applier) {
+                  if(
+                    ($group->getScope() == "corporation" && $applier->getCorpId() == $char->getCorpId()) ||
+                    ($group->getScope() == "alliance" && $applier->getAlliId() == $char->getAlliId())
+                  ) {
+                    array_push($applications, $applier);
+                  }
+                }
+              } else {
+                $applications = $apps;
+              }
+          }
+      }
+      $this->app->response->headers->set('Content-Type', 'application/json');
+      $this->app->response->body(json_encode($applications));
+    }
+
+    // apply to join a group
+    public function apply ($groupID) {
+        $resp = array("msg" => "", "state" => "error");
+        if(isset($_SESSION["loggedIn"])) {
+          $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
+          $group = $this->app->CoreManager->getGroup((int)$groupID);
+          if($group->isCustom()) {
+            if(
+              $group->isPublic() ||
+              ($group->getScope() == "corporation" && $group->getOwner() == $char->getCorpId()) ||
+              ($group->getScope() == "alliance" && $group->getOwner() == $char->getAlliId())
+            ) {
+              $this->db->execute("INSERT INTO easGroupApplications (characterID, groupID) VALUES (:characterID, :groupID)", array(":characterID" => $char->getCharId(), ":groupID" => $groupID));
+              $resp['state'] = "success";
+            } else {
+              $resp['msg'] = "You are not permitted to do this.";
+            }
+          } else {
+            $resp['msg'] = "You are not permitted to do this.";
+          }
+        }
+        $this->app->response->headers->set('Content-Type', 'application/json');
+        $this->app->response->body(json_encode($resp));
     }
 
     // remove a permission from a group

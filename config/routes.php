@@ -149,6 +149,14 @@ $app->get('/json/group/:groupid/members/', function($groupID) use ($app){
     (new \ProjectRena\Controller\GroupsController($app))->getGroupMembers($groupID);
 });
 
+$app->get('/json/group/:groupid/applications/', function($groupID) use ($app){
+    (new \ProjectRena\Controller\GroupsController($app))->getGroupApplications($groupID);
+});
+
+$app->get('/json/group/:groupid/apply/', function($groupID) use ($app){
+    (new \ProjectRena\Controller\GroupsController($app))->apply($groupID);
+});
+
 $app->get('/json/group/:groupid/remove/permission/:id/', function($groupid, $id) use ($app){
     (new \ProjectRena\Controller\GroupsController($app))->removePermissionFromGroup($groupid, $id);
 });

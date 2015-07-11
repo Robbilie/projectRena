@@ -18,6 +18,13 @@
 		<div id="memberList" class="cbody">
 		</div>
 	</div>
+	<div class="card" id="applicationsCard">
+		<div class="chead">
+			<h2 class="blue">Applications</h2>
+		</div>
+		<div id="applicationList" class="cbody">
+		</div>
+	</div>
 	<div class="card" id="charAddCard">
 		<div class="chead">
 			<h2 class="blue">Add Character</h2>
@@ -35,6 +42,9 @@
 			<div class="hover row"><input onchange="changePermission(this);" data-permissionid="{2}" data-groupid="{3}" type="checkbox" id="{1}Perm" {0} ><label for="{1}Perm">{1}</label></div>
 		</div>
 		<div id="memberTemplate">
+			<div class="hover row"><a href="#!/profile/{0}/" onclick="click(this);">{1}</a>{2}</div>
+		</div>
+		<div id="applicationTemplate">
 			<div class="hover row"><a href="#!/profile/{0}/" onclick="click(this);">{1}</a>{2}</div>
 		</div>
 	</div>
@@ -72,6 +82,12 @@
 
 			loadMembers();
 
+			if(r.canAdd) {
+				loadApplications();
+			} else {
+				$("#applicationsCard").parentNode.removeChild($("#applicationsCard"));
+			}
+
 			fadeOn($("#groupConti"), 1);
 		}, "json");
 	}
@@ -94,6 +110,16 @@
 			el.innerHTML = "";
 			for(var i = 0; i < t.length; i++)
 				el.innerHTML += tmpl.format([t[i].characterID, t[i].characterName, groupCustom == 1 ? '<span class="fr hover" onclick="removeCharacter(' + t[i]['characterID'] + ');">&times;</span>' : '']);
+		}, "json");
+	}
+
+	function loadApplications () {
+		ajax("/json/group/" + location.hash.split("/")[2] + "/applications/", function (t) {
+			var tmpl = $("#applicationTemplate").innerHTML;
+			var el = $("#applicationList");
+			el.innerHTML = "";
+			for(var i = 0; i < t.length; i++)
+				el.innerHTML += tmpl.format([t[i].characterID, t[i].characterName, ""]);
 		}, "json");
 	}
 
