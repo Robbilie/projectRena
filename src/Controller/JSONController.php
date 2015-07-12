@@ -113,7 +113,7 @@ class JSONController
         $resp = array("state" => "error");
         if(isset($_SESSION["loggedIn"])) {
             $char = $this->app->CoreManager->getCharacter($characterID);
-            if($char->getCUser()->getId() == $this->app->CoreManager->getCharacter($_SESSION['characterID'])->getCUser()->getId()) {
+            if($char->getCUser()->isAdmin() || $char->getCUser()->getId() == $this->app->CoreManager->getCharacter($_SESSION['characterID'])->getCUser()->getId()) {
                 $this->app->CoreManager->createCharacter($char->getCharId());
                 $_SESSION["characterName"] = $char->getCharName();
                 $_SESSION["characterID"] = $char->getCharId();
