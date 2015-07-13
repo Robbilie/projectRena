@@ -8,9 +8,9 @@ function taxesJS () {
 		el.innerHTML = "";
 
 		for(var i = 0; i < r.entries.length; i++)
-				el.innerHTML += tmpl.format([r.entries[i].ownerName, r.entries[i].valuestr]);
+			el.appendChild(createElement(tmpl.format([r.entries[i].ownerName, r.entries[i].valuestr])));
 
-    el.innerHTML += tmpl.format(["<b>Global</b>", "<b>" + r.globalstr + "</b>"]);
+    el.appendChild(createElement(tmpl.format(["<b>Global</b>", "<b>" + r.globalstr + "</b>"])));
 
 		fadeOn($("#taxesConti"), 1);
 	}, "json");

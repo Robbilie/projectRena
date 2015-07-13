@@ -29,7 +29,7 @@ function intelsystemJS (cb) {
     if(location.hash.split("/")[3] !== "")
         $("#checkTracker").checked = false;
 
-    dd = new AutoComplete("intelSystemName");
+    dd = new AutoComplete($("#intelSystemName"));
     dd.oncomplete = function (self, el) {
         intelSystemID = el.getAttribute("data-dat");
         if(intelSystemID != location.hash.split("/")[3]) {
@@ -105,13 +105,13 @@ function checkSystemStatus () {
             warns.innerHTML = "";
             for(var i = 0; i < systemStatus.neighbours.length; i++)
                 if(systemStatus.neighbours[i].hostilecount > 0)
-                    warns.innerHTML += wtpl.format([systemStatus.neighbours[i].systemID, systemStatus.neighbours[i].systemName, systemStatus.neighbours[i].hostilecount]);
+                    warns.appendChild(createElement(wtpl.format([systemStatus.neighbours[i].systemID, systemStatus.neighbours[i].systemName, systemStatus.neighbours[i].hostilecount])));
 
             var tmpl = $("#" + (systemStatus.membertype == "characters" ? "char" : "alli") + "Template").innerHTML;
             var el = $("#intelMemberlist");
             el.innerHTML = "";
             for(var j = 0; j < systemStatus.members.length; j++)
-                el.innerHTML += tmpl.format([systemStatus.members[j].id, systemStatus.members[j].name + (systemStatus.members[j].count ? " [" + systemStatus.members[j].count + "]" : ""), systemStatus.members[j].standing + "Standing"]);
+                el.appendChild(createElement(tmpl.format([systemStatus.members[j].id, systemStatus.members[j].name + (systemStatus.members[j].count ? " [" + systemStatus.members[j].count + "]" : ""), systemStatus.members[j].standing + "Standing"])));
         }
 
         setTimeout(checkSystemStatus, 100);

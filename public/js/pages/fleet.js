@@ -11,7 +11,7 @@ function fleetJS () {
         el.innerHTML = "";
         for(var i = 0; i < r.participants.length; i++)
             if(r.participants[i])
-                el.innerHTML += tmpl.format([r.participants[i].characterID, r.participants[i].characterName, (r.participants[i].confirmed ? '<span class="fr">[confirmed]</span>' : '')]);
+                el.appendChild(createElement(tmpl.format([r.participants[i].characterID, r.participants[i].characterName, (r.participants[i].confirmed ? '<span class="fr">[confirmed]</span>' : '')])));
 
         fadeOn($("#fleetConti"), 1);
     }, "json");

@@ -16,7 +16,7 @@ function structurescontroltowerJS () {
 		var el = $("#moduleslist");
 		el.innerHTML = "";
 		for(var i = 0; i < r.modules.length; i++)
-			el.innerHTML += tmpl.format([r.modules[i].ownerID, r.modules[i].itemID, r.modules[i].name]);
+			el.appendChild(createElement(tmpl.format([r.modules[i].ownerID, r.modules[i].itemID, r.modules[i].name])));
 
 		fadeOn($("#controltowerConti"), 1);
 	}, "json");

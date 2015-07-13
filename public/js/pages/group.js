@@ -19,7 +19,7 @@ function groupJS () {
 		if(!r.group.custom || !r.canAdd) {
 			$("#charAddCard").parentNode.removeChild($("#charAddCard"));
 		} else {
-            namedd = new AutoComplete("charId");
+            namedd = new AutoComplete($("#charId"));
             namedd.oncomplete = function (self, el) {
                 charToAdd = el.getAttribute("data-dat");
             };
@@ -46,7 +46,7 @@ function loadPermissions () {
 		var el = $("#permissionList");
 		el.innerHTML = "";
 		for(var i = 0; i < s.length; i++)
-			el.innerHTML += tmpl.format([((groupPermissions.indexOf(parseInt(s[i].id)) >= 0) ? 'checked="true"' : '') + (groupCanEdit ? '' : ' disabled'), s[i].name, s[i].id, location.hash.split("/")[2]]);
+			el.appendChild(createElement(tmpl.format([((groupPermissions.indexOf(parseInt(s[i].id)) >= 0) ? 'checked="true"' : '') + (groupCanEdit ? '' : ' disabled'), s[i].name, s[i].id, location.hash.split("/")[2]])));
 	}, "json");
 }
 
@@ -56,7 +56,7 @@ function loadMembers () {
 		var el = $("#memberList");
 		el.innerHTML = "";
 		for(var i = 0; i < t.length; i++)
-			el.innerHTML += tmpl.format([t[i].characterID, t[i].characterName, groupCustom == 1 ? '<span class="fr hover" onclick="removeCharacter(' + t[i].characterID + ');">&times;</span>' : '']);
+			el.appendChild(createElement(tmpl.format([t[i].characterID, t[i].characterName, groupCustom == 1 ? '<span class="fr hover" onclick="removeCharacter(' + t[i].characterID + ');">&times;</span>' : ''])));
 	}, "json");
 }
 

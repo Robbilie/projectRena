@@ -59,7 +59,7 @@ function hashChange (elem) {
                         var scriptelem = document.createElement("script");
                         scriptelem.src = $("#content script")[0].src;
                         scriptelem.text = $("#content script")[0].text;
-                        
+
                         $("#content").appendChild(scriptelem);
                         $("#content").removeChild(scriptelem);
                     } else {
@@ -211,10 +211,10 @@ function removePane () {
 
 // autocomplete test
 
-var AutoComplete = function (elname) {
+var AutoComplete = function (acEl) {
     var self = this;
 
-    var oldel = $("#" + elname);
+    var oldel = acEl;
     this.url = oldel.getAttribute("data-url");
     var id = oldel.id;
 

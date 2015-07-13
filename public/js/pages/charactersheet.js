@@ -18,22 +18,20 @@ function charactersheetJS () {
 	ajax("/json/characters/", function (r) {
 		var el = $("#characterList");
 		el.innerHTML = '';
-		for (var i = r.length - 1; i >= 0; i--) {
-			el.innerHTML += '<div class="hover row">' +
+		for (var i = r.length - 1; i >= 0; i--)
+			el.appendChild(createElement('<div class="hover row">' +
 				'<img src="https://image.eveonline.com/Alliance/' + r[i].allianceID + '_32.png" alt="' + r[i].allianceName + '"/>' +
 				'<img src="https://image.eveonline.com/Corporation/' + r[i].corporationID + '_32.png" alt="' + r[i].corporationName + '"/>' +
 				'<img src="https://image.eveonline.com/Character/' + r[i].characterID + '_32.jpg" alt="' + r[i].characterName + '"/>' +
 				'<span onclick="switchCharacter(' + r[i].characterID + ');">' + r[i].characterName + '</span>' +
 				(r[i].characterID != coreStatus.charid ? '<span class="fr hover" onclick="deleteCharacter(' + r[i].characterID + ');">&times;</span>' : '') +
-			'</div>';
-		}
+			'</div>'));
 	}, "json");
 	ajax("/json/character/" + coreStatus.charid + "/groups/", function (r) {
 		var el = $("#groupList");
 		el.innerHTML = '';
-		for (var i = r.length - 1; i >= 0; i--) {
-			el.innerHTML += '<div> + ' + r[i].name + '</div>';
-		}
+		for (var i = r.length - 1; i >= 0; i--)
+			el.appendChild(createElement('<div> + ' + r[i].name + '</div>'));
 	}, "json");
 }
 

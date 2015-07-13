@@ -33,7 +33,7 @@ function listCorpMembers (id, cb) {
 			var el = $("#corporationList");
 			el.innerHTML = "";
 			for(var i = 0; i < s.length; i++)
-				el.innerHTML += tmpl.format([s[i].characterID, s[i].characterName, '']);
+				el.appendChild(createElement(tmpl.format([s[i].characterID, s[i].characterName, ''])));
 			cb();
 		}, "json");
 	}, "json");
@@ -58,7 +58,7 @@ function listAlliMembers (id, cb) {
 			var el = $("#allianceList");
 			el.innerHTML = "";
 			for(var i = 0; i < s.length; i++)
-				el.innerHTML += tmpl.format([s[i].characterID, s[i].characterName, '']);
+				el.appendChild(createElement(tmpl.format([s[i].characterID, s[i].characterName, ''])));
 			cb();
 		}, "json");
 	}, "json");

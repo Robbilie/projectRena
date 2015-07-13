@@ -9,25 +9,25 @@ function timersJS () {
 		el.innerHTML = "";
 
 		for(var i = 0; i < r.timers.length; i++)
-				el.innerHTML += tmpl.format(r.timers[i]);
+			el.innerHTML += tmpl.format(r.timers[i]);
 
-    var acOwner = new AutoComplete("timerOwner");
-    acOwner.oncomplete = function (self, el) {
-        self.input.setAttribute("data-id", el.getAttribute("data-dat"));
-    };
+	    var acOwner = new AutoComplete($("#timerOwner"));
+	    acOwner.oncomplete = function (self, el) {
+	        self.input.setAttribute("data-id", el.getAttribute("data-dat"));
+	    };
 
-    var acType = new AutoComplete("timerStrucure");
-    acType.oncomplete = function (self, el) {
-        self.input.setAttribute("data-id", el.getAttribute("data-dat"));
-    };
+	    var acType = new AutoComplete($("#timerStrucure"));
+	    acType.oncomplete = function (self, el) {
+	        self.input.setAttribute("data-id", el.getAttribute("data-dat"));
+	    };
 
-    var acLoca = new AutoComplete("timerLocation");
-    acLoca.oncomplete = function (self, el) {
-        self.input.setAttribute("data-id", el.getAttribute("data-dat"));
-    };
+	    var acLoca = new AutoComplete($("#timerLocation"));
+	    acLoca.oncomplete = function (self, el) {
+	        self.input.setAttribute("data-id", el.getAttribute("data-dat"));
+	    };
 
-		if(r.cancreate.length > 0)
-			$("#timerScope").innerHTML = '<option>' + r.cancreate.join('</option><option>') + '</option>';
+		for(var j = 0; j < r.cancreate.length; j++)
+			$("#timerScope").appendChild(createElement('<option>' + r.cancreate[j] + '</option>'));
 
 		if(r.cancreate.length === 0)
 			$("#createTimerForm").parentNode.removeChild($("#createTimerForm"));
@@ -38,21 +38,21 @@ function timersJS () {
 }
 
 function createTimer () {
-		var req = new XMLHttpRequest();
-		req.onreadystatechange = function () {
-				if(req.readyState == 4 && req.status == 200) {
-						var r = JSON.parse(req.responseText);
-						$("#createresponse").innerHTML = r.msg;
-						if(r.state == "success") {
-								timersJS();
-						} else {
-							$("#createresponse").innerHTML = r.msg;
-						}
-				}
-		};
-		req.open("POST", "/json/timer/create/", true);
-		req.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-		req.send(encodeURI("scope=" + $("#timerScope").value + "&ownerID=" + $("#timerOwner").getAttribute("data-id") + "&typeID=" + $("#timerStrucure").getAttribute("data-id") + "&locationID=" + $("#timerLocation").getAttribute("data-id") + "&rf=" + $("#timerRf").value + "&comment=" + $("#timerComment").value + "&timestamp=" + $("#timerTime").value));
+	var req = new XMLHttpRequest();
+	req.onreadystatechange = function () {
+		if(req.readyState == 4 && req.status == 200) {
+			var r = JSON.parse(req.responseText);
+			$("#createresponse").innerHTML = r.msg;
+			if(r.state == "success") {
+					timersJS();
+			} else {
+				$("#createresponse").innerHTML = r.msg;
+			}
+		}
+	};
+	req.open("POST", "/json/timer/create/", true);
+	req.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+	req.send(encodeURI("scope=" + $("#timerScope").value + "&ownerID=" + $("#timerOwner").getAttribute("data-id") + "&typeID=" + $("#timerStrucure").getAttribute("data-id") + "&locationID=" + $("#timerLocation").getAttribute("data-id") + "&rf=" + $("#timerRf").value + "&comment=" + $("#timerComment").value + "&timestamp=" + $("#timerTime").value));
 }
 
 function resetTimerForm () {
@@ -60,7 +60,7 @@ function resetTimerForm () {
 	$("#timerOwner").value = "";
 	$("#timerStrucure").value = "";
 	$("#timerLocation").value = "";
-	$("#timerRf").value = "";
+	$("#timerRf").value = 0;
 	$("#timerTime").value = "";
 	$("#timerComment").value = "";
 }

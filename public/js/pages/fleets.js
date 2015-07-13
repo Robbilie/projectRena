@@ -9,10 +9,10 @@ function fleetsJS () {
         el.innerHTML = "";
 
         for(var i = 0; i < r.fleets.length; i++)
-            el.innerHTML += tmpl.format([r.fleets[i].id, r.fleets[i].name, ""]);
+            el.appendChild(createElement(tmpl.format([r.fleets[i].id, r.fleets[i].name, ""])));
 
-        if(r.cancreate.length > 0)
-          $("#fleetScope").innerHTML = '<option>' + r.cancreate.join('</option><option>') + '</option>';
+        for(var j = 0; j < r.cancreate.length; j++)
+          $("#fleetScope").appendChild(createElement('<option>' + r.cancreate[j] + '</option>'));
 
         if(r.cancreate.length === 0)
             $("#createFleetForm").parentNode.removeChild($("#createFleetForm"));

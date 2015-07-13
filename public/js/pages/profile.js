@@ -17,8 +17,7 @@ function profileJS () {
 	ajax("/json/character/" + coreStatus.charid + "/groups/", function (r) {
 		var el = $("#groupList");
 		el.innerHTML = '';
-		for (var i = r.length - 1; i >= 0; i--) {
-			el.innerHTML += '<div> + ' + r[i].name + '</div>';
-		}
+		for (var i = r.length - 1; i >= 0; i--)
+			el.appendChild(createElement('<div> + ' + r[i].name + '</div>'));
 	}, "json");
 }

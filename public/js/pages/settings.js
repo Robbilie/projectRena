@@ -4,8 +4,8 @@ function settingsJS () {
 }
 
 function submitAPI () {
-	var keyID = document.getElementsByName("keyID")[0].value;
-	var vCode = document.getElementsByName("vCode")[0].value;
+	var keyID = $("[name='keyID']")[0].value;
+	var vCode = $("[name='vCode']")[0].value;
 	if(keyID === "" || vCode === "") return;
 	ajax("/json/apikey/" + keyID + "/" + vCode + "/", function (r) {
 		if(r.state == "success")

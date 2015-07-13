@@ -23,20 +23,19 @@ function structurescontroltowerJS (cb) {
 		var corp = "";
 		var region = "";
 		var system = "";
-		var ctn = "";
 		var chngd = false;
 		for (var i = 0; i < r.length; i++) {
 			if(corp != r[i].corpName) {
 				corp = r[i].corpName;
-				ctn += '<h2 class="mtn mbn">' + corp + '</h2>';
+				structCont.appendChild(createElement('<h2 class="mtn mbn">' + corp + '</h2>'));
 			}
 			if(region != r[i].regionName) {
 				region = r[i].regionName;
-				ctn += '<h3 class="mtn mbn">' + region + '</h3>';
+				structCont.appendChild(createElement('<h3 class="mtn mbn">' + region + '</h3>'));
 			}
 			if(system != r[i].solarSystemName) {
 				system = r[i].solarSystemName;
-				ctn += '<h4 class="mtn mbn">' + system + '</h3>';
+				structCont.appendChild(createElement('<h4 class="mtn mbn">' + system + '</h3>'));
 			}
 			var fuel = 0;
 			var stront = 0;
@@ -47,11 +46,9 @@ function structurescontroltowerJS (cb) {
 					stront += (r[i].content[j].volume * r[i].content[j].quantity);
 				}
 			}
-			ctn += tmpl.format([r[i].id, r[i].name, r[i].moonName, states[r[i].state], r[i].typeName, fuel / r[i].capacity * 100, stront / r[i].secondaryCapacity * 100]);
+			structCont.appendChild(createElement(tmpl.format([r[i].id, r[i].name, r[i].moonName, states[r[i].state], r[i].typeName, fuel / r[i].capacity * 100, stront / r[i].secondaryCapacity * 100])));
 			chngd = false;
 		}
-		ctn += '</table>';
-		structCont.innerHTML = ctn;
 		cb();
 	}, "json");
 }
