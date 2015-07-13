@@ -41,8 +41,10 @@ function hashChange (elem) {
                     // js exec magic
                     if($("#content").getElementsByTagName("script").length > 0) {
                         console.log("script");
+                        var scriptsrc = $("#content").getElementsByTagName("script")[0].src;
                         var scripttxt = $("#content").getElementsByTagName("script")[0].text;
                         var scriptelem = document.createElement("script");
+                        scriptelem.src = scriptsrc;
                         scriptelem.text = scripttxt;
                         $("#content").appendChild(scriptelem);
                         $("#content").removeChild(scriptelem);
