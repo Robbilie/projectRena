@@ -52,18 +52,18 @@ class CoreNotification extends CoreBase {
 
 	public function jsonSerialize() {
 		return array(
-				"id"					=> (int)$this->id,
-				"eveID"				=> (int)$this->eveID,
-				"state"				=> (int)$this->state,
-				"typeID"			=> (int)$this->typeID,
-				"creatorID"		=> (int)$this->creatorID,
-				"recipientID"	=> (int)$this->recipientID,
-				"locationID"	=> (int)$this->locationID,
-				"created"			=> (int)$this->created,
-				"requested"		=> (int)$this->requested,
-				"body"				=> $this->body,
-				"readState"		=> $this->isRead()
-			);
+			"id"			=> (int)$this->id,
+			"eveID"			=> (int)$this->eveID,
+			"state"			=> (int)$this->state,
+			"typeID"		=> (int)$this->typeID,
+			"creatorID"		=> (int)$this->creatorID,
+			"recipientID"	=> (int)$this->recipientID,
+			"locationID"	=> (int)$this->locationID,
+			"created"		=> (int)$this->created,
+			"requested"		=> (int)$this->requested,
+			"body"			=> $this->body,
+			"readState"		=> $this->isRead()
+		);
 	}
 
 	// default

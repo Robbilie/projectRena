@@ -231,14 +231,14 @@ class CoreCharacter extends CoreBase {
 							0 = 1
 						)
 					) ORDER BY easNotifications.requested DESC",
-					array(
-						":characterID" => $this->getCharId(),
-						":corporationID" => $this->getCorpId(),
-						":allianceID" => $this->getAlliId()
-					)
-				);
-			}
-			return $this->notifications;
+				array(
+					":characterID" => $this->getCharId(),
+					":corporationID" => $this->getCorpId(),
+					":allianceID" => $this->getAlliId()
+				)
+			);
+		}
+		return $this->notifications;
 	}
 
 	public function getCNotifications () {

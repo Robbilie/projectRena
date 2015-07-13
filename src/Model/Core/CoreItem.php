@@ -89,17 +89,17 @@ class CoreItem extends CoreBase {
 
 	public function jsonSerialize() {
 		return array(
-				"ownerID"			=> (int)$this->ownerID,
-				"itemID"			=> (int)$this->itemID,
-				"typeID"			=> (int)$this->typeID,
-				"typeName"		=> $this->getType()->getName(),
-				"locationID"	=> (int)$this->locationID,
-				"quantity"		=> (int)$this->quantity,
-				"flag"				=> $this->flag,
-				"name"				=> $this->name,
-				"volume"			=> $this->getType()->getVolume(),
-				"group"				=> $this->getType()->getGroupId()
-			);
+			"ownerID"			=> (int)$this->ownerID,
+			"itemID"			=> (int)$this->itemID,
+			"typeID"			=> (int)$this->typeID,
+			"typeName"			=> $this->getType()->getName(),
+			"locationID"		=> (int)$this->locationID,
+			"quantity"			=> (int)$this->quantity,
+			"flag"				=> (int)$this->flag,
+			"name"				=> $this->name,
+			"volume"			=> (float)$this->getType()->getVolume(),
+			"group"				=> (int)$this->getType()->getGroupId()
+		);
 	}
 
 	// default

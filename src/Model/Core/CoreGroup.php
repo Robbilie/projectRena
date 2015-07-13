@@ -140,12 +140,12 @@ class CoreGroup extends CoreBase {
 
 	public function jsonSerialize() {
 		return array(
-			"id"					=> (int)$this->id,
+			"id"				=> (int)$this->id,
 			"name"				=> $this->name,
 			"scope"				=> $this->scope,
 			"owner"				=> (int)$this->owner,
 			"custom"			=> $this->isCustom(),
-			"permissions" => $this->getPermissions()
+			"permissions" 		=> $this->getPermissions()
 		);
 	}
 

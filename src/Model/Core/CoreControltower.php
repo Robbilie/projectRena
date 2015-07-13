@@ -32,23 +32,23 @@ class CoreControltower extends CoreStructure {
 	public function jsonSerialize() {
 		$id = $this->itemID;
 		return array(
-        		"id" 								=> (int)$this->getItemId(),
-        		"name" 							=> $this->getName(),
-        		"state" 						=> (int)$this->getState(),
-        		"moonName" 					=> $this->getMoon()->getName(),
-        		"typeID" 						=> (int)$this->getTypeId(),
-        		"typeName" 					=> $this->getType()->getName(),
-        		"capacity" 					=> $this->getType()->getCapacity(),
-        		"solarSystemID" 		=> (int)$this->getLocation()->getId(),
-        		"solarSystemName" 	=> $this->getLocation()->getName(),
-        		"regionName" 				=> $this->getLocation()->getLocation()->getName(),
-        		"corpName" 					=> $this->getOwner()->getName(),
-        		"corpID" 						=> (int)$this->getOwner()->getId(),
-        		"sov" 							=> $this->getLocation()->getOwner() && $this->getLocation()->getOwner()->getId() == $this->getOwner()->getCAlliance()->getId(),
-        		"secondaryCapacity" => $this->app->CoreManager->getDGMAttribute($this->getTypeId(), 1233)['valueFloat'],
-        		"content" 					=> $this->getOwner()->getItems(function($i) use ($id) { return $i->getLocationId() == $id; }),
-        		//"ressources" 			=> $ct->getRessources()
-    		);
+    		"id" 				=> (int)$this->getItemId(),
+    		"name" 				=> $this->getName(),
+    		"state" 			=> (int)$this->getState(),
+    		"moonName" 			=> $this->getMoon()->getName(),
+    		"typeID" 			=> (int)$this->getTypeId(),
+    		"typeName" 			=> $this->getType()->getName(),
+    		"capacity" 			=> (float)$this->getType()->getCapacity(),
+    		"solarSystemID" 	=> (int)$this->getLocation()->getId(),
+    		"solarSystemName" 	=> $this->getLocation()->getName(),
+    		"regionName" 		=> $this->getLocation()->getLocation()->getName(),
+    		"corpName" 			=> $this->getOwner()->getName(),
+    		"corpID" 			=> (int)$this->getOwner()->getId(),
+    		"sov" 				=> $this->getLocation()->getOwner() && $this->getLocation()->getOwner()->getId() == $this->getOwner()->getCAlliance()->getId(),
+    		"secondaryCapacity" => (float)$this->app->CoreManager->getDGMAttribute($this->getTypeId(), 1233)['valueFloat'],
+    		"content" 			=> $this->getOwner()->getItems(function($i) use ($id) { return $i->getLocationId() == $id; }),
+    		//"ressources" 			=> $ct->getRessources()
+		);
 	}
 
 	public function getStateName () {

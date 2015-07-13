@@ -5,27 +5,27 @@ use ProjectRena\RenaApp;
 
 class CoreFleetParticipant extends CoreCharacter {
 
-  protected $confirmed;
+    protected $confirmed;
 
-  // custom
+    // custom
 
-  public function setConfirmed ($confirmed) {
-    $this->confirmed = $confirmed;
-  }
+    public function setConfirmed ($confirmed) {
+        $this->confirmed = $confirmed;
+    }
 
-	public function jsonSerialize() {
-		return array(
-			"characterID"      => (int)$this->getCharId(),
-			"characterName"    => $this->getCharName(),
-			"corporationName"  => $this->getCorpName(),
-			"confirmed"        => $this->getConfirmed()
-		);
-	}
+    public function jsonSerialize() {
+        return array(
+            "characterID"      => (int)$this->getCharId(),
+            "characterName"    => $this->getCharName(),
+            "corporationName"  => $this->getCorpName(),
+            "confirmed"        => $this->getConfirmed()
+        );
+    }
 
-  // default
+    // default
 
-  public function getConfirmed () {
-    return (int)$this->confirmed;
-  }
+    public function getConfirmed () {
+        return (int)$this->confirmed;
+    }
 
 }

@@ -56,76 +56,74 @@ class CoreManager {
             $vars = array('characterID' => 'CharId', 'characterName' => 'CharName', 'corporationID' => 'CorpId', 'corporationName' => 'CorpName', 'allianceID' => 'AlliId', 'allianceName' => 'AlliName');
             $char = new CoreCharacter($this->app, $charRow);
             $ch = $this->charChanged($char, $apiChar);
-            if($ch || count($char->getGroups()) == 0) {
+            if($ch || count($char->getGroups()) == 0)
                 $this->setBaseGroups($char);
-            }
         }
         return $char;
     }
 
     public function getNotification ($notificationID) {
-      $character = $this->getCharacter($_SESSION['characterID']);
-      $notification = $this->db->queryRow(
-				"SELECT easNotifications.*, (SELECT 1 as i FROM easNotificationReaders WHERE notificationID = easNotifications.id AND readerID = :characterID) as readState
-				FROM
-					easNotifications
-				LEFT JOIN easNotificationSettings
-				ON
-					easNotifications.recipientID = easNotificationSettings.corporationID,
-					easNotificationTypes,
-					easPermissions
-				WHERE
-					easNotifications.typeID = easNotificationTypes.typeID
-				AND
-					easNotificationTypes.permissionID IN (:permissions)
-				AND
-					easNotificationTypes.permissionID = easPermissions.id
-				AND
-					(
-				        (
-				            easNotificationSettings.scope = easPermissions.scope
-				        )
-				    OR
-				        (
-				            easNotificationSettings.scope IS NULL
-				        AND
-				            easPermissions.scope = 'corporation'
-				        )
-				    )
-				AND
-					(
-						(
-							(
-				                easNotificationSettings.scope = 'corporation'
-				            OR
-				                easNotificationSettings.scope IS NULL
-				            )
-						AND
-							easNotifications.recipientID = :corporationID
-						)
-					OR
-						(
-							easNotificationSettings.scope = 'alliance'
-						AND
-							:allianceID = (SELECT alliance FROM ntCorporation WHERE id = easNotifications.recipientID)
-						)
-					OR
-						(
-							easNotificationSettings.scope = 'blue'
-						AND
-							0 = 1
-						)
-					)",
-					array(
-						":permissions" => implode(",", $character->getPermissions()),
-						":characterID" => $character->getCharId(),
-						":corporationID" => $character->getCorpId(),
-						":allianceID" => $character->getAlliId()
-					)
-				);
-        if($notification) {
-          return new CoreNotification($this->app, $notification);
-        }
+        $character = $this->getCharacter($_SESSION['characterID']);
+        $notification = $this->db->queryRow(
+    		"SELECT easNotifications.*, (SELECT 1 as i FROM easNotificationReaders WHERE notificationID = easNotifications.id AND readerID = :characterID) as readState
+    		FROM
+    			easNotifications
+    		LEFT JOIN easNotificationSettings
+    		ON
+    			easNotifications.recipientID = easNotificationSettings.corporationID,
+    			easNotificationTypes,
+    			easPermissions
+    		WHERE
+    			easNotifications.typeID = easNotificationTypes.typeID
+    		AND
+    			easNotificationTypes.permissionID IN (:permissions)
+    		AND
+    			easNotificationTypes.permissionID = easPermissions.id
+    		AND
+    			(
+    		        (
+    		            easNotificationSettings.scope = easPermissions.scope
+    		        )
+    		    OR
+    		        (
+    		            easNotificationSettings.scope IS NULL
+    		        AND
+    		            easPermissions.scope = 'corporation'
+    		        )
+    		    )
+    		AND
+    			(
+    				(
+    					(
+    		                easNotificationSettings.scope = 'corporation'
+    		            OR
+    		                easNotificationSettings.scope IS NULL
+    		            )
+    				AND
+    					easNotifications.recipientID = :corporationID
+    				)
+    			OR
+    				(
+    					easNotificationSettings.scope = 'alliance'
+    				AND
+    					:allianceID = (SELECT alliance FROM ntCorporation WHERE id = easNotifications.recipientID)
+    				)
+    			OR
+    				(
+    					easNotificationSettings.scope = 'blue'
+    				AND
+    					0 = 1
+    				)
+    			)",
+    			array(
+    				":permissions" => implode(",", $character->getPermissions()),
+    				":characterID" => $character->getCharId(),
+    				":corporationID" => $character->getCorpId(),
+    				":allianceID" => $character->getAlliId()
+    			)
+    		);
+        if($notification)
+            return new CoreNotification($this->app, $notification);
         return null;
     }
 
@@ -193,11 +191,11 @@ class CoreManager {
         if(is_int($perm)) {
             $permissionRow = $this->db->queryRow("SELECT * FROM easPermissions WHERE id = :bi", array(":bi" => $perm));
         } else if(is_string($perm)) {
-          if(is_null($scope)) {
-            $permissionRow = $this->db->queryRow("SELECT * FROM easPermissions WHERE name = :bi", array(":bi" => $perm));
-          } else {
-            $permissionRow = $this->db->queryRow("SELECT * FROM easPermissions WHERE name = :bi AND scope = :scope", array(":bi" => $perm, ":scope" => $scope));
-          }
+            if(is_null($scope)) {
+                $permissionRow = $this->db->queryRow("SELECT * FROM easPermissions WHERE name = :bi", array(":bi" => $perm));
+            } else {
+                $permissionRow = $this->db->queryRow("SELECT * FROM easPermissions WHERE name = :bi AND scope = :scope", array(":bi" => $perm, ":scope" => $scope));
+            }
         }
         if($permissionRow) {
             $permission = new CorePermission($this->app, $permissionRow);
@@ -259,62 +257,62 @@ class CoreManager {
                 array_push($this->chars, $char);
                 return $char;
             } else {
-              $char = new CoreCharacter($this->app, $this->app->EVEEVECharacterAffiliation->getData(array($characterID))['result']['characters'][0]);
-              array_push($this->chars, $char);
-              return $char;
+                $char = new CoreCharacter($this->app, $this->app->EVEEVECharacterAffiliation->getData(array($characterID))['result']['characters'][0]);
+                array_push($this->chars, $char);
+                return $char;
             }
         }
         return null;
     }
 
     public function getFleetParticipant ($fleetparticipant) {
-      $character = $this->getCharacter($fleetparticipant['characterID']);
-		if(is_null($character)) return null;
-      $characterData = $character->getData();
-      $characterData['confirmed'] = $fleetparticipant['confirmed'];
-      $cfleetparticipant = new CoreFleetParticipant($this->app, $characterData);
-      return $cfleetparticipant;
+        $character = $this->getCharacter($fleetparticipant['characterID']);
+        if(is_null($character)) return null;
+        $characterData = $character->getData();
+        $characterData['confirmed'] = $fleetparticipant['confirmed'];
+        $cfleetparticipant = new CoreFleetParticipant($this->app, $characterData);
+        return $cfleetparticipant;
     }
 
     protected $fleets = array();
     public function getFleet ($fleetID) {
-      foreach ($this->fleets as $fleet)
-        if($fleet->getId() == $fleetID)
-          return $fleet;
-      $fleetRow = $this->db->queryRow("SELECT * FROM easFleets WHERE id = :fleetID", array(":fleetID" => $fleetID));
-      if($fleetRow) {
-        $fleet = new CoreFleet($this->app, $fleetRow);
-        array_push($this->fleets, $fleet);
-        return $fleet;
-      }
-      return null;
+        foreach ($this->fleets as $fleet)
+            if($fleet->getId() == $fleetID)
+                return $fleet;
+        $fleetRow = $this->db->queryRow("SELECT * FROM easFleets WHERE id = :fleetID", array(":fleetID" => $fleetID));
+        if($fleetRow) {
+            $fleet = new CoreFleet($this->app, $fleetRow);
+            array_push($this->fleets, $fleet);
+            return $fleet;
+        }
+        return null;
     }
 
     public function getFleetByHash ($hash) {
-      foreach ($this->fleets as $fleet)
-        if($fleet->getHash() == $hash)
-          return $fleet;
-      $fleetRow = $this->db->queryRow("SELECT * FROM easFleets WHERE hash = :hash", array(":hash" => $hash));
-      if($fleetRow) {
-        $fleet = new CoreFleet($this->app, $fleetRow);
-        array_push($this->fleets, $fleet);
-        return $fleet;
-      }
-      return null;
+        foreach ($this->fleets as $fleet)
+            if($fleet->getHash() == $hash)
+                return $fleet;
+        $fleetRow = $this->db->queryRow("SELECT * FROM easFleets WHERE hash = :hash", array(":hash" => $hash));
+        if($fleetRow) {
+            $fleet = new CoreFleet($this->app, $fleetRow);
+            array_push($this->fleets, $fleet);
+            return $fleet;
+        }
+        return null;
     }
 
     public function createFleet ($scope, $name, $comment, $creator, $expiresin, $participants) {
-      $id = $this->db->execute("INSERT INTO easFleets (scope, name, comment, creator, time, expires, hash) VALUES (:scope, :name, :comment, :creator, :time, :expires, :hash)",
-        array(
-          ":scope"    => $scope,
-          ":name"     => $name,
-          ":comment"  => $comment,
-          ":creator"  => $creator,
-          ":time"     => time(),
-          ":expires"  => time() + (60*60*$expiresin),
-          ":hash"     => md5($creator.$name.$comment.time().$this->config->getConfig("fleetsalt", "secrets"))
-        ), true
-      );
+        $id = $this->db->execute("INSERT INTO easFleets (scope, name, comment, creator, time, expires, hash) VALUES (:scope, :name, :comment, :creator, :time, :expires, :hash)",
+            array(
+                ":scope"    => $scope,
+                ":name"     => $name,
+                ":comment"  => $comment,
+                ":creator"  => $creator,
+                ":time"     => time(),
+                ":expires"  => time() + (60*60*$expiresin),
+                ":hash"     => md5($creator.$name.$comment.time().$this->config->getConfig("fleetsalt", "secrets"))
+            ), true
+        );
 
         $character = $this->getCharacter($creator);
 
@@ -332,33 +330,32 @@ class CoreManager {
 		foreach ($idsFromAPI as $idFromAPI)
 			array_push($idsFromAPISorted, (int)$idFromAPI['characterID']);
 
-    // get affiliations from api
-    $chunkedIdsFromAPI = array_chunk($idsFromAPISorted, 100);
-    $affs = array();
-    for($i = 0; $i < count($chunkedIdsFromAPI); $i++) {
-        $affs = array_merge($affs, $this->app->EVEEVECharacterAffiliation->getData($chunkedIdsFromAPI[$i])['result']['characters']);
-    }
+        // get affiliations from api
+        $chunkedIdsFromAPI = array_chunk($idsFromAPISorted, 100);
+        $affs = array();
+        for($i = 0; $i < count($chunkedIdsFromAPI); $i++)
+            $affs = array_merge($affs, $this->app->EVEEVECharacterAffiliation->getData($chunkedIdsFromAPI[$i])['result']['characters']);
 
-    $affsSorted = array();
-    foreach($affs as $aff)
-        $affsSorted[$aff['characterID']] = $aff;
+        $affsSorted = array();
+        foreach($affs as $aff)
+            $affsSorted[$aff['characterID']] = $aff;
 
 
 		for($i = 0; $i < count($idsFromAPISorted); $i++) {
-      if(
-        ($scope == "corporation" && $character->getCorpId() == $affsSorted[$idsFromAPISorted[$i]]['corporationID']) ||
-        ($scope == "alliance" && $character->getAlliId() == $affsSorted[$idsFromAPISorted[$i]]['allianceID']) ||
-        ($scope == "blue" && $character->getCCorporation()->getCAlliance()->hasStandingsTowards($this->app->CoreManager->getCharacter($idsFromAPISorted[$i])))
-      ) {
-        $this->db->execute("INSERT INTO easFleetParticipants (fleetID, characterID, confirmed) VALUE (:fleetID, :characterID, 0)", array(":fleetID" => $id, ":characterID" => $idsFromAPISorted[$i]));
-      }
-    }
+            if(
+                ($scope == "corporation" && $character->getCorpId() == $affsSorted[$idsFromAPISorted[$i]]['corporationID']) ||
+                ($scope == "alliance" && $character->getAlliId() == $affsSorted[$idsFromAPISorted[$i]]['allianceID']) ||
+                ($scope == "blue" && $character->getCCorporation()->getCAlliance()->hasStandingsTowards($this->app->CoreManager->getCharacter($idsFromAPISorted[$i])))
+            ) {
+                $this->db->execute("INSERT INTO easFleetParticipants (fleetID, characterID, confirmed) VALUE (:fleetID, :characterID, 0)", array(":fleetID" => $id, ":characterID" => $idsFromAPISorted[$i]));
+            }
+        }
 		if(in_array($creator, $idsFromAPISorted)) {
 			$this->db->execute("UPDATE easFleetParticipants SET confirmed = 1 WHERE fleetID = :fleetID AND characterID = :characterID", array(":fleetID" => $id, ":characterID" => $creator));
 		} else {
 			$this->db->execute("INSERT INTO easFleetParticipants (fleetID, characterID, confirmed) VALUE (:fleetID, :characterID, 1)", array(":fleetID" => $id, ":characterID" => $creator));
 		}
-      return $this->getFleet($id);
+        return $this->getFleet($id);
     }
 
     protected $corps = array();
@@ -423,12 +420,12 @@ class CoreManager {
             if($location->getId() == $locationID)
                 return $location;
         if($invName) {
-          $invnameLocRow = $this->db->queryRow("SELECT itemName as name, itemID as id FROM invNames WHERE itemID = :itemID", array(":itemID" => $locationID));
-          if($invnameLocRow) {
-            $invnameLoc = new CoreLocation($this->app, $invnameLocRow);
-            array_push($this->locations, $invnameLoc);
-            return $invnameLoc;
-          }
+            $invnameLocRow = $this->db->queryRow("SELECT itemName as name, itemID as id FROM invNames WHERE itemID = :itemID", array(":itemID" => $locationID));
+            if($invnameLocRow) {
+                $invnameLoc = new CoreLocation($this->app, $invnameLocRow);
+                array_push($this->locations, $invnameLoc);
+                return $invnameLoc;
+            }
         }
         return null;
     }
@@ -458,30 +455,30 @@ class CoreManager {
                 return $controltower;
         $controltowerRow = $this->db->queryRow("SELECT ntItem.ownerID,ntItem.itemID,ntItem.typeID,ntItem.locationID,ntItem.quantity,ntItem.flag,ntLocation.name,ntLocation.x,ntLocation.y,ntLocation.z,ntItemStarbase.state,ntItemStarbase.moonID FROM ntItem,ntLocation,ntItemStarbase WHERE ntItem.itemID = :itemID AND ntLocation.itemID = ntItem.itemID AND ntItemStarbase.itemID = ntItem.itemID", array(":itemID" => $towerID));
         if($controltowerRow) {
-          $controlTower = new CoreControltower($this->app, $controltowerRow);
-          array_push($this->controltowers, $controlTower);
-          return $controlTower;
+            $controlTower = new CoreControltower($this->app, $controltowerRow);
+            array_push($this->controltowers, $controlTower);
+            return $controlTower;
         }
         return null;
     }
 
     protected $timers = array();
     public function getTimer ($timerID) {
-      foreach ($this->timers as $timer)
-        if($timer->getId() == $timerID)
-          return $timer;
+        foreach ($this->timers as $timer)
+            if($timer->getId() == $timerID)
+            return $timer;
         $timerRow = $this->db->queryRow("SELECT * FROM easTimers WHERE id = :timerID", array(":timerID" => $timerID));
         if($timerRow) {
-          $ctimer = new CoreTimer($this->app, $timerRow);
-          array_push($this->timers, $ctimer);
-          return $ctimer;
+            $ctimer = new CoreTimer($this->app, $timerRow);
+            array_push($this->timers, $ctimer);
+            return $ctimer;
         }
         return null;
     }
 
     public function createTimer ($scope, $creatorID, $ownerID, $typeID, $locationID, $rf, $comment, $timestamp) {
         $id = $this->db->execute("INSERT INTO easTimers (scope, creatorID, ownerID, typeID, locationID, rf, comment, timestamp) VALUES (:scope, :creatorID, :ownerID, :typeID, :locationID, :rf, :comment, :timestamp)",
-          array(
+            array(
             ":scope"      => $scope,
             ":creatorID"  => $creatorID,
             ":ownerID"    => $ownerID,
@@ -490,18 +487,17 @@ class CoreManager {
             ":rf"         => $rf,
             ":comment"    => $comment,
             ":timestamp"  => $timestamp,
-          ), true
+            ), true
         );
         return $this->getTimer($id);
     }
 
     public function getTimers ($creatorID) {
-      $timers = array();
-      $timerRows = $this->db->query("SELECT * FROM easTimers WHERE creatorID = :creatorID ORDER BY timestamp ASC", array(":creatorID" => $creatorID));
-      foreach ($timerRows as $timerRow) {
-        array_push($timers, new CoreTimer($this->app, $timerRow));
-      }
-      return $timers;
+        $timers = array();
+        $timerRows = $this->db->query("SELECT * FROM easTimers WHERE creatorID = :creatorID ORDER BY timestamp ASC", array(":creatorID" => $creatorID));
+        foreach ($timerRows as $timerRow)
+            array_push($timers, new CoreTimer($this->app, $timerRow));
+        return $timers;
     }
 
     public function charChanged ($char, $apiChar) {
@@ -521,15 +517,14 @@ class CoreManager {
         // remove old groups
         $oldgroups = $char->getCGroups();
         for($i = 0; $i < count($oldgroups); $i++)
-          $oldgroups[i]->removeCharacter($char->getCharId());
+            $oldgroups[i]->removeCharacter($char->getCharId());
 
         $char->resetGroups();
 
         $corporation = $char->getCCorporation();
         $corporationGroup = $this->getGroup($char->getCorpName());
-        if(is_null($corporationGroup)) {
+        if(is_null($corporationGroup))
             $corporationGroup = $this->createGroup($corporation->getName(), "corporation", $char->getCorpId(), 0);
-        }
         $corporationGroup->addCharacter($char->getCharId());
 
         if($corporation->getCeoCharacterId() == $char->getCharId())
@@ -537,9 +532,8 @@ class CoreManager {
 
         $alliance = $char->getCAlliance();
         $allianceGroup = $this->getGroup($char->getAlliName());
-        if(is_null($allianceGroup)) {
+        if(is_null($allianceGroup))
             $allianceGroup = $this->createGroup($alliance>getName(), "alliance", $char->getAlliId(), 0);
-        }
         $allianceGroup->addCharacter($char->getCharId());
 
         if($alliance->getExecCorp()->getCeoCharacterId() == $char->getCharId())
