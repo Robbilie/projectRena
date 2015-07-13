@@ -1,6 +1,6 @@
 var loginurl = "https://login.eveonline.com/oauth/authorize?response_type=code&redirect_uri=http://core.eneticum.rep.pm/login/eve/&client_id=6fe200c8c9ef4ab59fe595e86de454af&scope=&state=/";
 
-var $ = function (id, el) {
+function $ (id, el) {
     var c = el ? el : document;
     if(document.querySelector && document.querySelectorAll) {
         if(id.substr(0,1) == "#") {
@@ -18,7 +18,13 @@ var $ = function (id, el) {
                 return c.getElementsByTagName(id);
         }
     }
-};
+}
+function createElement (elStr) {
+    var tmpEl = document.createElement("div");
+    tmpEl.innerHTML = elStr;
+    return tmpEl.firstChild;
+}
+
 window.onload = function () {
   if(window != window.top)
     document.body.className = "iframe";
