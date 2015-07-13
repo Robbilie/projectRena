@@ -55,7 +55,11 @@ function hashChange (elem) {
                     // js exec magic
                     if($("#content script").length > 0) {
                         console.log("script");
-                        var scriptelem = createElement($("#content script")[0].outerHTML);
+
+                        var scriptelem = document.createElement("script");
+                        scriptelem.src = $("#content script")[0].src;
+                        scriptelem.text = $("#content script")[0].text;
+                        
                         $("#content").appendChild(scriptelem);
                         $("#content").removeChild(scriptelem);
                     } else {
