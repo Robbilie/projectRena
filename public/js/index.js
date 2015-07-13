@@ -53,7 +53,7 @@ function hashChange (elem) {
                     // inject new content
                     $("#content").innerHTML = r;
                     // js exec magic
-                    if($("#contentConti script").length > 0) {
+                    if($("#content script").length > 0) {
                         console.log("script");
                         var scriptelem = createElement($("#content script")[0].outerHTML);
                         $("#content").appendChild(scriptelem);
