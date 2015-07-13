@@ -22,7 +22,9 @@ function $ (id, el) {
 function createElement (elStr) {
     var tmpEl = document.createElement("div");
     tmpEl.innerHTML = elStr;
-    return tmpEl.firstChild;
+    for(var i = 0; i < tmpEl.children.length; i++)
+      if(tmpEl.children[0].nodeType == 1)
+        return tmpEl.children[i];
 }
 
 window.onload = function () {

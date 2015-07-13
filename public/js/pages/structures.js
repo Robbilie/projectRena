@@ -16,10 +16,11 @@ function structuresJS () {
 }
 
 function structurescontroltowerJS (cb) {
-	var tmpl = $("#controltowerStructuresTemplate").innerHTML;
-	var structCont = $("#structuresContent");
-	var states = ["Unanchored", "Anchored / Offline", "Onlining", "Reinforced", "Online"];
 	ajax("/json/structures/controltower/", function (r) {
+		var tmpl = $("#controltowerStructuresTemplate").innerHTML;
+		var structCont = $("#structuresContent");
+		structCont.innerHTML = "";
+		var states = ["Unanchored", "Anchored / Offline", "Onlining", "Reinforced", "Online"];
 		var corp = "";
 		var region = "";
 		var system = "";
