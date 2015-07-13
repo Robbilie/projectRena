@@ -3,7 +3,7 @@ var loginurl = "https://login.eveonline.com/oauth/authorize?response_type=code&r
 function $ (id, el) {
     var c = el ? el : document;
     if(document.querySelector && document.querySelectorAll) {
-        if(id.substr(0,1) == "#") {
+        if(id.substr(0,1) == "#" && id.split(" ").length == 1) {
             return document.querySelector(id);
         } else {
             return document.querySelectorAll(id);
@@ -47,25 +47,21 @@ function hashChange (elem) {
         ajax(location.hash.slice(2), function (r) {
             if(location.hash.split("/")[1] == "logout") location.hash = "#!/home/";
             setTimeout(function () {
-                if(document.getElementsByClassName("contentConti")[0])
-                    document.getElementsByClassName("contentConti")[0].style.opacity = 0;
+                if($(".contentConti")[0])
+                    $(".contentConti")[0].style.opacity = 0;
                 setTimeout(function () {
                     // inject new content
                     $("#content").innerHTML = r;
                     // js exec magic
-                    if($("#content").getElementsByTagName("script").length > 0) {
+                    if($("#contentConti script").length > 0) {
                         console.log("script");
-                        var scriptsrc = $("#content").getElementsByTagName("script")[0].src;
-                        var scripttxt = $("#content").getElementsByTagName("script")[0].text;
-                        var scriptelem = document.createElement("script");
-                        scriptelem.src = scriptsrc;
-                        scriptelem.text = scripttxt;
+                        var scriptelem = createElement($("#content script")[0].outerHTML);
                         $("#content").appendChild(scriptelem);
                         $("#content").removeChild(scriptelem);
                     } else {
                         console.log("no script");
-                        if(document.getElementsByClassName("contentConti")[0])
-                            fadeOn(document.getElementsByClassName("contentConti")[0], 1);
+                        if($(".contentConti")[0])
+                            fadeOn($(".contentConti")[0], 1);
                     }
                 }, 200);
             }, 10);
@@ -87,9 +83,9 @@ function hashChange (elem) {
 
 function refreshDom () {
     if(typeof(CCPEVE) == "undefined") return;
-    document.getElementById('container').style.visibility = 'hidden';
+    $('#container').style.visibility = 'hidden';
     setTimeout(function () {
-        document.getElementById('container').style.visibility = 'visible';
+        $('#container').style.visibility = 'visible';
     }, 0);
 }
 
@@ -191,17 +187,12 @@ function getNotif (id, el) {
 
 function switchCharacter (charid) {
     if(charid == coreStatus.charid) return;
-    ajax("/json/character/switch/" + charid + "/", function (r) {
-        //if(r.state == "success")
-            //hashChange();
-    }, "json");
+    ajax("/json/character/switch/" + charid + "/", function (r) {}, "json");
 }
 
 function splitPane () {
   document.body.className = "split";
-  var fr = document.createElement("div");
-  fr.id = "iframeParent";
-  fr.innerHTML = '<iframe src="/" frameBorder="0"></iframe>';
+  var fr = createElement('<div id="iframeParent"><iframe src="/" frameBorder="0"></iframe></div>');
   $("#splitPane").parentNode.insertBefore(fr, $("#splitPane"));
   $("#splitPane").setAttribute("onclick", "removePane();");
   $("#splitPane").innerHTML = "-";
@@ -226,10 +217,7 @@ var AutoComplete = function (elname) {
     var dropdown = document.createElement("div");
     dropdown.className = "dropdowntf";
 
-    this.input = document.createElement("input");
-    this.input.className = oldel.className;
-    this.input.type = "text";
-    this.input.id = id;
+    this.input = createElement(oldel.outerHTML);
     this.input.addEventListener("keyup", function (event) {
         self.pollAutoComplete(self, event);
     });
@@ -239,8 +227,7 @@ var AutoComplete = function (elname) {
         }, 200);
     });
 
-    this.dropdownConti = document.createElement("div");
-    this.dropdownConti.className = "dropdown";
+    this.dropdownConti = createElement('<div class="dropdown"></div>');
 
     dropdown.appendChild(this.input);
     dropdown.appendChild(this.dropdownConti);
@@ -258,10 +245,7 @@ AutoComplete.prototype.pollAutoComplete = function (self, event) {
             var conti = self.dropdownConti;
             conti.innerHTML = "";
             for(var i = 0; i < r.length; i++) {
-                var tmpdiv = document.createElement("div");
-                tmpdiv.className = "hover row";
-                tmpdiv.innerHTML = r[i].name;
-                tmpdiv.setAttribute("data-dat", r[i].data);
+                var tmpdiv = createElement('<div class="hover row" data-dat="' + r[i].data + '">' + r[i].name + '</div>');
                 self.addClickComplete(self, tmpdiv);
                 conti.appendChild(tmpdiv);
             }
