@@ -2,13 +2,21 @@ var loginurl = "https://login.eveonline.com/oauth/authorize?response_type=code&r
 
 var $ = function (id, el) {
     var c = el ? el : document;
-    switch(id.substr(0,1)) {
-        case "#":
-            return c.getElementById(id.slice(1));
-        case ".":
-            return c.getElementsByClassName(id.slice(1));
-        default:
-            return c.getElementsByTagName(id);
+    if(document.querySelector && document.querySelectorAll) {
+        if(id.substr(0,1) == "#") {
+            return document.querySelector(id);
+        } else {
+            return document.querySelectorAll(id);
+        }
+    } else {
+        switch(id.substr(0,1)) {
+            case "#":
+                return c.getElementById(id.slice(1));
+            case ".":
+                return c.getElementsByClassName(id.slice(1));
+            default:
+                return c.getElementsByTagName(id);
+        }
     }
 };
 window.onload = function () {
