@@ -48,7 +48,7 @@ function dropReaction (e, el) {
     	ne = oe;
     	$("#" + oe.id).parentNode.removeChild($("#" + oe.id));
     } else {
-		ne = createElement('<div class="react"><div class="rhead"></div><div class="rbody"></div>');
+		ne = createElement('<div class="react"><div class="rhead"></div><div class="rbody split0"></div>');
 		ne.firstChild.appendChild(oe);
 		ne.setAttribute("ondrop", "dropReaction(event, this)");
 		ne.setAttribute("ondragover", "dragOverReaction(event, this)");

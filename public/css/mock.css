@@ -1015,12 +1015,54 @@
       text-align: center;
     }
 
+    .react {
+        position: relative;
+    }
+
     .rbody {
         margin: 0 5px;
     }
 
     .rhead > * {
         text-align: center;
+    }
+
+    .cbody > react:before, .rbody > *:before {
+        position: absolute;
+        top: 0px;
+        left: 50%;
+        width: 8px;
+        height: 8px;
+        background-color: gray;
+        content: " ";
+        margin-left: -4px;
+    }
+
+    .rbody:before {
+        content: " ";
+        position: absolute;
+        background-color: gray;
+        height: 4px;
+    }
+
+    .rbody.split2:before {
+        left: 25%;
+        right: 25%;
+    }
+
+    .rbody.split3:before {
+        left: 33.33%;
+        right: 33.33%;
+    }
+
+    .rbody.split4:before {
+        left: 12.5%;
+        right: 12.5%;
+    }
+
+    .rbody.split5:before {
+        left: 10%;
+        right: 10%;
     }
 
     .split2 > *, .split3 > *, .split4 > *, .split5 > * {
