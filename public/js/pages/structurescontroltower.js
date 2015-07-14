@@ -41,13 +41,13 @@ function dropReaction (e, el) {
     var data = e.dataTransfer.getData("draggedEl");
     console.log(data);
     var oe = createElement(data);
-    oe.removeAttribute("ondragstart");
-    oe.removeAttribute("draggable");
     var ne;
     if(oe.id) {
     	ne = oe;
     	$("#" + oe.id).parentNode.removeChild($("#" + oe.id));
     } else {
+	    oe.removeAttribute("ondragstart");
+	    oe.removeAttribute("draggable");
 		ne = createElement('<div class="react"><div class="rhead"></div><div class="rbody split0"></div>');
 		ne.firstChild.appendChild(oe);
 		ne.setAttribute("ondrop", "dropReaction(event, this)");
