@@ -1,6 +1,7 @@
 structurescontroltowerJS();
 function structurescontroltowerJS () {
 	ajax("/json" + location.hash.slice(2), function (r) {
+		console.log(r);
 		var states = ["Unanchored", "Anchored / Offline", "Onlining", "Reinforced", "Online"];
 
 		$("#controltowernotif").onmouseover = function () { loadNotif(r.id, this); };
