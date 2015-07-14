@@ -20,6 +20,7 @@ function structurescontroltowerJS () {
 			if([404,416,438].indexOf(r.modules[i].group) != -1) {
 				ne.setAttribute("draggable", "true");
 				ne.setAttribute("data-modid", r.modules[i].itemID);
+				ne.setAttribute("ondragstart", "dragReaction(event, this)");
 			}
 			el.appendChild(ne);
 		}
@@ -28,17 +29,27 @@ function structurescontroltowerJS () {
 	}, "json");
 }
 
+function dragReaction (e, el) {
+	ev.dataTransfer.setData('draggedEl', el.outerHTML);
+}
+
 function dropReaction (e, el) {
     e.preventDefault();
-    var data = e.dataTransfer.getData("text");
-    console.log(data);
 	removeAddReaction(el.className == "card" ? el.children[1] : el);
+
+    var data = e.dataTransfer.getData("draggedEl");
+
+	if(el.className == "card") {
+		el.children[1].appendChild(createElement(data));
+	} else {
+		el.appendChild(createElement(data));
+	}
 }
 
 function dragOverReaction (e, el) {
 	e.preventDefault();
 	if(el.className == "card") {
-		if(el.children[1].lastChild.className != "btn")
+		if(!el.children[1].lastChild || el.children[1].lastChild.className != "btn")
 			el.children[1].appendChild(createElement('<div class="btn">+</div>'));
 	} else {
 		if(el.lastChild.className != "btn")
