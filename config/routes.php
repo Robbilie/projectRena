@@ -39,6 +39,10 @@ $app->get('/json/structures/controltower/:towerID/', function($towerID) use ($ap
     (new \ProjectRena\Controller\JSONController($app))->getControltower($towerID);
 });
 
+$app->get('/json/structures/controltower/:towerID/reaction/:source/:destination/', function($towerID, $source, $destination) use ($app){
+    (new \ProjectRena\Controller\JSONController($app))->setReactionConnection($towerID, $source, $destination);
+});
+
 $app->get('/json/corporation/:corporationID/', function($corporationID) use ($app){
     (new \ProjectRena\Controller\JSONController($app))->getCorporation($corporationID);
 });

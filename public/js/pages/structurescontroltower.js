@@ -39,7 +39,6 @@ function dropReaction (e, el) {
 	removeAddReaction(el);
 
     var data = e.dataTransfer.getData("draggedEl");
-    console.log(data);
     var oe = createElement(data);
     var ne;
     if(oe.id) {
@@ -55,12 +54,18 @@ function dropReaction (e, el) {
 		ne.setAttribute("ondragleave", "dragLeaveReaction(event, this)");
 		ne.setAttribute("ondragstart", "dragReaction(event, this)");
 		ne.setAttribute("draggable", "true");
+		ne.setAttribute("data-modid", oe.getAttribute("data-modid"));
 		ne.id = "react" + oe.getAttribute("data-modid");
     }
 
 	el.children[1].appendChild(ne);
 	el.children[1].className = el.children[1].className.replace(/( split[0-5])/g, "");
 	el.children[1].className += " split" + el.children[1].children.length;
+
+	if(el.className != "card")
+		ajax("/json" + location.hash.slice(2) + "/" + ne.getAttribute("data-modid") + "/" + el.getAttribute("data-modid") + "/", function (r) {
+			console.log(r);
+		}, "json");
 }
 
 function dragOverReaction (e, el) {

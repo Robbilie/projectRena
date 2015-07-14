@@ -1031,11 +1031,11 @@
         position: absolute;
         top: 0px;
         left: 50%;
-        width: 8px;
+        width: 4px;
         height: 8px;
         background-color: gray;
         content: " ";
-        margin-left: -4px;
+        margin-left: -2px;
     }
 
     .rbody:before {
