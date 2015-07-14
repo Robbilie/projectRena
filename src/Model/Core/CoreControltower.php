@@ -49,7 +49,10 @@ class CoreControltower extends CoreStructure {
     		"sov" 				=> $this->getLocation()->getOwner() && $this->getLocation()->getOwner()->getId() == $this->getOwner()->getCAlliance()->getId(),
     		"secondaryCapacity" => (float)$this->app->CoreManager->getDGMAttribute($this->getTypeId(), 1233)['valueFloat'],
     		"content" 			=> $this->getOwner()->getItems(function($i) use ($id) { return $i->getLocationId() == $id; }),
-			"reactions"			=> $this->db->query("SELECT source, destination FROM easControltowerReactions WHERE towerID = :towerID", array(":towerID" => $this->getItemId()))
+			"reactions"			=> $this->db->query("SELECT source, destination FROM easControltowerReactions WHERE towerID = :towerID", array(":towerID" => $this->getItemId())),
+			"modules"			=> $this->getModules(),
+			"fuel"				=> $this->getFuelLevel(),
+			"strontium"			=> $this->getStrontiumLevel(),
     		//"ressources" 			=> $ct->getRessources()
 		);
 	}

@@ -7,9 +7,9 @@ function structurescontroltowerJS () {
 		$("#controltowernotif").onmouseover = function () { loadNotif(r.id, this); };
 
 		$("#controltowername").innerHTML = r.name;
-		$("#controltowermoonname").innerHTML = r.moonname;
+		$("#controltowermoonname").innerHTML = r.moonName;
 		$("#controltowerstatename").innerHTML = states[r.state];
-		$("#controltowertypename").innerHTML = r.typename;
+		$("#controltowertypename").innerHTML = r.typeName;
 		$("#controltowerfuel").style.width = r.fuel + "%";
 		$("#controltowerstrontium").style.width = r.strontium + "%";
 
