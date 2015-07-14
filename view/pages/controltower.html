@@ -29,16 +29,15 @@
 		</div>
 		<div class="cbody" id="moduleslist"></div>
 	</div>
-	<div class="card">
+	<div class="card" ondrop="dropReaction(event, this)" ondragover="dragOverReaction(event, this)" ondragleave="dragLeaveReaction(event, this)">
 		<div class="chead">
 			<h3 class="blue">Reactions</h3>
 		</div>
-		<div class="cbody">
-		</div>
+		<div class="cbody"></div>
 	</div>
 	<div style="display: none;">
 		<div id="modulesTemplate">
-			<div class="hover paddedp"><a href="#!/corporation/{0}/container/{1}/" onclick="click(this);">{2}</a></div>
+			<div class="hover paddedp" {3}><a href="#!/corporation/{0}/container/{1}/" onclick="click(this);">{2}</a></div>
 		</div>
 	</div>
 </div>
