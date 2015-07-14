@@ -68,7 +68,7 @@ function dropReaction (e, el) {
     var oe = createElement(data);
     var ne;
     if(oe.id) {
-		if($("#" + oe.id + " #" + el.id) || $("#" + el.id + " #" + oe.id)) return;
+		if($("#" + oe.id + " #" + el.id).length !== 0 || $("#" + el.id + " #" + oe.id).length !== 0) return;
     	ne = oe;
 		var par = $("#" + oe.id).parentNode;
     	par.removeChild($("#" + oe.id));
