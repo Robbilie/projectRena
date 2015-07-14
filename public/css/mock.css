@@ -1014,3 +1014,27 @@
       color: white;
       text-align: center;
     }
+
+    .rbody {
+        margin: 0 5px;
+    }
+
+    .split2 > * {
+        width: 50%;
+    }
+
+    .split3 > * {
+        width: 33.33%;
+    }
+
+    .split4 > * {
+        width: 25%;
+    }
+
+    .split5 > * {
+        width: 20%;
+    }
+
+    .rhead > * {
+        text-align: center;
+    }

@@ -59,6 +59,8 @@ function dropReaction (e, el) {
     }
 
 	el.children[1].appendChild(ne);
+	el.children[1].className = el.children[1].className.replace(/( split[0-5])/g, "");
+	el.children[1].className += " split" + el.children[1].children.length;
 }
 
 function dragOverReaction (e, el) {
