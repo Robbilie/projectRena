@@ -36,7 +36,7 @@ function dragReaction (e, el) {
 function dropReaction (e, el) {
 	e.stopPropagation();
     e.preventDefault();
-	removeAddReaction(el.children[1]);
+	removeAddReaction(el);
 
     var data = e.dataTransfer.getData("draggedEl");
     console.log(data);
@@ -66,17 +66,17 @@ function dropReaction (e, el) {
 function dragOverReaction (e, el) {
 	e.stopPropagation();
 	e.preventDefault();
-	if(!el.children[1].lastChild || el.children[1].lastChild.className != "btn")
-		el.children[1].appendChild(createElement('<div class="btn">+</div>'));
+	if(!el.children[2] || el.children[2].className != "btn absfill")
+		el.appendChild(createElement('<div class="btn absfill">+</div>'));
 }
 
 function dragLeaveReaction (e, el) {
-	removeAddReaction(el.children[1]);
+	removeAddReaction(el);
 }
 
 function removeAddReaction (el) {
 	for(var i = el.children.length - 1; i >= 0; i--) {
-		if(el.children[i].className == "btn") {
+		if(el.children[i].className == "btn absfill") {
 			el.removeChild(el.children[i]);
 		} else {
 			break;
