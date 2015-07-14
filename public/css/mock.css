@@ -1019,6 +1019,14 @@
         margin: 0 5px;
     }
 
+    .rhead > * {
+        text-align: center;
+    }
+
+    .split2 > *, .split3 > *, .split4 > *, .split5 > * {
+        float: left;
+    }
+
     .split2 > * {
         width: 50%;
     }
@@ -1033,8 +1041,4 @@
 
     .split5 > * {
         width: 20%;
-    }
-
-    .rhead > * {
-        text-align: center;
     }
