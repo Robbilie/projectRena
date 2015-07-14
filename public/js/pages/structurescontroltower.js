@@ -15,8 +15,14 @@ function structurescontroltowerJS () {
 		var tmpl = $("#modulesTemplate").innerHTML;
 		var el = $("#moduleslist");
 		el.innerHTML = "";
-		for(var i = 0; i < r.modules.length; i++)
-			el.appendChild(createElement(tmpl.format([r.modules[i].ownerID, r.modules[i].itemID, r.modules[i].name, [404,416,438].indexOf(r.modules[i].group) != -1 ? 'dragable="true" data-modid="' + r.modules[i].itemID + '"' : ''])));
+		for(var i = 0; i < r.modules.length; i++) {
+			var ne = createElement(tmpl.format([r.modules[i].ownerID, r.modules[i].itemID, r.modules[i].name]));
+			if([404,416,438].indexOf(r.modules[i].group) != -1) {
+				ne.setAttribute("draggable", "true");
+				ne.setAttribute("data-modid", r.modules[i].itemID);
+			}
+			el.appendChild(ne);
+		}
 
 		fadeOn($("#controltowerConti"), 1);
 	}, "json");
