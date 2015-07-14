@@ -208,7 +208,7 @@ class JSONController
             $tower = $this->app->CoreManager->getControlTower($towerID);
             if($tower->getOwnerId() == $char->getCorpId()) {
                 if($char->hasPermission("writeReactionsControltower", "corporation")) {
-                    $this->db->execute("INSERT INTO easControltowerReactions (source, destination) VALUES (:source, :destination) ON DUPLICATE KEY UPDATE source = :source , destination = :destination", array(":source" => (int)$source, ":destination" => (int)$destination));
+                    $this->db->execute("INSERT INTO easControltowerReactions (towerID, source, destination) VALUES (:towerID, :source, :destination) ON DUPLICATE KEY UPDATE towerID = :towerID , source = :source , destination = :destination", array(":towerID" => (int)$towerID, ":source" => (int)$source, ":destination" => (int)$destination));
                     $resp['state'] = "success";
                 } else {
                     $resp['msg'] = "You are not permitted to do this.";

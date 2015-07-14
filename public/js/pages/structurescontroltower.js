@@ -63,7 +63,7 @@ function dropReaction (e, el) {
 	el.children[1].className += " split" + el.children[1].children.length;
 
 	if(el.className != "card")
-		ajax("/json" + location.hash.slice(2) + "/" + ne.getAttribute("data-modid") + "/" + el.getAttribute("data-modid") + "/", function (r) {
+		ajax("/json" + location.hash.slice(2) + "reaction/" + ne.getAttribute("data-modid") + "/" + el.getAttribute("data-modid") + "/", function (r) {
 			console.log(r);
 		}, "json");
 }
