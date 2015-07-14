@@ -26,6 +26,29 @@ function structurescontroltowerJS () {
 			el.appendChild(ne);
 		}
 
+		for(var j = 0; j < reactions.length; j++) {
+			if(!$("#react" + reactions[j].destination)) {
+				if($('[data-modid="' + reactions[j].destination + '"]')) {
+					createNewReaction($('[data-modid="' + reactions[j].destination + '"]'));
+				} else {
+					break;
+				}
+			}
+			if(!$("#react" + reactions[j].source)) {
+				if($('[data-modid="' + reactions[j].source + '"]')) {
+					createNewReaction($('[data-modid="' + reactions[j].source + '"]'));
+				} else {
+					break;
+				}
+			}
+
+			$("#react" + reactions[j].destination).children[1].appendChild($("#react" + reactions[j].source));
+			$("#react" + reactions[j].destination).children[1].className = $("#react" + reactions[j].destination).children[1].className.replace(/( split[0-5])/g, "");
+			$("#react" + reactions[j].destination).children[1].className += " split" + $("#react" + reactions[j].destination).children[1].children.length;
+
+			$("#react" + reactions[j].source).parentNode.removeChild($("#react" + reactions[j].source));
+		}
+
 		fadeOn($("#controltowerConti"), 1);
 	}, "json");
 }
@@ -67,6 +90,24 @@ function dropReaction (e, el) {
 		ajax("/json" + location.hash.slice(2) + "reaction/" + ne.getAttribute("data-modid") + "/" + el.getAttribute("data-modid") + "/", function (r) {
 			console.log(r);
 		}, "json");
+}
+
+function createNewReaction (oe) {
+	oe.removeAttribute("ondragstart");
+	oe.removeAttribute("draggable");
+	var ne = createElement('<div class="react"><div class="rhead"></div><div class="rbody split0"></div>');
+	ne.firstChild.appendChild(oe);
+	ne.setAttribute("ondrop", "dropReaction(event, this)");
+	ne.setAttribute("ondragover", "dragOverReaction(event, this)");
+	ne.setAttribute("ondragleave", "dragLeaveReaction(event, this)");
+	ne.setAttribute("ondragstart", "dragReaction(event, this)");
+	ne.setAttribute("draggable", "true");
+	ne.setAttribute("data-modid", oe.getAttribute("data-modid"));
+	ne.id = "react" + oe.getAttribute("data-modid");
+
+	$("#reactions").children[1].appendChild(ne);
+	$("#reactions").children[1].className = $("#reactions").children[1].className.replace(/( split[0-5])/g, "");
+	$("#reactions").children[1].className += " split" + $("#reactions").children[1].children.length;
 }
 
 function dragOverReaction (e, el) {
