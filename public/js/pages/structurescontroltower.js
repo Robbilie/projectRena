@@ -55,6 +55,7 @@ function structurescontroltowerJS () {
 }
 
 function dragReaction (e, el) {
+	e.stopPropagation();
 	e.dataTransfer.setData('draggedEl', el.outerHTML);
 }
 
@@ -68,7 +69,10 @@ function dropReaction (e, el) {
     var ne;
     if(oe.id) {
     	ne = oe;
-    	$("#" + oe.id).parentNode.removeChild($("#" + oe.id));
+		var par = $("#" + oe.id).parentNode;
+    	par.removeChild($("#" + oe.id));
+		par.className = par.className.replace(/( split[0-5])/g, "");
+		par.className += " split" + par.children.length;
     } else {
 	    oe.removeAttribute("ondragstart");
 	    oe.removeAttribute("draggable");
