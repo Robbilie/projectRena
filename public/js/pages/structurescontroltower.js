@@ -26,28 +26,29 @@ function structurescontroltowerJS () {
 			el.appendChild(ne);
 		}
 
-		for(var j = 0; j < reactions.length; j++) {
-			if(!$("#react" + reactions[j].destination)) {
-				if($('[data-modid="' + reactions[j].destination + '"]')) {
-					createNewReaction($('[data-modid="' + reactions[j].destination + '"]'));
+		for(var j = 0; j < r.reactions.length; j++) {
+			if(!$("#react" + r.reactions[j].destination)) {
+				if($('[data-modid="' + r.reactions[j].destination + '"]')[0]) {
+					createNewReaction($('[data-modid="' + r.reactions[j].destination + '"]')[0].cloneNode(true));
 				} else {
 					break;
 				}
 			}
-			if(!$("#react" + reactions[j].source)) {
-				if($('[data-modid="' + reactions[j].source + '"]')) {
-					createNewReaction($('[data-modid="' + reactions[j].source + '"]'));
+			if(!$("#react" + r.reactions[j].source)) {
+				if($('[data-modid="' + r.reactions[j].source + '"]')[0]) {
+					createNewReaction($('[data-modid="' + r.reactions[j].source + '"]')[0].cloneNode(true));
 				} else {
 					break;
 				}
 			}
 
-			$("#react" + reactions[j].destination).children[1].appendChild($("#react" + reactions[j].source));
-			$("#react" + reactions[j].destination).children[1].className = $("#react" + reactions[j].destination).children[1].className.replace(/( split[0-5])/g, "");
-			$("#react" + reactions[j].destination).children[1].className += " split" + $("#react" + reactions[j].destination).children[1].children.length;
-
-			$("#react" + reactions[j].source).parentNode.removeChild($("#react" + reactions[j].source));
+			$("#react" + r.reactions[j].destination).children[1].appendChild($("#react" + r.reactions[j].source));
+			$("#react" + r.reactions[j].destination).children[1].className = $("#react" + r.reactions[j].destination).children[1].className.replace(/( split[0-5])/g, "");
+			$("#react" + r.reactions[j].destination).children[1].className += " split" + $("#react" + r.reactions[j].destination).children[1].children.length;
 		}
+
+		$("#reactions").children[1].className = $("#reactions").children[1].className.replace(/( split[0-5])/g, "");
+		$("#reactions").children[1].className += " split" + $("#reactions").children[1].children.length;
 
 		fadeOn($("#controltowerConti"), 1);
 	}, "json");
