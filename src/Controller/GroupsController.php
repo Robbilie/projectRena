@@ -86,13 +86,13 @@ class GroupsController
             $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
             $group = $this->app->CoreManager->getGroup((int)$groupID);
             if($group->getScope() == "corporation") {
-              $corpID = $char->getCorpId();
-              $members = $group->getCCharacters(function ($i) use ($corpID) { return $i->getCorpId() == $corpID; });
+                $corpID = $char->getCorpId();
+                $members = $group->getCCharacters(function ($i) use ($corpID) { return $i->getCorpId() == $corpID; });
             } else if($group->getScope() == "alliance") {
-              $alliID = $char->getAlliId();
-              $members = $group->getCCharacters(function ($i) use ($alliID) { return $i->getAlliId() == $alliID; });
+                $alliID = $char->getAlliId();
+                $members = $group->getCCharacters(function ($i) use ($alliID) { return $i->getAlliId() == $alliID; });
             } else {
-              $members = $group->getCCharacters();
+                $members = $group->getCCharacters();
             }
         }
         $this->app->response->headers->set('Content-Type', 'application/json');
@@ -120,7 +120,7 @@ class GroupsController
                     ($group->getScope() == "corporation" && $applier->getCorpId() == $char->getCorpId()) ||
                     ($group->getScope() == "alliance" && $applier->getAlliId() == $char->getAlliId())
                   ) {
-                    array_push($applications, $applier);
+                      array_push($applications, $applier);
                   }
                 }
               } else {
@@ -136,22 +136,22 @@ class GroupsController
     public function apply ($groupID) {
         $resp = array("msg" => "", "state" => "error");
         if(isset($_SESSION["loggedIn"])) {
-          $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
-          $group = $this->app->CoreManager->getGroup((int)$groupID);
-          if($group->isCustom()) {
-            if(
-              $group->isPublic() ||
-              ($group->getScope() == "corporation" && $group->getOwner() == $char->getCorpId()) ||
-              ($group->getScope() == "alliance" && $group->getOwner() == $char->getAlliId())
-            ) {
-              $this->db->execute("INSERT INTO easGroupApplications (characterID, groupID) VALUES (:characterID, :groupID)", array(":characterID" => $char->getCharId(), ":groupID" => $groupID));
-              $resp['state'] = "success";
+            $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
+            $group = $this->app->CoreManager->getGroup((int)$groupID);
+            if($group->isCustom()) {
+                if(
+                    $group->isPublic() ||
+                    ($group->getScope() == "corporation" && $group->getOwner() == $char->getCorpId()) ||
+                    ($group->getScope() == "alliance" && $group->getOwner() == $char->getAlliId())
+                ) {
+                    $this->db->execute("INSERT INTO easGroupApplications (characterID, groupID) VALUES (:characterID, :groupID)", array(":characterID" => $char->getCharId(), ":groupID" => $groupID));
+                    $resp['state'] = "success";
+                } else {
+                    $resp['msg'] = "You are not permitted to do this.";
+                }
             } else {
-              $resp['msg'] = "You are not permitted to do this.";
+                $resp['msg'] = "You are not permitted to do this.";
             }
-          } else {
-            $resp['msg'] = "You are not permitted to do this.";
-          }
         }
         $this->app->response->headers->set('Content-Type', 'application/json');
         $this->app->response->body(json_encode($resp));
@@ -161,21 +161,21 @@ class GroupsController
     public function acceptApplication ($groupID, $characterID) {
         $resp = array("msg" => "", "state" => "error");
         if(isset($_SESSION["loggedIn"])) {
-          $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
-          $group = $this->app->CoreManager->getGroup((int)$groupID);
-          if(
-              (
-                  $group->getScope() == "corporation" && $char->hasPermission("writeMembersGroup", "corporation")
-              ) ||
-              (
-                  $group->getScope() == "alliance" && $char->hasPermission("writeMembersGroup", "alliance")
-              )
-          ) {
-            $group->acceptApplication($characterID);
-            $resp['state'] = "success";
-          } else {
-            $resp['msg'] = "You are not permitted to do this.";
-          }
+            $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
+            $group = $this->app->CoreManager->getGroup((int)$groupID);
+            if(
+                (
+                    $group->getScope() == "corporation" && $char->hasPermission("writeMembersGroup", "corporation")
+                ) ||
+                (
+                    $group->getScope() == "alliance" && $char->hasPermission("writeMembersGroup", "alliance")
+                )
+            ) {
+                $group->acceptApplication($characterID);
+                $resp['state'] = "success";
+            } else {
+                $resp['msg'] = "You are not permitted to do this.";
+            }
         }
         $this->app->response->headers->set('Content-Type', 'application/json');
         $this->app->response->body(json_encode($resp));
@@ -185,21 +185,21 @@ class GroupsController
     public function rejectApplication ($groupID, $characterID) {
         $resp = array("msg" => "", "state" => "error");
         if(isset($_SESSION["loggedIn"])) {
-          $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
-          $group = $this->app->CoreManager->getGroup((int)$groupID);
-          if(
-              (
-                  $group->getScope() == "corporation" && $char->hasPermission("writeMembersGroup", "corporation")
-              ) ||
-              (
-                  $group->getScope() == "alliance" && $char->hasPermission("writeMembersGroup", "alliance")
-              )
-          ) {
-            $group->rejectApplication($characterID);
-            $resp['state'] = "success";
-          } else {
-            $resp['msg'] = "You are not permitted to do this.";
-          }
+            $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
+            $group = $this->app->CoreManager->getGroup((int)$groupID);
+            if(
+                (
+                    $group->getScope() == "corporation" && $char->hasPermission("writeMembersGroup", "corporation")
+                ) ||
+                (
+                    $group->getScope() == "alliance" && $char->hasPermission("writeMembersGroup", "alliance")
+                )
+            ) {
+                $group->rejectApplication($characterID);
+                $resp['state'] = "success";
+            } else {
+                $resp['msg'] = "You are not permitted to do this.";
+            }
         }
         $this->app->response->headers->set('Content-Type', 'application/json');
         $this->app->response->body(json_encode($resp));

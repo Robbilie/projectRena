@@ -10,6 +10,8 @@ class CoreControltower extends CoreStructure {
 
 	protected $moon;
 	protected $ressources;
+	protected $modules;
+	protected $reactions;
 
 	function __construct (RenaApp $app, $controltowerData = array()) {
 		CoreBase::__construct($app, $controltowerData);
@@ -81,13 +83,26 @@ class CoreControltower extends CoreStructure {
 	}
 
 	public function getModules () {
-		$id = $this->getId();
-		$loc = $this->getLocationId();
-		$x = $this->getX();
-		$y = $this->getY();
-		$z = $this->getZ();
-		$mods = $this->getOwner()->getContainers(function($i) use ($id, $loc, $x, $y, $z) { return $i->getId() != $id && $i->getLocationId() == $loc && !is_null($i->getX()) && $i->getX() != 0 && !is_null($i->getY()) && $i->getY() != 0 && !is_null($i->getZ()) && $i->getZ() != 0 && sqrt(pow($i->getX() - $x, 2) + pow($i->getY() - $y, 2) + pow($i->getZ() - $z, 2)) <= 250000; });
-		return $mods;
+		if(is_null($this->modules)) {
+			$this->modules = array();
+			$id = $this->getId();
+			$loc = $this->getLocationId();
+			$x = $this->getX();
+			$y = $this->getY();
+			$z = $this->getZ();
+			$this->modules = $this->getOwner()->getContainers(function($i) use ($id, $loc, $x, $y, $z) { return $i->getId() != $id && $i->getLocationId() == $loc && !is_null($i->getX()) && $i->getX() != 0 && !is_null($i->getY()) && $i->getY() != 0 && !is_null($i->getZ()) && $i->getZ() != 0 && sqrt(pow($i->getX() - $x, 2) + pow($i->getY() - $y, 2) + pow($i->getZ() - $z, 2)) <= 250000; });
+		}
+		return $this->modules;
+	}
+
+	public function getReactions () {
+		if(is_null($this->reactions)) {
+			$modules = $this->getModules();
+			foreach ($modules as $module)
+				if(in_array($module->getType()->getMarketGroupId(), [483, 488, 490]))
+					array_push($this->reactions, $module);
+		}
+		return $this->reactions;
 	}
 
 	// default

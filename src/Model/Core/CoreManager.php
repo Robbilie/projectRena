@@ -400,6 +400,17 @@ class CoreManager {
         return null;
     }
 
+    public function getItemsByLocation ($locationID) {
+        $items = array();
+        $itemRows = $this->db->query("SELECT ntItem.ownerID,ntItem.itemID,ntItem.typeID,ntItem.locationID,ntItem.quantity,ntItem.flag,ntLocation.name FROM ntItem LEFT JOIN ntLocation ON ntItem.itemID = ntLocation.itemID WHERE ntItem.locationID = :locationID", array(":locationID" => $locationID));
+        foreach ($itemRows as $itemRow) {
+            $item = new CoreItem($this->app, $itemRow);
+            array_push($this->items, $item);
+            array_push($items, $item);
+        }
+        return $items;
+    }
+
     protected $itemtypes = array();
     public function getItemType ($itemTypeID) {
         foreach ($this->itemtypes as $itemtype)

@@ -25,15 +25,19 @@ class CoreItemType extends CoreBase {
 	}
 
 	public function getCapacity () {
-		return $this->capacity;
+		return (float)$this->capacity;
 	}
 
 	public function getVolume () {
-		return $this->volume;
+		return (float)$this->volume;
 	}
 
 	public function getGroupId () {
 		return (int)$this->groupID;
+	}
+
+	public function getMarketGroupId () {
+		return (int)$this->marketGroupID;
 	}
 
 }
