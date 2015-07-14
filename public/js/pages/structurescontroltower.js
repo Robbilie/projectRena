@@ -30,35 +30,46 @@ function structurescontroltowerJS () {
 }
 
 function dragReaction (e, el) {
-	ev.dataTransfer.setData('draggedEl', el.outerHTML);
+	e.dataTransfer.setData('draggedEl', el.outerHTML);
 }
 
 function dropReaction (e, el) {
+	e.stopPropagation();
     e.preventDefault();
-	removeAddReaction(el.className == "card" ? el.children[1] : el);
+	removeAddReaction(el.children[1]);
 
     var data = e.dataTransfer.getData("draggedEl");
+    console.log(data);
+    var oe = createElement(data);
+    oe.removeAttribute("ondragstart");
+    oe.removeAttribute("draggable");
+    var ne;
+    if(oe.id) {
+    	ne = oe;
+    	$("#" + oe.id).parentNode.removeChild($("#" + oe.id));
+    } else {
+		ne = createElement('<div class="react"><div class="rhead"></div><div class="rbody"></div>');
+		ne.firstChild.appendChild(oe);
+		ne.setAttribute("ondrop", "dropReaction(event, this)");
+		ne.setAttribute("ondragover", "dragOverReaction(event, this)");
+		ne.setAttribute("ondragleave", "dragLeaveReaction(event, this)");
+		ne.setAttribute("ondragstart", "dragReaction(event, this)");
+		ne.setAttribute("draggable", "true");
+		ne.id = "react" + oe.getAttribute("data-modid");
+    }
 
-	if(el.className == "card") {
-		el.children[1].appendChild(createElement(data));
-	} else {
-		el.appendChild(createElement(data));
-	}
+	el.children[1].appendChild(ne);
 }
 
 function dragOverReaction (e, el) {
+	e.stopPropagation();
 	e.preventDefault();
-	if(el.className == "card") {
-		if(!el.children[1].lastChild || el.children[1].lastChild.className != "btn")
-			el.children[1].appendChild(createElement('<div class="btn">+</div>'));
-	} else {
-		if(el.lastChild.className != "btn")
-			el.appendChild(createElement('<div class="btn">+</div>'));
-	}
+	if(!el.children[1].lastChild || el.children[1].lastChild.className != "btn")
+		el.children[1].appendChild(createElement('<div class="btn">+</div>'));
 }
 
 function dragLeaveReaction (e, el) {
-	removeAddReaction(el.className == "card" ? el.children[1] : el);
+	removeAddReaction(el.children[1]);
 }
 
 function removeAddReaction (el) {
