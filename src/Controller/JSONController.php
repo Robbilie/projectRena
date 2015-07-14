@@ -186,7 +186,7 @@ class JSONController
 
     // return a controltower
     public function getControltower ($towerID) {
-        $resp = array("name" => "", "moonname" => "", "state" => "", "typename" => "", "fuel" => "", "strontium" => "", "modules" => array());
+        $towerresp = null;
         if(isset($_SESSION["loggedIn"])) {
             $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
             $tower = $this->app->CoreManager->getControlTower($towerID);
@@ -194,11 +194,11 @@ class JSONController
                 ($tower->getOwner()->getCAlliance()->getId() == $char->getAlliId() && $char->hasPermission("readControltower", "alliance")) ||
                 ($tower->getOwner()->getId() == $char->getCorpId() && $char->hasPermission("readControltower", "corporation"))
             ) {
-                $resp = array("id" => $tower->getId(),"name" => $tower->getName(), "moonname" => $tower->getMoon()->getName(), "state" => $tower->getState(), "typename" => $tower->getType()->getName(), "fuel" => $tower->getFuelLevel(), "strontium" => $tower->getStrontiumLevel(), "modules" => $tower->getModules());
+                $towerresp = $tower;
             }
         }
         $this->app->response->headers->set('Content-Type', 'application/json');
-        $this->app->response->body(json_encode($resp));
+        $this->app->response->body(json_encode($towerresp));
     }
 
     public function setReactionConnection ($towerID, $source, $destination) {
