@@ -41,13 +41,13 @@ class CoreContainer extends CoreItem {
 		if(is_null($this->fill)) {
 			$this->fill = 0;
 			$volume = 0;
-			
+
 			$contents = $this->getContents();
 			foreach ($contents as $content) {
 				$volume += $content->getType()->getVolume();
 			}
 
-			$this->fill = $volume / ($this->getType()-getCapacity() * $this->cargomod) * 100;
+			$this->fill = $volume / ($this->getType()->getCapacity() * $this->cargomod) * 100;
 		}
 		return $this->fill;
 	}

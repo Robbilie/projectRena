@@ -50,7 +50,9 @@ class IntelController
                 $interval = 500000;
                 while($timeout > 0) {
 
-                    session_start();
+
+                    if(!isset($_SESSION)) 
+                        session_start();
                     $charid = $_SESSION['characterID'];
                     session_write_close();
 
@@ -377,7 +379,8 @@ class IntelController
                 $interval = 500000;
                 while($timeout > 0) {
 
-                    session_start();
+                    if(!isset($_SESSION))
+                        session_start();
                     $charid = $_SESSION['characterID'];
                     session_write_close();
 

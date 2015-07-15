@@ -5,7 +5,7 @@ use Zeuxisoo\Whoops\Provider\Slim\WhoopsMiddleware;
 
 // Error display
 ini_set("display_errors", 1);
-error_reporting(E_WARNING);
+error_reporting(isset($_REQUEST['debug']) ? E_ALL : E_WARNING);
 
 // Load the autoloader
 if(file_exists(__DIR__ . "/vendor/autoload.php"))
