@@ -2,6 +2,7 @@ structurescontroltowerJS();
 function structurescontroltowerJS () {
 	ajax("/json" + location.hash.slice(2), function (r) {
 		console.log(r);
+		if(r === null) return;
 		var states = ["Unanchored", "Anchored / Offline", "Onlining", "Reinforced", "Online"];
 
 		$("#controltowernotif").onmouseover = function () { loadNotif(r.id, this); };
@@ -67,11 +68,12 @@ function dropReaction (e, el) {
     var data = e.dataTransfer.getData("draggedEl");
     var oe = createElement(data);
     var ne;
+	var par;
     if($("#react" + oe.getAttribute("data-modid"))) {
     	var te = $("#react" + oe.getAttribute("data-modid"));
     	if($("#" + te.id + " #" + el.id).length !== 0 || te.id == el.id) return;
     	ne = te;
-    	var par = $("#" + te.id).parentNode;
+    	par = $("#" + te.id).parentNode;
     	par.removeChild($("#" + te.id));
 		par.className = par.className.replace(/( split[0-5])/g, "");
 		par.className += " split" + par.children.length;
@@ -79,7 +81,7 @@ function dropReaction (e, el) {
     } else if(oe.id) {
 		if($("#" + oe.id + " #" + el.id).length !== 0 || oe.id == el.id) return;
     	ne = oe;
-		var par = $("#" + oe.id).parentNode;
+		par = $("#" + oe.id).parentNode;
     	par.removeChild($("#" + oe.id));
 		par.className = par.className.replace(/( split[0-5])/g, "");
 		par.className += " split" + par.children.length;

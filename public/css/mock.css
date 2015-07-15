@@ -761,11 +761,17 @@
         width: 50%;
     }
 
+    .hover:hover .progressBar {
+        background-color: white;
+    }
+
     .progressBar {
         width: 100%;
         height: 4px;
         background-color: #c8c8c8;
         position: relative;
+        -webkit-transition: background-color .25s;
+        transition: background-color .25s;
     }
 
     .progressBar div {
@@ -1047,8 +1053,9 @@
     }
 
     .rhead .progressBar {
-        margin-left: 25%;
-        width: 50%;
+        margin: auto;
+        max-width: 40%;
+        width: 150px;
     }
 
     .rbody.split2:before {
