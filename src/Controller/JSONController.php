@@ -211,14 +211,12 @@ class JSONController
                     // destination may not be child of source
                     $isChild = false;
                     $st = $destination;
-                    while(true) {
+                    while(!$isChild) {
                         $row = $this->db->queryRow("SELECT * FROM easControltowerReactions WHERE source = :source", array(":source" => $st));
-                        if(!row)
+                        if(!$row)
                             break;
-                        if($row['destination'] == $destination) {
+                        if((int)$row['destination'] == $destination)
                             $isChild = true;
-                            break;
-                        }
                         $st = $row['destination'];
                     }
                     if(($source != $destination) && !$isChild) {
