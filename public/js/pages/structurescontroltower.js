@@ -17,7 +17,7 @@ function structurescontroltowerJS () {
 		var el = $("#moduleslist");
 		el.innerHTML = "";
 		for(var i = 0; i < r.modules.length; i++) {
-			var ne = createElement(tmpl.format([r.modules[i].ownerID, r.modules[i].itemID, r.modules[i].name]));
+			var ne = createElement(tmpl.format([r.modules[i].ownerID, r.modules[i].itemID, r.modules[i].name, r.modules[i].group == 404 ? '<div class="progressBar"><div style="width: ' + r.modules[i].fill + '%;"></div></div>' : '']));
 			if([404,416,438].indexOf(r.modules[i].group) != -1) {
 				ne.setAttribute("draggable", "true");
 				ne.setAttribute("data-modid", r.modules[i].itemID);
@@ -67,8 +67,17 @@ function dropReaction (e, el) {
     var data = e.dataTransfer.getData("draggedEl");
     var oe = createElement(data);
     var ne;
-    if(oe.id) {
-		if($("#" + oe.id + " #" + el.id).length !== 0 || $("#" + el.id + " #" + oe.id).length !== 0) return;
+    if($("#react" + oe.getAttribute("data-modid"))) {
+    	var te = $("#react" + oe.getAttribute("data-modid"));
+    	if($("#" + te.id + " #" + el.id).length !== 0 || te.id == el.id) return;
+    	ne = te;
+    	var par = $("#" + te.id).parentNode;
+    	par.removeChild($("#" + te.id));
+		par.className = par.className.replace(/( split[0-5])/g, "");
+		par.className += " split" + par.children.length;
+
+    } else if(oe.id) {
+		if($("#" + oe.id + " #" + el.id).length !== 0 || oe.id == el.id) return;
     	ne = oe;
 		var par = $("#" + oe.id).parentNode;
     	par.removeChild($("#" + oe.id));

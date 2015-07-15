@@ -1017,6 +1017,7 @@
 
     .react {
         position: relative;
+        overflow: hidden;
     }
 
     .rbody {
@@ -1045,14 +1046,19 @@
         height: 4px;
     }
 
+    .rhead .progressBar {
+        margin-left: 25%;
+        width: 50%;
+    }
+
     .rbody.split2:before {
         left: 25%;
         right: 25%;
     }
 
     .rbody.split3:before {
-        left: 33.33%;
-        right: 33.33%;
+        left: 16.665%;
+        right: 16.665%;
     }
 
     .rbody.split4:before {
@@ -1065,23 +1071,23 @@
         right: 10%;
     }
 
-    .split2 > *, .split3 > *, .split4 > *, .split5 > * {
+    .rbody.split2 > *, .rbody.split3 > *, .rbody.split4 > *, .rbody.split5 > * {
         float: left;
     }
 
-    .split2 > * {
+    .rbody.split2 > * {
         width: 50%;
     }
 
-    .split3 > * {
+    .rbody.split3 > * {
         width: 33.33%;
     }
 
-    .split4 > * {
+    .rbody.split4 > * {
         width: 25%;
     }
 
-    .split5 > * {
+    .rbody.split5 > * {
         width: 20%;
     }
 

@@ -208,6 +208,7 @@ class JSONController
             $tower = $this->app->CoreManager->getControlTower($towerID);
             if($tower->getOwnerId() == $char->getCorpId()) {
                 if($char->hasPermission("writeReactionsControltower", "corporation")) {
+                    $this->db->execute("DELETE FROM easControltowerReactions WHERE towerID = :towerID AND source = :destination AND destination = :source", array(":towerID" => $towerID, ":source" => $source, ":destination" => $destination));
                     $this->db->execute("INSERT INTO easControltowerReactions (towerID, source, destination) VALUES (:towerID, :source, :destination) ON DUPLICATE KEY UPDATE towerID = :towerID , source = :source , destination = :destination", array(":towerID" => $towerID, ":source" => $source, ":destination" => $destination));
                     $resp['state'] = "success";
                 } else {
