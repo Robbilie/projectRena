@@ -28,10 +28,11 @@ function createElement (elStr) {
 }
 
 window.onload = function () {
-  if(window != window.top)
-    document.body.className = "iframe";
-  checkStatus(); setTimeout(hashChange, 300);
+    if(window != window.top)
+        document.body.className = "iframe";
+    checkStatus(); //setTimeout(hashChange, 300);
 };
+
 window.onhashchange = hashChange;
 
 function click (elem) {
@@ -177,7 +178,7 @@ String.prototype.format = function() {
 
 /**
  * Number.prototype.format(n, x, s, c)
- * 
+ *
  * @param integer n: length of decimal
  * @param integer x: length of whole part
  * @param mixed   s: sections delimiter
