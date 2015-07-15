@@ -208,9 +208,24 @@ class JSONController
             $tower = $this->app->CoreManager->getControlTower($towerID);
             if($tower->getOwnerId() == $char->getCorpId()) {
                 if($char->hasPermission("writeReactionsControltower", "corporation")) {
-                    $this->db->execute("DELETE FROM easControltowerReactions WHERE towerID = :towerID AND source = :destination AND destination = :source", array(":towerID" => $towerID, ":source" => $source, ":destination" => $destination));
-                    $this->db->execute("INSERT INTO easControltowerReactions (towerID, source, destination) VALUES (:towerID, :source, :destination) ON DUPLICATE KEY UPDATE towerID = :towerID , source = :source , destination = :destination", array(":towerID" => $towerID, ":source" => $source, ":destination" => $destination));
-                    $resp['state'] = "success";
+                    // destination may not be child of source
+                    $isChild = false;
+                    $st = $destination;
+                    while(true) {
+                        $row = $this->db->queryRow("SELECT * FROM easControltowerReactions WHERE source = :source", array(":source" => $st));
+                        if(!row)
+                            break;
+                        if($row['destination'] == $destination) {
+                            $isChild = true;
+                            break;
+                        }
+                        $st = $row['destination'];
+                    }
+                    if(($source != $destination) && !$isChild) {
+                        $this->db->execute("DELETE FROM easControltowerReactions WHERE towerID = :towerID AND source = :destination AND destination = :source", array(":towerID" => $towerID, ":source" => $source, ":destination" => $destination));
+                        $this->db->execute("INSERT INTO easControltowerReactions (towerID, source, destination) VALUES (:towerID, :source, :destination) ON DUPLICATE KEY UPDATE towerID = :towerID , source = :source , destination = :destination", array(":towerID" => $towerID, ":source" => $source, ":destination" => $destination));
+                        $resp['state'] = "success";
+                    }
                 } else {
                     $resp['msg'] = "You are not permitted to do this.";
                 }
