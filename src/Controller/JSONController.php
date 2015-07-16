@@ -215,7 +215,7 @@ class JSONController
                         $row = $this->db->queryRow("SELECT * FROM easControltowerReactions WHERE source = :source", array(":source" => $st));
                         if(!$row)
                             break;
-                        if((int)$row['destination'] == $destination)
+                        if((int)$row['destination'] == $source)
                             $isChild = true;
                         $st = $row['destination'];
                     }
