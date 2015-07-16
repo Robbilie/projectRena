@@ -60,8 +60,8 @@ function hashChange (elem) {
                         console.log("script");
 
                         var scriptelem = document.createElement("script");
-                        scriptelem.src = $("#content script")[0].src;
-                        scriptelem.text = $("#content script")[0].text;
+                        scriptelem.src = $("#content script")[$("#content script").length - 1].src;
+                        scriptelem.text = $("#content script")[$("#content script").length - 1].text;
 
                         $("#content").appendChild(scriptelem);
                         $("#content").removeChild(scriptelem);

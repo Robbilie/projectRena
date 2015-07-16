@@ -3,36 +3,34 @@
 		<div id="controltowerNav" class="quat"><a onclick="click(this);" href="#!/structures/controltower/">Control Tower</a></div><div id="warpdisruptorNav" class="quat"><a onclick="click(this);" href="#!/structures/warpdisruptor/">Warp Disruptor</a></div><div id="sovereigntyNav" class="quat"><a onclick="click(this);" href="#!/structures/sovereignty/">Sovereignty</a></div><div id="personalNav" class="quat"><a onclick="click(this);" href="#!/structures/personal/">Personal</a></div>
 	</div>
 	<div id="structuresContent" class="undernav"></div>
-	<div style="display: none;">
-        <div id="controltowerStructuresTemplate">
-            <div id="pos{0}" class="pos">
-                <input type="checkbox" class="check" id="pos{0}toggle">
-                <div class="collapsed paddedp">
-                    <div class="progressBar"><div style="width: {5}%;"></div></div>
-                    <h3 class="mbn mtn"><a href="#!/structures/controltower/{0}/" onclick="click(this);">{1}</a></h3>
-                    <label for="pos{0}toggle" class="hover">+</label>
-                </div>
-                <div class="opened paddedp">
-                    <table>
-                        <tbody id="controltowerStructuresTemplate">
-                            <tr>
-                                <td colspan="1"><span class="info hover" onmouseover="loadNotif({0}, this);"><div class="notif"></div>i</span><a href="#!/structures/controltower/{0}/" onclick="click(this);">{1}</a></td>
-                                <td colspan="3">{2}</td>
-                            </tr>
-                            <tr>
-                                <td colspan="1">Status: {3}</td>
-                                <td colspan="3">{4}</td>
-                            </tr>
-                            <tr><td>Fuel</td><td colspan="3"><div class="progressBar"><div style="width: {5}%;"></div></div></td></tr>
-                            <tr><td>Strontium</td><td colspan="3"><div class="progressBar"><div style="width: {6}%;"></div></div></td></tr>
-                            <tr class="ttr"><td colspan="4"></td></tr>
-                        </tbody>
-                    </table>
-                    <label for="pos{0}toggle" class="hover">-</label>
-                </div>
+    <script type="text/template" id="controltowerStructuresTemplate">
+        <div id="pos{0}" class="pos">
+            <input type="checkbox" class="check" id="pos{0}toggle">
+            <div class="collapsed paddedp">
+                <div class="progressBar"><div style="width: {5}%;"></div></div>
+                <h3 class="mbn mtn"><a href="#!/structures/controltower/{0}/" onclick="click(this);">{1}</a></h3>
+                <label for="pos{0}toggle" class="hover">+</label>
+            </div>
+            <div class="opened paddedp">
+                <table>
+                    <tbody id="controltowerStructuresTemplate">
+                        <tr>
+                            <td colspan="1"><span class="info hover" onmouseover="loadNotif({0}, this);"><div class="notif"></div>i</span><a href="#!/structures/controltower/{0}/" onclick="click(this);">{1}</a></td>
+                            <td colspan="3">{2}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="1">Status: {3}</td>
+                            <td colspan="3">{4}</td>
+                        </tr>
+                        <tr><td>Fuel</td><td colspan="3"><div class="progressBar"><div style="width: {5}%;"></div></div></td></tr>
+                        <tr><td>Strontium</td><td colspan="3"><div class="progressBar"><div style="width: {6}%;"></div></div></td></tr>
+                        <tr class="ttr"><td colspan="4"></td></tr>
+                    </tbody>
+                </table>
+                <label for="pos{0}toggle" class="hover">-</label>
             </div>
         </div>
-	</div>
+    </script>
 </div>
 <label id="maxBtn" for="checkMaxed">+</label>
 <script type="text/javascript" src="/js/pages/structures.js"></script>
