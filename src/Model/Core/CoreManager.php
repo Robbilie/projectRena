@@ -528,7 +528,7 @@ class CoreManager {
         // remove old groups
         $oldgroups = $char->getCGroups();
         for($i = 0; $i < count($oldgroups); $i++)
-            $oldgroups[i]->removeCharacter($char->getCharId());
+            $oldgroups[$i]->removeCharacter($char->getCharId());
 
         $char->resetGroups();
 
