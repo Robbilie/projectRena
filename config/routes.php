@@ -11,26 +11,6 @@ $app->get('/json/apikey/:keyID/:vCode/', function($keyID, $vCode) use ($app){
     (new \ProjectRena\Controller\JSONController($app))->submitAPIKey($keyID, $vCode);
 });
 
-$app->get('/json/characters/', function() use ($app){
-    (new \ProjectRena\Controller\JSONController($app))->getCharacters();
-});
-
-$app->get('/json/character/:characterID/', function($characterID) use ($app){
-    (new \ProjectRena\Controller\JSONController($app))->getCharacter($characterID);
-});
-
-$app->get('/json/character/switch/:characterID/', function($characterID) use ($app){
-    (new \ProjectRena\Controller\JSONController($app))->switchCharacter($characterID);
-});
-
-$app->get('/json/character/delete/:characterID/', function($characterID) use ($app){
-    (new \ProjectRena\Controller\JSONController($app))->removeCharacter($characterID);
-});
-
-$app->get('/json/character/:characterID/groups/', function($characterID) use ($app){
-    (new \ProjectRena\Controller\JSONController($app))->getCharacterGroups($characterID);
-});
-
 $app->get('/json/structures/controltower/', function() use ($app){
     (new \ProjectRena\Controller\JSONController($app))->getControltowers();
 });
@@ -81,6 +61,36 @@ $app->get('/json/corporation/:corporationID/wallet/:from/', function($corporatio
 
 $app->get('/json/corporation/:corporationID/wallet/:from/:till/', function($corporationID, $from, $till) use ($app){
     (new \ProjectRena\Controller\JSONController($app))->getCorporationRattingTax($from, $till);
+});
+
+
+/*
+ * Characters
+ */
+
+
+$app->get('/json/characters/', function() use ($app){
+    (new \ProjectRena\Controller\CharactersController($app))->getCharacters();
+});
+
+$app->get('/json/character/:characterID/', function($characterID) use ($app){
+    (new \ProjectRena\Controller\CharactersController($app))->getCharacter($characterID);
+});
+
+$app->get('/json/character/switch/:characterID/', function($characterID) use ($app){
+    (new \ProjectRena\Controller\CharactersController($app))->switchCharacter($characterID);
+});
+
+$app->get('/json/character/delete/:characterID/', function($characterID) use ($app){
+    (new \ProjectRena\Controller\CharactersController($app))->removeCharacter($characterID);
+});
+
+$app->get('/json/character/:characterID/groups/', function($characterID) use ($app){
+    (new \ProjectRena\Controller\CharactersController($app))->getCharacterGroups($characterID);
+});
+
+$app->get('/json/character/:characterID/options/', function($characterID) use ($app){
+    (new \ProjectRena\Controller\CharactersController($app))->getCharacterOptions($characterID);
 });
 
 
