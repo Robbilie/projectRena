@@ -86,8 +86,8 @@ class CharactersController
         if(isset($_SESSION["loggedIn"])) {
             $tmpoptions = $this->app->CoreManager->getCharacter($characterID)->getOptions();
             foreach ($tmpoptions as $option) {
-                if(!$options[$options['key']]) $options[$options['key']] = array();
-                array_push($options[$options['key']], $option['value']);
+                if(!isset($options[$option['key']])) $options[$option['key']] = array();
+                array_push($options[$option['key']], $option['value']);
             }
         }
         $this->app->response->headers->set('Content-Type', 'application/json');
