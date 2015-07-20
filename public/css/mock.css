@@ -613,6 +613,10 @@
         font-weight: normal;
     }
 
+    .gray {
+        color: #606060;
+    }
+
     .tu {
         text-transform: uppercase;
     }

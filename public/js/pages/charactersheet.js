@@ -17,11 +17,16 @@ function charactersheetJS () {
 
 		ajax("/json/character/" + coreStatus.charid + "/options/", function (s) {
 			console.log(s);
-			for(var i = 0; i < s.length; i++) {
-				var list = $("#" + s[i].key + "list");
-				var tmpl = $("#" + s[i].key + "Template");
-				if(list && tmpl) {
-					list.appendChild(createElement(tmpl.format(s[i])));
+			for(var key in s) {
+				var list = $("#" + key + "list");
+				if(list) {
+					var tmpl = $("#" + key + "Template").innerHTML;
+					for(var i = 0; i < s[key].length; i++) {
+						if(key == "jid" && i === 0) {
+							s[key][i] += '<input type="password" name="jpw" id="jpw" class="mtn" placeholder="Jabber Password"><span class="btn" onclick="savePassword();">Save Password</span>';
+						}
+						list.appendChild(createElement(tmpl.format(s[key][i])));
+					}
 				}
 			}
 		}, "json");
@@ -51,4 +56,15 @@ function deleteCharacter (charid) {
 		if(r.state == "success")
 			hashChange();
 	}, "json");
+}
+
+function setOption (key, value) {
+	ajax("/json/character/" + coreStatus.charid + "/option/" + key + "/set/" + value + "/", function (r) {
+		console.log(r);
+	}, "json");
+}
+
+function savePassword () {
+	setOption("jpw", $("#jpw").value);
+	$("#jpw").value = "";
 }
