@@ -656,7 +656,7 @@
         padding: 0.9em 1em;
     }
 
-    #characterList span, .hover.row > span, .hover.row > a, .hover.row > label {
+    #characterList span, .hover.row > span, .hover.row > a, .hover.row > label, .optionslist span {
         line-height: 32px;
         vertical-align: top;
         padding: 0px 10px;
@@ -1159,7 +1159,7 @@
         pointer-events: none;
     }
 
-    .optionslist .row {
+    .optionslist > .hover {
         border-top: lightgray 1px solid;
         border-left: lightgray 1px solid;
         border-right: lightgray 1px solid;

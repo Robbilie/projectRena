@@ -46,9 +46,9 @@ function loadOptions () {
 				var tmpl = $("#" + key + "Template").innerHTML;
 				for(var i = 0; i < s[key].length; i++) {
 					if(key == "jid" && i === 0) {
-						s[key][i] = '<div>' + s[key][i] + '</div><input type="password" name="jpw" id="jpw" class="mtn" placeholder="Jabber Password"><span class="btn" onclick="savePassword();">Save Password</span>';
+						s[key][i] = '<div class="hover paddedp"><div>' + s[key][i] + '</div><input type="password" name="jpw" id="jpw" class="mtn" placeholder="Jabber Password"><span class="btn" onclick="savePassword();">Save Password</span></div>';
 					} else {
-						s[key][i] = '<div>' + s[key][i] + '<span class="fr hover" onclick="delOption("' + key + '","' + s[key][i] + '");">×</span></div>';
+						s[key][i] = '<div class="hover row"><span>' + s[key][i] + '</span><span class="fr hover" onclick="delOption(\'' + key + '\',\'' + s[key][i] + '\');">×</span></div>';
 					}
 					list.appendChild(createElement(tmpl.format([s[key][i]])));
 				}

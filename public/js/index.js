@@ -213,18 +213,18 @@ function switchCharacter (charid) {
 }
 
 function splitPane () {
-  document.body.className = "split";
-  var fr = createElement('<div id="iframeParent"><iframe src="/" frameBorder="0"></iframe></div>');
-  $("#splitPane").parentNode.insertBefore(fr, $("#splitPane"));
-  $("#splitPane").setAttribute("onclick", "removePane();");
-  $("#splitPane").innerHTML = "-";
+    document.body.className = "split";
+    var fr = createElement('<div id="iframeParent"><iframe src="/" frameBorder="0"></iframe></div>');
+    $("#splitPane").parentNode.insertBefore(fr, $("#splitPane"));
+    $("#splitPane").setAttribute("onclick", "removePane();");
+    $("#splitPane").innerHTML = "-";
 }
 
 function removePane () {
-  document.body.className = "";
-  $("#container").removeChild($("#iframeParent"));
-  $("#splitPane").setAttribute("onclick", "splitPane();");
-  $("#splitPane").innerHTML = "+";
+    document.body.className = "";
+    $("#container").removeChild($("#iframeParent"));
+    $("#splitPane").setAttribute("onclick", "splitPane();");
+    $("#splitPane").innerHTML = "+";
 }
 
 // autocomplete test
