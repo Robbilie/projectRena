@@ -33,6 +33,7 @@ function charactersheetJS () {
 		for (var i = r.length - 1; i >= 0; i--)
 			el.appendChild(createElement('<div> + ' + r[i].name + '</div>'));
 	}, "json");
+	loadOptions();
 }
 
 function loadOptions () {
@@ -66,18 +67,25 @@ function deleteCharacter (charid) {
 function setOption (key, value) {
 	ajax("/json/character/" + coreStatus.charid + "/option/" + key + "/set/" + value + "/", function (r) {
 		console.log(r);
+		if(r.state == "success")
+			loadOptions();
 	}, "json");
+	loadOptions();
 }
 
 function addOption (key, value) {
 	ajax("/json/character/" + coreStatus.charid + "/option/" + key + "/add/" + value + "/", function (r) {
 		console.log(r);
+		if(r.state == "success")
+			loadOptions();
 	}, "json");
 }
 
 function delOption (key, value) {
 	ajax("/json/character/" + coreStatus.charid + "/option/" + key + "/del/" + value + "/", function (r) {
 		console.log(r);
+		if(r.state == "success")
+			loadOptions();
 	}, "json");
 }
 
