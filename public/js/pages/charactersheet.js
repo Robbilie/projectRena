@@ -50,7 +50,7 @@ function loadOptions () {
 					} else {
 						s[key][i] = '<div class="hover row"><span>' + s[key][i] + '</span><span class="fr hover" onclick="delOption(\'' + key + '\',\'' + s[key][i] + '\');">×</span></div>';
 					}
-					list.appendChild(createElement(tmpl.format([s[key][i]])));
+					list.appendChild(createElement(s[key][i]));
 				}
 			}
 		}
