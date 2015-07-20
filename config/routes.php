@@ -93,6 +93,10 @@ $app->get('/json/character/:characterID/options/', function($characterID) use ($
     (new \ProjectRena\Controller\CharactersController($app))->getCharacterOptions($characterID);
 });
 
+$app->get('/json/character/:characterID/option/:key/set/:value/', function($characterID, $key, $value) use ($app){
+    (new \ProjectRena\Controller\CharactersController($app))->setCharacterOption($characterID, $key, $value);
+});
+
 
 /*
  * Intel

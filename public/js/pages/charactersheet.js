@@ -14,6 +14,17 @@ function charactersheetJS () {
 		$("#allianceName").innerHTML = r.allianceName;
 
 		fadeOn($("#charactersheetConti"), 1);
+
+		ajax("/json/character/" + coreStatus.charid + "/options/", function (s) {
+			console.log(s);
+			for(var i = 0; i < s.length; i++) {
+				var list = $("#" + s[i].key + "list");
+				var tmpl = $("#" + s[i].key + "Template");
+				if(list && tmpl) {
+					list.appendChild(createElement(tmpl.format(s[i])));
+				}
+			}
+		}, "json");
 	}, "json");
 	ajax("/json/characters/", function (r) {
 		var el = $("#characterList");

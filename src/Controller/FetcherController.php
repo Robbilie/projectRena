@@ -39,7 +39,7 @@ class FetcherController
             $tmpchar = $this->app->CoreManager->getCharacter($dbchar['oldID']);
             $ch = $this->app->CoreManager->charChanged($tmpchar, $dbchar);
             if($ch || count($tmpchar->getGroups()) == 0) {
-                $this->app->CoreManager->setBaseGroups($tmpchar);
+                $tmpchar->setBaseGroups();
             }
         }
         echo " + - ".count($dbchars)." old Characters updated<br>";
@@ -64,7 +64,7 @@ class FetcherController
             $tmpchar = $this->app->CoreManager->getCharacter($key);
             $ch = $this->app->CoreManager->charChanged($tmpchar, $affSorted);
             if($ch || count($tmpchar->getGroups()) == 0) {
-                $this->app->CoreManager->setBaseGroups($tmpchar);
+                $tmpchar->setBaseGroups();
             }
         }
         echo " + - ".count($affsSorted)." special Characters updated<br>";

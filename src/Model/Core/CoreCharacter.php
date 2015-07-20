@@ -260,15 +260,60 @@ class CoreCharacter extends CoreBase {
 		return $this->options;
 	}
 
-	public function setOption ($key, $value) {
+	public function getOption ($key) {
+		return $this->options = $this->db->query("SELECT key, value FROM easCharacterOptions WHERE characterID = :characterID AND key = :key", array(":characterID" => $this->getCharId(), ":key" => $key));;
+	}
+
+	public function addOption ($key, $value) {
 		$this->db->execute("INSERT INTO easCharacterOptions (characterID, key, value) VALUES (:characterID, :key, :value)", array(":characterID" => $this->getCharId(), ":key" => $key, ":value" => $value));
 		$this->options = null;
 	}
 
 	public function updateOption ($key, $value) {
-		$this->db->execute("DELETE FROM easCharacterOptions WHERE characterID = :characterID AND key = :key AND value = :value", array(":characterID" => $this->getCharId(), ":key" => $key, ":value" => $value));
+		$this->db->execute("DELETE FROM easCharacterOptions WHERE characterID = :characterID AND key = :key", array(":characterID" => $this->getCharId(), ":key" => $key));
 		$this->db->execute("INSERT INTO easCharacterOptions (characterID, key, value) VALUES (:characterID, :key, :value)", array(":characterID" => $this->getCharId(), ":key" => $key, ":value" => $value));
 		$this->options = null;
+	}
+
+	public function setBaseGroups () {
+
+        // remove old groups
+        $oldgroups = $this->getCGroups();
+        for($i = 0; $i < count($oldgroups); $i++)
+            $oldgroups[$i]->removeCharacter($this->getCharId());
+
+        $this->resetGroups();
+
+        $corporation = $this->getCCorporation();
+        $corporationGroup = $this->app->CoreManager->getGroup($this->getCorpName());
+        if(is_null($corporationGroup))
+            $corporationGroup = $this->app->CoreManager->createGroup($corporation->getName(), "corporation", $this->getCorpId(), 0);
+        $corporationGroup->addCharacter($this->getCharId());
+
+        if($corporation->getCeoCharacterId() == $this->getCharId())
+            $this->app->CoreManager->getGroup("CEO")->addCharacter($this->getCharId());
+
+        $alliance = $this->getCAlliance();
+        $allianceGroup = $this->app->CoreManager->getGroup($this->getAlliName());
+        if(is_null($allianceGroup))
+            $allianceGroup = $this->app->CoreManager->createGroup($alliance>getName(), "alliance", $this->getAlliId(), 0);
+        $allianceGroup->addCharacter($this->getCharId());
+
+        if($alliance->getExecCorp()->getCeoCharacterId() == $this->getCharId())
+            $this->app->CoreManager->getGroup("Alliance CEO")->addCharacter($this->getCharId());
+    }
+
+	public function setBaseOptions () {
+		$options = array(
+			"jid" => $this->getStripCharName()."@".$this->config->getConfig("jabber", "urls")
+		);
+		foreach ($options as $key => $value) {
+			$this->updateOption($key, $value);
+		}
+	}
+
+	public function getStripCharName () {
+		return preg_replace(array("/ /", "/'/"), array("_", "."), strtolower($this->getCharName()));
 	}
 
 	// default

@@ -89,4 +89,23 @@ class CharactersController
         $this->app->response->body(json_encode($options));
     }
 
+    public function setCharacterOption ($characterID, $key, $value) {
+        $resp = array("msg" => "", "state" => "error");
+        if(isset($_SESSION["loggedIn"])) {
+            $char = $this->app->CoreManager->getCharacter($characterID);
+            switch ($key) {
+                case 'jpw':
+                    $jname = $char->getStripCharName();
+                    $reps['msg'] = file_get_contents("https://www.nemesisenterprises.de/auth/external.php?token=".$this->config->getConfig("jabberreg", "secrets")."&user=".$jname."&password=".$value);
+                    $resp['state'] = "success";
+                    break;
+
+                default:
+                    break;
+            }
+        }
+        $this->app->response->headers->set('Content-Type', 'application/json');
+        $this->app->response->body(json_encode($resp));
+    }
+
 }

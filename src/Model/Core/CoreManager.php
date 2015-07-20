@@ -50,14 +50,17 @@ class CoreManager {
                 ), true);
             $charRow = $this->db->queryRow("SELECT * FROM easCharacters WHERE characterID = :characterID", array(":characterID" => $characterID));
             $char = new CoreCharacter($this->app, $charRow);
-            $this->setBaseGroups($char);
+            $char->setBaseGroups();
+            $char->setBaseOptions();
         } else {
             $changed = false;
             $vars = array('characterID' => 'CharId', 'characterName' => 'CharName', 'corporationID' => 'CorpId', 'corporationName' => 'CorpName', 'allianceID' => 'AlliId', 'allianceName' => 'AlliName');
             $char = new CoreCharacter($this->app, $charRow);
             $ch = $this->charChanged($char, $apiChar);
-            if($ch || count($char->getGroups()) == 0)
-                $this->setBaseGroups($char);
+            if($ch || count($char->getGroups()) == 0) {
+                $char->setBaseGroups();
+                $char->setBaseOptions();
+            }
         }
         return $char;
     }
@@ -263,6 +266,17 @@ class CoreManager {
             }
         }
         return null;
+    }
+
+    public function getAllCharacters () {
+        $chars = array();
+        $charRows = $this->db->query("SELECT * FROM easCharacters");
+        foreach ($charRows as $charRow) {
+            $char = new CoreCharacter($this->app, $charRow);
+            array_push($this->chars, $char);
+            array_push($chars, $char);
+        }
+        return $chars;
     }
 
     public function getFleetParticipant ($fleetparticipant) {
@@ -523,34 +537,6 @@ class CoreManager {
         return $changed;
     }
 
-    public function setBaseGroups ($char) {
-
-        // remove old groups
-        $oldgroups = $char->getCGroups();
-        for($i = 0; $i < count($oldgroups); $i++)
-            $oldgroups[$i]->removeCharacter($char->getCharId());
-
-        $char->resetGroups();
-
-        $corporation = $char->getCCorporation();
-        $corporationGroup = $this->getGroup($char->getCorpName());
-        if(is_null($corporationGroup))
-            $corporationGroup = $this->createGroup($corporation->getName(), "corporation", $char->getCorpId(), 0);
-        $corporationGroup->addCharacter($char->getCharId());
-
-        if($corporation->getCeoCharacterId() == $char->getCharId())
-            $this->getGroup("CEO")->addCharacter($char->getCharId());
-
-        $alliance = $char->getCAlliance();
-        $allianceGroup = $this->getGroup($char->getAlliName());
-        if(is_null($allianceGroup))
-            $allianceGroup = $this->createGroup($alliance>getName(), "alliance", $char->getAlliId(), 0);
-        $allianceGroup->addCharacter($char->getCharId());
-
-        if($alliance->getExecCorp()->getCeoCharacterId() == $char->getCharId())
-            $this->getGroup("Alliance CEO")->addCharacter($char->getCharId());
-    }
-
     public function createGroup ($groupName, $scope, $owner = null, $custom = 0) {
         $id = $this->db->execute("INSERT INTO easGroups (name, scope, owner, custom) VALUES (:name, :scope, :owner, :custom)",
             array(
@@ -563,85 +549,6 @@ class CoreManager {
 
     public function getDGMAttribute ($typeID, $attributeID) {
         return $this->db->queryRow("SELECT * FROM dgmTypeAttributes WHERE typeID = :typeID AND attributeID = :attributeID", array(":typeID" => $typeID, ":attributeID" => $attributeID));
-    }
-
-    public function charCanEditMembersGroup ($char, $group) {
-
-    }
-
-    public function charCanEditPermissionsGroup ($char, $group) {
-        if(
-            (
-                is_null($group->getOwner()) && $group->isCustom() && $char->getCUser()->isAdmin()
-            ) ||
-            (
-                $group->getScope() == "corporation" &&
-                $group->getOwner() == $char->getCorpId() &&
-                $char->getCCorporation()->getCeoCharacterId() == $char->getCharId()
-            ) ||
-            (
-                $group->getScope() == "alliance" &&
-                $group->getOwner() == $char->getAlliId() &&
-                $char->getCCorporation()->getCAlliance()->getExecCorp()->getCeoCharacterId() == $char->getCharId()
-            ) ||
-            (
-                $char->getCUser()->isAdmin()
-            )
-        ) {
-            return true;
-        }
-        return false;
-    }
-
-    public function charHasGroupPrivs ($char, $group) {
-        if(
-            (
-                $group->getScope() == "corporation" &&
-                $group->getOwner() == $char->getCorpId() &&
-                $char->getCCorporation()->getCeoCharacterId() == $char->getCharId()
-            ) ||
-            (
-                $group->getScope() == "alliance" &&
-                $group->getOwner() == $char->getAlliId() &&
-                $char->getCCorporation()->getCAlliance()->getExecCorp()->getCeoCharacterId() == $char->getCharId()
-            ) ||
-            (
-                $char->getCUser()->isAdmin()
-            )
-        ) {
-            return true;
-        }
-        return false;
-    }
-
-    public function charCanAddCharToGroup ($char, $otherchar, $group) {
-        $entity = $group->getScope() == "corporation" ? $this->getCorporation($group->getOwner()) : $group->getScope() == "alliance" ? $this->getAlliance($group->getOwner()) : null;
-        if(
-            $this->charHasGroupPrivs($char, $group) &&
-            (
-                (
-                    $group->getScope() == "corporation" &&
-                    $char->getCorpId() == $otherchar->getCorpId()
-                ) ||
-                (
-                    $group->getScope() == "alliance" &&
-                    $char->getAlliId() == $otherchar->getAlliId()
-                ) ||
-                (
-                    $group->getScope() == "admin" &&
-                    $char->getCUser()->isAdmin()
-                )
-            )/* &&
-            (
-                $entity == null ||
-                (
-                    $entity->getId() != $group->getOwner()
-                )
-            )*/
-        ) {
-            return true;
-        }
-        return false;
     }
 
     public function entityExists ($name) {

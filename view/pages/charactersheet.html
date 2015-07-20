@@ -1,5 +1,5 @@
 <div class="contentConti" id="charactersheetConti">
-	<h1 class="blue tu ml">Active Character</h1>
+	<h1 class="blue tu ml mbn">Active Character</h1>
 	<p class="inset inline-block">
 		<img class="block" id="characterImg"><img id="corporationImg"><img id="allianceImg">
 	</p>
@@ -25,8 +25,13 @@
 		<a id="charSwitch"><img src="/img/EVE_SSO_Login_Buttons_Small_White.png" alt="EVE SSO Login Button"></a>
 	</div>
 	<div class="divider"></div>
+	<h1 class="blue tu ml mbn">Options</h1>
 	<div class="inline-block ml">
-		<h1 class="blue tu mtn">Options</h1>
+		<h1 class="blue tu mtn">Jabber</h1>
+		<div id="jidlist"></div>
+		<script type="text/template" id="jidTemplate">
+			<div class="hover paddedp">{value}</div>
+		</script>
 	</div>
 </div>
 <label id="maxBtn" for="checkMaxed">+</label>
