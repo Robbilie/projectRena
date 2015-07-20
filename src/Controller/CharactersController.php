@@ -118,7 +118,7 @@ class CharactersController
         if(isset($_SESSION["loggedIn"])) {
             $char = $this->app->CoreManager->getCharacter($characterID);
             switch ($key) {
-                case 'jid':
+                case 'xjid':
                     $char->addOption($key, $value);
                     $resp['state'] = "success";
                     break;

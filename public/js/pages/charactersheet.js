@@ -45,13 +45,21 @@ function loadOptions () {
 				list.innerHTML = "";
 				var tmpl = $("#" + key + "Template").innerHTML;
 				for(var i = 0; i < s[key].length; i++) {
-					if(key == "jid" && i === 0) {
-						s[key][i] = '<div class="hover paddedp"><div>' + s[key][i] + '</div><input type="password" name="jpw" id="jpw" class="mtn" placeholder="Jabber Password"><span class="btn" onclick="savePassword();">Save Password</span></div>';
-					} else {
-						s[key][i] = '<div class="hover row"><span>' + s[key][i] + '</span><span class="fr hover" onclick="delOption(\'' + key + '\',\'' + s[key][i] + '\');">×</span></div>';
+					switch (key) {
+						case 'jid':
+							if(i === 0) {
+								s[key][i] = '<div class="hover paddedp"><div>' + s[key][i] + '</div><input type="password" name="jpw" id="jpw" class="mtn" placeholder="Jabber Password"><span class="btn" onclick="savePassword();">Save Password</span></div>';
+							} else {
+								s[key][i] = '<div class="hover row"><span>' + s[key][i] + '</span><span class="fr hover" onclick="delOption(\'' + key + '\',\'' + s[key][i] + '\');">×</span></div>';
+							}
+							list.appendChild(createElement(tmpl.format([s[key][i]])));
+							break;
+						case 'xjid':
+							list.appendChild(createElement(tmpl.format([s[key][i]])));
+							break;
 					}
-					list.appendChild(createElement(s[key][i]));
 				}
+				list.appendChild(createElement('<div class="hover"></div>'));
 			}
 		}
 	}, "json");
@@ -95,6 +103,6 @@ function savePassword () {
 }
 
 function addJID () {
-	addOption("jid", $("#jid").value);
+	addOption("xjid", $("#jid").value);
 	$("#jid").value = "";
 }
