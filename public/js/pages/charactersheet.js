@@ -53,13 +53,14 @@ function loadOptions () {
 								s[key][i] = '<div class="hover row"><span>' + s[key][i] + '</span><span class="fr hover" onclick="delOption(\'' + key + '\',\'' + s[key][i] + '\');">×</span></div>';
 							}
 							list.appendChild(createElement(tmpl.format([s[key][i]])));
+							if(i == s[key].length - 1)
+								list.appendChild(createElement('<div class="hover"></div>'));
 							break;
 						case 'xjid':
 							list.appendChild(createElement(tmpl.format([s[key][i]])));
 							break;
 					}
 				}
-				list.appendChild(createElement('<div class="hover"></div>'));
 			}
 		}
 	}, "json");

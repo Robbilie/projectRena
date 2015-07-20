@@ -119,7 +119,7 @@ class CharactersController
             $char = $this->app->CoreManager->getCharacter($characterID);
             switch ($key) {
                 case 'xjid':
-                    $char->addOption($key, $value);
+                    $char->addOption($key, $value."|".bin2hex(random_bytes(5)));
                     $resp['state'] = "success";
                     break;
 
