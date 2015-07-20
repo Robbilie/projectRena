@@ -269,9 +269,17 @@ class CoreCharacter extends CoreBase {
 		$this->options = null;
 	}
 
-	public function updateOption ($key, $value) {
-		$this->db->execute("DELETE FROM easCharacterOptions WHERE characterID = :characterID AND `key` = :key", array(":characterID" => $this->getCharId(), ":key" => $key));
-		$this->db->execute("INSERT INTO easCharacterOptions (characterID, `key`, `value`) VALUES (:characterID, :key, :value)", array(":characterID" => $this->getCharId(), ":key" => $key, ":value" => $value));
+	public function setOption ($key, $value) {
+		$this->delOption($key);
+		$this->addOption($key, $value);
+	}
+
+	public function delOption ($key, $value = null) {
+		if(is_null($value)) {
+			$this->db->execute("DELETE FROM easCharacterOptions WHERE characterID = :characterID AND `key` = :key", array(":characterID" => $this->getCharId(), ":key" => $key));
+		} else {
+			$this->db->execute("DELETE FROM easCharacterOptions WHERE characterID = :characterID AND `key` = :key AND `value` = :value", array(":characterID" => $this->getCharId(), ":key" => $key, ":value" => $value));
+		}
 		$this->options = null;
 	}
 

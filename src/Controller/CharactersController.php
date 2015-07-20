@@ -113,4 +113,40 @@ class CharactersController
         $this->app->response->body(json_encode($resp));
     }
 
+    public function addCharacterOption ($characterID, $key, $value) {
+        $resp = array("msg" => "", "state" => "error");
+        if(isset($_SESSION["loggedIn"])) {
+            $char = $this->app->CoreManager->getCharacter($characterID);
+            switch ($key) {
+                case 'jid':
+                    $char->addOption($key, $value);
+                    $resp['state'] = "success";
+                    break;
+
+                default:
+                    break;
+            }
+        }
+        $this->app->response->headers->set('Content-Type', 'application/json');
+        $this->app->response->body(json_encode($resp));
+    }
+
+    public function delCharacterOption ($characterID, $key, $value) {
+        $resp = array("msg" => "", "state" => "error");
+        if(isset($_SESSION["loggedIn"])) {
+            $char = $this->app->CoreManager->getCharacter($characterID);
+            switch ($key) {
+                case 'jid':
+                    $char->delOption($key, $value);
+                    $resp['state'] = "success";
+                    break;
+
+                default:
+                    break;
+            }
+        }
+        $this->app->response->headers->set('Content-Type', 'application/json');
+        $this->app->response->body(json_encode($resp));
+    }
+
 }

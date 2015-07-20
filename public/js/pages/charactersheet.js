@@ -14,22 +14,6 @@ function charactersheetJS () {
 		$("#allianceName").innerHTML = r.allianceName;
 
 		fadeOn($("#charactersheetConti"), 1);
-
-		ajax("/json/character/" + coreStatus.charid + "/options/", function (s) {
-			console.log(s);
-			for(var key in s) {
-				var list = $("#" + key + "list");
-				if(list) {
-					var tmpl = $("#" + key + "Template").innerHTML;
-					for(var i = 0; i < s[key].length; i++) {
-						if(key == "jid" && i === 0) {
-							s[key][i] = '<div>' + s[key][i] + '</div><input type="password" name="jpw" id="jpw" class="mtn" placeholder="Jabber Password"><span class="btn" onclick="savePassword();">Save Password</span>';
-						}
-						list.appendChild(createElement(tmpl.format([s[key][i]])));
-					}
-				}
-			}
-		}, "json");
 	}, "json");
 	ajax("/json/characters/", function (r) {
 		var el = $("#characterList");
@@ -51,6 +35,27 @@ function charactersheetJS () {
 	}, "json");
 }
 
+function loadOptions () {
+	ajax("/json/character/" + coreStatus.charid + "/options/", function (s) {
+		console.log(s);
+		for(var key in s) {
+			var list = $("#" + key + "list");
+			if(list) {
+				list.innerHTML = "";
+				var tmpl = $("#" + key + "Template").innerHTML;
+				for(var i = 0; i < s[key].length; i++) {
+					if(key == "jid" && i === 0) {
+						s[key][i] = '<div>' + s[key][i] + '</div><input type="password" name="jpw" id="jpw" class="mtn" placeholder="Jabber Password"><span class="btn" onclick="savePassword();">Save Password</span>';
+					} else {
+						s[key][i] = '<div>' + s[key][i] + '<span class="fr hover" onclick="delOption("' + key + '","' + s[key][i] + '");">×</span></div>';
+					}
+					list.appendChild(createElement(tmpl.format([s[key][i]])));
+				}
+			}
+		}
+	}, "json");
+}
+
 function deleteCharacter (charid) {
 	ajax("/json/character/delete/" + charid + "/", function (r) {
 		if(r.state == "success")
@@ -64,7 +69,24 @@ function setOption (key, value) {
 	}, "json");
 }
 
+function addOption (key, value) {
+	ajax("/json/character/" + coreStatus.charid + "/option/" + key + "/add/" + value + "/", function (r) {
+		console.log(r);
+	}, "json");
+}
+
+function delOption (key, value) {
+	ajax("/json/character/" + coreStatus.charid + "/option/" + key + "/del/" + value + "/", function (r) {
+		console.log(r);
+	}, "json");
+}
+
 function savePassword () {
 	setOption("jpw", $("#jpw").value);
 	$("#jpw").value = "";
+}
+
+function addJID () {
+	addOption("jid", $("#jid").value);
+	$("#jid").value = "";
 }

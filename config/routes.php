@@ -97,6 +97,14 @@ $app->get('/json/character/:characterID/option/:key/set/:value/', function($char
     (new \ProjectRena\Controller\CharactersController($app))->setCharacterOption($characterID, $key, $value);
 });
 
+$app->get('/json/character/:characterID/option/:key/add/:value/', function($characterID, $key, $value) use ($app){
+    (new \ProjectRena\Controller\CharactersController($app))->addCharacterOption($characterID, $key, $value);
+});
+
+$app->get('/json/character/:characterID/option/:key/del/:value/', function($characterID, $key, $value) use ($app){
+    (new \ProjectRena\Controller\CharactersController($app))->delCharacterOption($characterID, $key, $value);
+});
+
 
 /*
  * Intel
