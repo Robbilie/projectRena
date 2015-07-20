@@ -25,7 +25,7 @@ function charactersheetJS () {
 						if(key == "jid" && i === 0) {
 							s[key][i] += '<input type="password" name="jpw" id="jpw" class="mtn" placeholder="Jabber Password"><span class="btn" onclick="savePassword();">Save Password</span>';
 						}
-						list.appendChild(createElement(tmpl.format(s[key][i])));
+						list.appendChild(createElement(tmpl.format([s[key][i]])));
 					}
 				}
 			}
