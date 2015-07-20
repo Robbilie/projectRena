@@ -261,7 +261,7 @@ class CoreCharacter extends CoreBase {
 	}
 
 	public function getOption ($key) {
-		return $this->options = $this->db->query("SELECT `key`, `value` FROM easCharacterOptions WHERE characterID = :characterID AND `key` = :key", array(":characterID" => $this->getCharId(), ":key" => $key));;
+		return $this->db->query("SELECT `key`, `value` FROM easCharacterOptions WHERE characterID = :characterID AND `key` = :key", array(":characterID" => $this->getCharId(), ":key" => $key));;
 	}
 
 	public function addOption ($key, $value) {
