@@ -140,6 +140,10 @@ class CharactersController
                     $char->delOption($key, $value);
                     $resp['state'] = "success";
                     break;
+                case 'xjid':
+                    $char->delOption($key, $value);
+                    $resp['state'] = "success";
+                    break;
 
                 default:
                     break;
