@@ -783,7 +783,7 @@
         padding: 5px 0px;
     }
 
-    input[type=text], textarea, select {
+    input[type=text], input[type=password], textarea, select {
         color: #606060;
         margin-top: 12px;
         border: 1px solid #d0d0d0;
