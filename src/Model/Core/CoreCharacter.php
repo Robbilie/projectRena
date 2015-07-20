@@ -255,23 +255,23 @@ class CoreCharacter extends CoreBase {
 
 	public function getOptions () {
 		if(is_null($this->options)) {
-			$this->options = $this->db->query("SELECT key, value FROM easCharacterOptions WHERE characterID = :characterID", array(":characterID" => $this->getCharId()));
+			$this->options = $this->db->query("SELECT `key`, `value` FROM easCharacterOptions WHERE characterID = :characterID", array(":characterID" => $this->getCharId()));
 		}
 		return $this->options;
 	}
 
 	public function getOption ($key) {
-		return $this->options = $this->db->query("SELECT key, value FROM easCharacterOptions WHERE characterID = :characterID AND key = :key", array(":characterID" => $this->getCharId(), ":key" => $key));;
+		return $this->options = $this->db->query("SELECT `key`, `value` FROM easCharacterOptions WHERE characterID = :characterID AND `key` = :key", array(":characterID" => $this->getCharId(), ":key" => $key));;
 	}
 
 	public function addOption ($key, $value) {
-		$this->db->execute("INSERT INTO easCharacterOptions (characterID, key, value) VALUES (:characterID, :key, :value)", array(":characterID" => $this->getCharId(), ":key" => $key, ":value" => $value));
+		$this->db->execute("INSERT INTO easCharacterOptions (characterID, `key`, `value`) VALUES (:characterID, :key, :value)", array(":characterID" => $this->getCharId(), ":key" => $key, ":value" => $value));
 		$this->options = null;
 	}
 
 	public function updateOption ($key, $value) {
-		$this->db->execute("DELETE FROM easCharacterOptions WHERE characterID = :characterID AND key = :key", array(":characterID" => $this->getCharId(), ":key" => $key));
-		$this->db->execute("INSERT INTO easCharacterOptions (characterID, key, value) VALUES (:characterID, :key, :value)", array(":characterID" => $this->getCharId(), ":key" => $key, ":value" => $value));
+		$this->db->execute("DELETE FROM easCharacterOptions WHERE characterID = :characterID AND `key` = :key", array(":characterID" => $this->getCharId(), ":key" => $key));
+		$this->db->execute("INSERT INTO easCharacterOptions (characterID, `key`, `value`) VALUES (:characterID, :key, :value)", array(":characterID" => $this->getCharId(), ":key" => $key, ":value" => $value));
 		$this->options = null;
 	}
 
