@@ -23,7 +23,7 @@ function charactersheetJS () {
 					var tmpl = $("#" + key + "Template").innerHTML;
 					for(var i = 0; i < s[key].length; i++) {
 						if(key == "jid" && i === 0) {
-							s[key][i] += '<input type="password" name="jpw" id="jpw" class="mtn" placeholder="Jabber Password"><span class="btn" onclick="savePassword();">Save Password</span>';
+							s[key][i] = '<div>' + s[key][i] + '</div><input type="password" name="jpw" id="jpw" class="mtn" placeholder="Jabber Password"><span class="btn" onclick="savePassword();">Save Password</span>';
 						}
 						list.appendChild(createElement(tmpl.format([s[key][i]])));
 					}
