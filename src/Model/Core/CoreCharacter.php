@@ -316,7 +316,7 @@ class CoreCharacter extends CoreBase {
 			"jid" => $this->getStripCharName()."@".$this->config->getConfig("jabber", "urls")
 		);
 		foreach ($options as $key => $value) {
-			$this->updateOption($key, $value);
+			$this->setOption($key, $value);
 		}
 	}
 
