@@ -47,11 +47,13 @@ function loadOptions () {
 				for(var i = 0; i < s[key].length; i++) {
 					switch (key) {
 						case 'jid':
+							s[key][i] = '<div class="hover row"><span>' + s[key][i] + '</span>';
 							if(i === 0) {
-								s[key][i] = '<div class="hover paddedp"><div>' + s[key][i] + '</div><input type="password" name="jpw" id="jpw" class="mtn" placeholder="Jabber Password"><span class="btn" onclick="savePassword();">Save Password</span></div>';
+								s[key][i] += '<div><input type="password" name="jpw" id="jpw" class="mtn" placeholder="Jabber Password"></div><span class="btn" onclick="savePassword();">Save Password</span>';
 							} else {
-								s[key][i] = '<div class="hover row"><span>' + s[key][i] + '</span><span class="fr hover" onclick="delOption(\'' + key + '\',\'' + s[key][i] + '\');">×</span></div>';
+								s[key][i] += '<span class="fr hover" onclick="delOption(\'' + key + '\',\'' + s[key][i] + '\');">×</span>';
 							}
+							s[key][i] += '</div>';
 							list.appendChild(createElement(tmpl.format([s[key][i]])));
 							if(i == s[key].length - 1)
 								list.appendChild(createElement('<div class="hover"></div>'));
