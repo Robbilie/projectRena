@@ -104,6 +104,19 @@ class CharactersController
                     $reps['msg'] = file_get_contents("https://www.nemesisenterprises.de/auth/external.php?token=".$this->config->getConfig("jabberreg", "secrets")."&user=".$jname."&password=".$value);
                     $resp['state'] = "success";
                     break;
+                case 'jid':
+                    $vals = explode("|", $value);
+                    $this->db->execute(
+                        "UPDATE easCharacterOptions
+                        SET `key` = 'jid', `value` = :newvalue
+                        WHERE `key` = 'xjid' AND `value` = :oldvalue",
+                        array(
+                            ":newvalue" => $vals[0],
+                            ":oldvalue" => $value
+                        )
+                    );
+                    $resp['state'] = "success";
+                    break;
 
                 default:
                     break;
@@ -119,8 +132,10 @@ class CharactersController
             $char = $this->app->CoreManager->getCharacter($characterID);
             switch ($key) {
                 case 'xjid':
-                    $char->addOption($key, $value."|".$this->app->CoreManager->generateRandomString());
+                    $hasss = $value."|".$this->app->CoreManager->generateRandomString();
+                    $char->addOption($key, $hasss);
                     $resp['state'] = "success";
+                    file_get_contents("http://localhost:9699/send/".urlencode($value)."/".urlencode("https://core.eneticum.rep.pm/json/character/".$char->getCharId()."/option/jid/set/".$hasss."/")."/");
                     break;
 
                 default:
