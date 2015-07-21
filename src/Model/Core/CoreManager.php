@@ -382,6 +382,20 @@ class CoreManager {
             $corp = new CoreCorporation($this->app, $corporationRow);
             array_push($this->corps, $corp);
             return $corp;
+        } else {
+            $corpApi = $this->app->EVECorporationCorporationSheet->getData(array($corporationID))['result'];
+            $corp = new CoreCorporation($this->app,
+                array(
+                    "id" => $corpApi['corporationID'],
+                    "shortName" => $corpApi['ticker'],
+                    "name" => $corpApi['corporationName'],
+                    "ceoCharacterID" => $corpApi['ceoID'],
+                    "alliance" => $corpApi['allianceID'],
+                    "npc" => null
+                )
+            );
+            array_push($this->corps, $corp);
+            return $corp;
         }
         return null;
     }
