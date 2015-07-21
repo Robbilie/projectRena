@@ -302,13 +302,15 @@ class CoreCharacter extends CoreBase {
             $this->app->CoreManager->getGroup("CEO")->addCharacter($this->getCharId());
 
         $alliance = $this->getCAlliance();
-        $allianceGroup = $this->app->CoreManager->getGroup($this->getAlliName());
-        if(is_null($allianceGroup))
-            $allianceGroup = $this->app->CoreManager->createGroup($alliance>getName(), "alliance", $this->getAlliId(), 0);
-        $allianceGroup->addCharacter($this->getCharId());
+        if($alliance) {
+			$allianceGroup = $this->app->CoreManager->getGroup($this->getAlliName());
+	        if(is_null($allianceGroup))
+	            $allianceGroup = $this->app->CoreManager->createGroup($alliance>getName(), "alliance", $this->getAlliId(), 0);
+	        $allianceGroup->addCharacter($this->getCharId());
 
-        if($alliance->getExecCorp()->getCeoCharacterId() == $this->getCharId())
-            $this->app->CoreManager->getGroup("Alliance CEO")->addCharacter($this->getCharId());
+	        if($alliance->getExecCorp()->getCeoCharacterId() == $this->getCharId())
+	            $this->app->CoreManager->getGroup("Alliance CEO")->addCharacter($this->getCharId());
+		}
     }
 
 	public function setBaseOptions () {
