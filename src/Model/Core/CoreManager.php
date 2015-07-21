@@ -383,7 +383,7 @@ class CoreManager {
             array_push($this->corps, $corp);
             return $corp;
         } else {
-            $corpApi = $this->app->EVECorporationCorporationSheet->getData(array($corporationID))['result'];
+            $corpApi = $this->app->EVECorporationCorporationSheet->getData(null, null, $corporationID)['result'];
             $corp = new CoreCorporation($this->app,
                 array(
                     "id" => $corpApi['corporationID'],
