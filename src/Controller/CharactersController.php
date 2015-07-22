@@ -180,11 +180,11 @@ class CharactersController
                     $resp['state'] = "success";
                     break;
                 case 'xts3':
-                    $char->delOption($key, $value);
+                    $char->delOption($key, str_replace(" ", "+", $value));
                     $resp['state'] = "success";
                     break;
                 case 'ts3':
-                    $char->delOption($key, $value);
+                    $char->delOption($key, str_replace(" ", "+", $value));
                     $resp['state'] = "success";
                     break;
 
