@@ -63,6 +63,8 @@ function loadOptions () {
 							break;
 						case 'ts3':
 							list.appendChild(createElement(tmpl.format([s[key][i]])));
+							if(i == s[key].length - 1)
+								list.appendChild(createElement('<div class="hover"></div>'));
 							break;
 						case 'xts3':
 							list.appendChild(createElement(tmpl.format([s[key][i]])));
