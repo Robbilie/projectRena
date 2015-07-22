@@ -176,11 +176,17 @@ class CharactersController
                     $resp['state'] = "success";
                     break;
                 case 'xjid':
-                    $char->delOption($key, $value);
+                    $opts = $char->getOption($key);
+                    foreach ($opts as $opt)
+                        if(explode("|", $opt['value'])[0] == $value)
+                            $char->delOption($key, $opt['value']);
                     $resp['state'] = "success";
                     break;
                 case 'xts3':
-                    $char->delOption($key, str_replace(" ", "+", $value));
+                    $opts = $char->getOption($key);
+                    foreach ($opts as $opt)
+                        if(explode("|", $opt['value'])[0] == str_replace(" ", "+", $value))
+                            $char->delOption($key, $opt['value']);
                     $resp['state'] = "success";
                     break;
                 case 'ts3':
