@@ -151,7 +151,7 @@ class CharactersController
                     file_get_contents("http://localhost:9699/sendxmpp/".urlencode($value)."/".urlencode("https://core.eneticum.rep.pm/json/character/".$char->getCharId()."/option/jid/set/".$hasss."/")."/");
                     break;
                 case 'xts3':
-                    $hasss = $value."|".$this->app->CoreManager->generateRandomString();
+                    $hasss = str_replace(" ", "+", $value)."|".$this->app->CoreManager->generateRandomString();
                     $char->addOption($key, $hasss);
                     $resp['state'] = "success";
                     file_get_contents("http://localhost:9699/sendts3/".str_replace(" ", "+", urlencode($value))."/".urlencode("https://core.eneticum.rep.pm/json/character/".$char->getCharId()."/option/ts3/set/".$hasss."/")."/");
