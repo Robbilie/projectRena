@@ -119,13 +119,14 @@ class CharactersController
                     break;
                 case 'ts3':
                     $vals = explode("|", $value);
+                    $vals[0] = str_replace(" ", "+", $vals[0]);
                     $this->db->execute(
                         "UPDATE easCharacterOptions
                         SET `key` = 'ts3', `value` = :newvalue
                         WHERE `key` = 'xts3' AND `value` = :oldvalue",
                         array(
                             ":newvalue" => $vals[0],
-                            ":oldvalue" => $value
+                            ":oldvalue" => implode("|", $vals)
                         )
                     );
                     $resp['state'] = "success";
