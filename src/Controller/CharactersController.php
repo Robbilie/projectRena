@@ -117,6 +117,19 @@ class CharactersController
                     );
                     $resp['state'] = "success";
                     break;
+                case 'ts3':
+                    $vals = explode("|", $value);
+                    $this->db->execute(
+                        "UPDATE easCharacterOptions
+                        SET `key` = 'ts3', `value` = :newvalue
+                        WHERE `key` = 'xts3' AND `value` = :oldvalue",
+                        array(
+                            ":newvalue" => $vals[0],
+                            ":oldvalue" => $value
+                        )
+                    );
+                    $resp['state'] = "success";
+                    break;
 
                 default:
                     break;
@@ -135,8 +148,12 @@ class CharactersController
                     $hasss = $value."|".$this->app->CoreManager->generateRandomString();
                     $char->addOption($key, $hasss);
                     $resp['state'] = "success";
-                    file_get_contents("http://localhost:9699/send/".urlencode($value)."/".urlencode("https://core.eneticum.rep.pm/json/character/".$char->getCharId()."/option/jid/set/".$hasss."/")."/");
+                    file_get_contents("http://localhost:9699/sendxmpp/".urlencode($value)."/".urlencode("https://core.eneticum.rep.pm/json/character/".$char->getCharId()."/option/jid/set/".$hasss."/")."/");
                     break;
+                case 'xts3':
+                    $hasss = $value."|".$this->app->CoreManager->generateRandomString();
+                    $char->addOption($key, $hasss);
+                    file_get_contents("http://localhost:9699/sendts3/".urlencode($value)."/".urlencode("https://core.eneticum.rep.pm/json/character/".$char->getCharId()."/option/ts3/set/".$hasss."/")."/");
 
                 default:
                     break;

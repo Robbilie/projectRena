@@ -61,6 +61,12 @@ function loadOptions () {
 						case 'xjid':
 							list.appendChild(createElement(tmpl.format([s[key][i]])));
 							break;
+						case 'ts3':
+							list.appendChild(createElement(tmpl.format([s[key][i]])));
+							break;
+						case 'xts3':
+							list.appendChild(createElement(tmpl.format([s[key][i]])));
+							break;
 					}
 				}
 			}

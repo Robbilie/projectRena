@@ -55,6 +55,19 @@
 			</div>
 			<div class="inline-block ml">
 				<h1 class="blue tu mbn mtn gray">TS 3</h1>
+				<div id="ts3list" class="optionslist"></div>
+				<script type="text/template" id="ts3Template">
+					<div class="hover row"><span>{0}</span><span class="fr hover" onclick="delOption('ts3','{0}');">×</span></div>
+				</script>
+				<h1 class="blue tu mbn gray">TS3 [Unconfirmed]</h1>
+				<div id="xts3list" class="optionslist"></div>
+				<div>
+					<input type="text" name="ts3" id="ts3" class="mtn" placeholder="TS 3 UID">
+					<span class="btn" onclick="addTS3();">+</span>
+				</div>
+				<script type="text/template" id="xts3Template">
+					<div class="hover row"><span>{0}</span><span class="fr hover" onclick="delOption('xts3','{0}');">×</span></div>
+				</script>
 			</div>
 			<div class="inline-block ml">
 				<h1 class="blue tu mbn mtn gray">Mumble</h1>
