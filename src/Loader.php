@@ -1,4 +1,12 @@
 <?php
+
+// If the optimized loader exists, we'll just use that since it's faster than all the explodes and shit..
+if(file_exists(__DIR__ . "/OptimizedLoader.php") && php_sapi_name() != "cli")
+{
+				require_once(__DIR__ . "/OptimizedLoader.php");
+				return;
+}
+
 // Load baseConfig first..
 $app->container->singleton(/**
  * @param $container

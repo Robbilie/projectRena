@@ -10,14 +10,12 @@ class apiKeyCheckerCronjob
 {
 
     /**
-     * Executes the cronjob task
-     *
-     * @param mixed $pid
-     * @param mixed $md5
-     * @param RenaApp $app
+     * @param $pid
+     * @param $md5
      */
-    public static function execute($pid, $md5, RenaApp $app)
+    public static function execute($pid, $md5)
     {
+        $app = RenaApp::getInstance();
         if($app->Storage->get("Api904") >= date("Y-m-d H:i:s"))
             return;
 

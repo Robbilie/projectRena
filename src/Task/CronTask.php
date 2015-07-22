@@ -20,7 +20,7 @@ class CronTask extends Command
      */
     protected function configure()
     {
-        $this->setName('cron:run')->setDescription('Runs cronjobs');
+        $this->setName('run:cron')->setDescription('Runs cronjobs');
     }
 
     /**
@@ -99,11 +99,12 @@ class CronTask extends Command
                             {
                                 // Get the PID
                                 $pid = getmypid();
+
                                 // Tell the cache that we're running the cronjobs will automatically remove it from the cache once they're done
                                 $app->Cache->set($md5 . '_pid', $pid);
 
                                 // Execute the cronjob
-                                $class->execute($pid, $md5, $app);
+                                $class->execute($pid, $md5);
                                 exit();
                             }
 

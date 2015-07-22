@@ -20,7 +20,7 @@ class zkillboardReceiveTask extends Command
      */
     protected function configure()
     {
-        $this->setName('zkb:run')->setDescription('Receives data from Squizz stupid queue implementation from hell');
+        $this->setName('run:zkb')->setDescription('Receives data from Squizz stupid queue implementation from hell');
     }
 
     /**
@@ -38,6 +38,7 @@ class zkillboardReceiveTask extends Command
         do
         {
             $p = \RedisQ\Action::listen("redisq.zkillboard.com");
+var_dump($p);
             if($p["killID"] > $oldKillID)
             {
                 // Get the killmail data.

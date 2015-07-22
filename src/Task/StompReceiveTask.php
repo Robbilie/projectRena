@@ -19,7 +19,7 @@ class StompReceiveTask extends Command
      */
     protected function configure()
     {
-        $this->setName('stomp:run')->setDescription('Receives killmail data from stomp');
+        $this->setName('run:stomp')->setDescription('Receives killmail data from stomp');
     }
 
     /**
@@ -33,6 +33,7 @@ class StompReceiveTask extends Command
         //Init rena
         $app = RenaApp::getInstance();
 
+        $startTime = time() + 3600; // Current time + 60 minutes
         $run = true;
         $stomp = new \Stomp($app->baseConfig->getConfig("server", "stomp"), $app->baseConfig->getConfig("username", "stomp"), $app->baseConfig->getConfig("password", "stomp"));
         $stomp->subscribe("/topic/kills", array("id" => "projectRena", "persistent" => "true", "ack" => "client", "prefetch-count" => 1));
@@ -69,6 +70,11 @@ class StompReceiveTask extends Command
                 }
                 $stomp->ack($frame->headers["message-id"]);
             }
+
+            // Kill it after an hour
+            if($startTime <= time())
+                $run = false;
+
         } while($run == true);
     }
 }

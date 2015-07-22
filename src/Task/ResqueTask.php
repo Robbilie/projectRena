@@ -16,7 +16,7 @@ class ResqueTask extends Command
 				 */
 				protected function configure()
 				{
-								$this->setName('resque:run')->setDescription('Fires up resque');
+								$this->setName('run:resque')->setDescription('Fires up resque');
 				}
 
 				/**

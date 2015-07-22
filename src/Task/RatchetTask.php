@@ -20,7 +20,7 @@ class RatchetTask extends Command
      */
     protected function configure()
     {
-        $this->setName('ratchet:run')->setDescription('Starts up a zmq listener, with a websocket server that also passes data to stomp..');
+        $this->setName('run:ratchet')->setDescription('Starts up a zmq listener, with a websocket server that also passes data to stomp..');
     }
 
     /**

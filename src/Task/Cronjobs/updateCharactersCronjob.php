@@ -2,18 +2,30 @@
 
 namespace ProjectRena\Task\Cronjobs;
 
-use ProjectRena\Lib\Db;
 use ProjectRena\RenaApp;
 
+/**
+ * Class updateCharactersCronjob
+ *
+ * @package ProjectRena\Task\Cronjobs
+ */
 class updateCharactersCronjob
 {
+    /**
+     * @return int
+     */
     public static function getRunTimes()
     {
         return 60; // Runs every 60 seconds
     }
 
-    public static function execute($pid, $md5, RenaApp $app)
+    /**
+     * @param $pid
+     * @param $md5
+     */
+    public static function execute($pid, $md5)
     {
+        $app = RenaApp::getInstance();
         if($app->Storage->get("Api904") >= date("Y-m-d H:i:s"))
             return;
 

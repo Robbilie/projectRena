@@ -112,9 +112,10 @@ class EVEOAuth
             foreach($validGroups as $type => $id)
             {
                 $innerData = $this->db->query("SELECT groupID, groupType FROM usersGroups WHERE userID = :id", array(":id" => $this->app->Users->getUserByName($characterName)["id"]));
-                foreach($innerData as $check) if($check["groupType"] == $type) if($check["groupID"] != $id) $this->db->execute("DELETE FROM usersGroups WHERE userID = :id AND groupID = :groupID", array(":id"      => $this->app->Users->getUserByName($characterName)["id"],
-                                                                                                                                                                                                          ":groupID" => $check["groupID"]
-                ));
+                foreach($innerData as $check)
+                    if($check["groupType"] == $type)
+                        if($check["groupID"] != $id)
+                            $this->db->execute("DELETE FROM usersGroups WHERE userID = :id AND groupID = :groupID", array(":id" => $this->app->Users->getUserByName($characterName)["id"], ":groupID" => $check["groupID"]));
             }
 
             // Now add the user to the groups they're allowed to be in, this doesn't happen on anything but login so that we are a bit sql heavy there is fine!
