@@ -153,7 +153,9 @@ class CharactersController
                 case 'xts3':
                     $hasss = $value."|".$this->app->CoreManager->generateRandomString();
                     $char->addOption($key, $hasss);
-                    file_get_contents("http://localhost:9699/sendts3/".urlencode($value)."/".urlencode("https://core.eneticum.rep.pm/json/character/".$char->getCharId()."/option/ts3/set/".$hasss."/")."/");
+                    $resp['state'] = "success";
+                    file_get_contents("http://localhost:9699/sendts3/".str_replace(" ", "+", urlencode($value))."/".urlencode("https://core.eneticum.rep.pm/json/character/".$char->getCharId()."/option/ts3/set/".$hasss."/")."/");
+                    break;
 
                 default:
                     break;
@@ -173,6 +175,14 @@ class CharactersController
                     $resp['state'] = "success";
                     break;
                 case 'xjid':
+                    $char->delOption($key, $value);
+                    $resp['state'] = "success";
+                    break;
+                case 'xts3':
+                    $char->delOption($key, $value);
+                    $resp['state'] = "success";
+                    break;
+                case 'ts3':
                     $char->delOption($key, $value);
                     $resp['state'] = "success";
                     break;

@@ -115,3 +115,8 @@ function addJID () {
 	addOption("xjid", $("#jid").value);
 	$("#jid").value = "";
 }
+
+function addTS3 () {
+	addOption("xts3", $("#ts3").value);
+	$("#ts3").value = "";
+}
