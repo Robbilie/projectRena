@@ -39,6 +39,9 @@ function charactersheetJS () {
 function loadOptions () {
 	ajax("/json/character/" + coreStatus.charid + "/options/", function (s) {
 		console.log(s);
+		var lists = $(".optionslist");
+		for(var list in lists)
+			lists[list].innerHTML = "";
 		for(var key in s) {
 			var list = $("#" + key + "list");
 			if(list) {
