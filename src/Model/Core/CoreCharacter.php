@@ -273,9 +273,10 @@ class CoreCharacter extends CoreBase {
 			$notifications = $this->getNotifications();
 			$this->cnotifications = array();
 			foreach ($notifications as $notification) {
-				if(!is_null($ck) && !$ck($notification))
+				$tnotif = new CoreNotification($this->app, $notification);
+				if(!is_null($ck) && !$ck($tnotif))
 					continue;
-				array_push($tnotifs, new CoreNotification($this->app, $notification));
+				array_push($tnotifs, $tnotif);
 			}
 			if(is_null($ck))
 				$this->cnotifications = $tnotifs;
