@@ -206,7 +206,147 @@ class FetcherController
             foreach ($reactions as $reaction) {
                 $exportedArr = array();
                 $reaction->exportReaction($exportedArr);
-                var_dump($exportedArr);
+
+                foreach ($exportedArr as $silo) {
+
+                    echo $pos->getName().",".$pos->getMoon()->getName()." -> ".$this->app->CoreManager->getContainer($silo['id'])->getName()." is ".($silo['state'] == "running" ? ("running ".($silo["value"] >= 0 ? "full" : "empty")." in ".$silo["left"]." hours") : $silo['state'])."<br>";
+
+                    $lastSiloNotif = $this->app->CoreManager->getNotificationByLocation($silo['id']);
+
+                    if(!is_null($lastSiloNotif) && $silo['ts'] > $lastSiloNotif->getCreated()) {
+
+                        echo " - recalculate<br>";
+
+                        $tsOffset = floor(($lastSiloNotif->getCreated() - ($silo['ts'] + ($silo['left'] * 3600))) / 3600);
+
+                        if($silo['state'] == "running") {
+
+                            echo " - - running<br>";
+
+                            if($tsOffset == 0 || $tsOffset == -1) {
+		                         echo " - - - correct<br>";
+    						} else {
+
+    							echo " - - - incorrect {$tsOffset}<br>";
+
+                                $this->db->execute("UPDATE easNotifications SET state = 2 WHERE locationID = :locationID AND state = 0", array(":locationID" => $silo['id']));
+
+                                if(($lastSiloNotif->getRequested() - $lastSiloNotif->getCreated()) / 3600 == $silo['left']) {
+
+                                    $this->db->execute(
+                                        "INSERT INTO easNotifications (eveID, state, typeID, creatorID, recipientID, locationID, body, created, requested) VALUES (:eveID, :state, :typeID, :creatorID, :recipientID, :locationID, :body, :created, :requested)",
+                                        array(
+                                            ":eveID"        => 0,
+                                            ":state"        => 0,
+                                            ":typeID"       => 153,
+                                            ":creatorID"    => 0,
+                                            ":recipientID"  => $pos->getOwnerId(),
+                                            ":locationID"   => $silo['id'],
+                                            ":body"         => json_encode(array("msg" => "Silo inactive")),
+                                            ":created"      => $silo['ts'],
+                                            ":requested"    => $silo['ts']
+                                        )
+                                    );
+
+                                } else {
+
+                                    $this->db->execute(
+                                        "INSERT INTO easNotifications (eveID, state, typeID, creatorID, recipientID, locationID, body, created, requested) VALUES (:eveID, :state, :typeID, :creatorID, :recipientID, :locationID, :body, :created, :requested)",
+                                        array(
+                                            ":eveID"        => 0,
+                                            ":state"        => 0,
+                                            ":typeID"       => 152,
+                                            ":creatorID"    => 0,
+                                            ":recipientID"  => $pos->getOwnerId(),
+                                            ":locationID"   => $silo['id'],
+                                            ":body"         => json_encode(array("msg" => "Silo Progress")),
+                                            ":created"      => $silo['ts'],
+                                            ":requested"    => $silo['ts'] + ($silo['left'] * 3600)
+                                        )
+                                    );
+
+                                }
+
+                            }
+                        } else {
+
+						    echo " - - inactive<br>";
+
+                            if($lastSiloNotif->getTypeId() == 153) {
+                                echo " - - - correct<br>";
+                            } else {
+                                echo " - - - incorrect<br>";
+                                $this->db->execute("UPDATE easNotifications SET state = 2 WHERE locationID = :locationID AND state = 0", array(":locationID" => $silo['id']));
+
+                                $this->db->execute(
+                                    "INSERT INTO easNotifications (eveID, state, typeID, creatorID, recipientID, locationID, body, created, requested) VALUES (:eveID, :state, :typeID, :creatorID, :recipientID, :locationID, :body, :created, :requested)",
+                                    array(
+                                        ":eveID"        => 0,
+                                        ":state"        => 0,
+                                        ":typeID"       => 153,
+                                        ":creatorID"    => 0,
+                                        ":recipientID"  => $pos->getOwnerId(),
+                                        ":locationID"   => $silo['id'],
+                                        ":body"         => json_encode(array("msg" => "Silo inactive")),
+                                        ":created"      => $silo['ts'],
+                                        ":requested"    => $silo['ts']
+                                    )
+                                );
+                            }
+
+                        }
+
+                    } else if (is_null($lastSiloNotif)) {
+                        echo " - new<br>";
+
+                        if($silo['state'] == "running") {
+                            echo " - - running<br>";
+
+                            $this->db->execute(
+                                "INSERT INTO easNotifications (eveID, state, typeID, creatorID, recipientID, locationID, body, created, requested) VALUES (:eveID, :state, :typeID, :creatorID, :recipientID, :locationID, :body, :created, :requested)",
+                                array(
+                                    ":eveID"        => 0,
+                                    ":state"        => 0,
+                                    ":typeID"       => 152,
+                                    ":creatorID"    => 0,
+                                    ":recipientID"  => $pos->getOwnerId(),
+                                    ":locationID"   => $silo['id'],
+                                    ":body"         => json_encode(array("msg" => "Silo Progress")),
+                                    ":created"      => $silo['ts'],
+                                    ":requested"    => $silo['ts'] + ($silo['left'] * 3600)
+                                )
+                            );
+
+                        } else {
+                            echo " - - inactive : ".$silo['state']."<br>";
+
+                            $this->db->execute(
+                                "INSERT INTO easNotifications (eveID, state, typeID, creatorID, recipientID, locationID, body, created, requested) VALUES (:eveID, :state, :typeID, :creatorID, :recipientID, :locationID, :body, :created, :requested)",
+                                array(
+                                    ":eveID"        => 0,
+                                    ":state"        => 0,
+                                    ":typeID"       => 153,
+                                    ":creatorID"    => 0,
+                                    ":recipientID"  => $pos->getOwnerId(),
+                                    ":locationID"   => $silo['id'],
+                                    ":body"         => json_encode(array("msg" => "Silo inactive")),
+                                    ":created"      => $silo['ts'],
+                                    ":requested"    => $silo['ts']
+                                )
+                            );
+
+                        }
+                        
+                    } else if(!is_null($lastSiloNotif) && $silo['ts'] == $lastSiloNotif->getCreated()) {
+                        echo " - old<br>";
+    					if($silo['state'] == "running") {
+    						echo " - - running<br>";
+    					} else {
+    						echo " - - inactive<br>";
+    					}
+                    }
+
+                }
             }
 
 

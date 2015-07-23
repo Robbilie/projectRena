@@ -173,18 +173,11 @@ class CoreReactionModule {
 
     public function exportReaction (&$arr) {
 
-        if($this->output)
-            var_dump("tid ".$this->output->getTypeId());
-
-        var_dump(is_null($this->output));
-        var_dump(count($this->inputs));
-
         if(
             $this->getTypeId() == 404 && // only export silos
             (is_null($this->output) || $this->output->getTypeId() != 404) && // only export the topmost silo (no output or a reactor as output)
             ($this->hasContents() || $this->inputValue != 0) // should have content or at least will have content
         ) {
-            var_dump("export");
 
             array_push($arr,
                 array(
@@ -203,8 +196,6 @@ class CoreReactionModule {
             );
 
         }
-
-        var_dump("move on");
 
         foreach ($this->inputs as $input)
             $input->exportReaction($arr);
