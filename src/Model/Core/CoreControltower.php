@@ -112,6 +112,7 @@ class CoreControltower extends CoreStructure {
 
 	public function getContent () {
 		if(is_null($this->ccontent)) {
+			$id = $this->getId();
 			$this->ccontent = $this->getOwner()->getItems(function($i) use ($id) { return $i->getLocationId() == $id; });
 		}
 		return $this->ccontent;
