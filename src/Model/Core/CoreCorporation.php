@@ -71,7 +71,7 @@ class CoreCorporation extends CoreBase {
 	public function getItems ($ck = null) {
 		if(is_null($this->items) || !is_null($ck)) {
 			$items = array();
-			$itemRows = $this->db->query("SELECT ntItem.ownerID,ntItem.itemID,ntItem.typeID,ntItem.locationID,ntItem.quantity,ntItem.flag,ntLocation.name FROM ntItem LEFT JOIN ntLocation ON ntItem.itemID = ntLocation.itemID WHERE ntItem.ownerID = :corporationID", array(":corporationID" => $this->id));
+			$itemRows = $this->db->query("SELECT ntItem.ownerID,ntItem.itemID,ntItem.typeID,ntItem.locationID,ntItem.quantity,ntItem.flag,ntLocation.name,ntItem.lastUpdateTimestamp FROM ntItem LEFT JOIN ntLocation ON ntItem.itemID = ntLocation.itemID WHERE ntItem.ownerID = :corporationID", array(":corporationID" => $this->id));
 			foreach ($itemRows as $itemRow) {
 				$item = new CoreItem($this->app, $itemRow);
 				if(!is_null($ck))
@@ -90,7 +90,7 @@ class CoreCorporation extends CoreBase {
 	public function getContainers ($ck = null) {
 		if(is_null($this->containers) || !is_null($ck)) {
 			$containers = array();
-			$containerRows = $this->db->query("SELECT ntItem.ownerID,ntItem.itemID,ntItem.typeID,ntItem.locationID,ntItem.quantity,ntItem.flag,ntLocation.name,ntLocation.x,ntLocation.y,ntLocation.z FROM ntItem,ntLocation WHERE ntItem.ownerID = :corporationID AND ntLocation.itemID = ntItem.itemID", array(":corporationID" => $this->id));
+			$containerRows = $this->db->query("SELECT ntItem.ownerID,ntItem.itemID,ntItem.typeID,ntItem.locationID,ntItem.quantity,ntItem.flag,ntLocation.name,ntLocation.x,ntLocation.y,ntLocation.z,ntItem.lastUpdateTimestamp FROM ntItem,ntLocation WHERE ntItem.ownerID = :corporationID AND ntLocation.itemID = ntItem.itemID", array(":corporationID" => $this->id));
 			foreach ($containerRows as $containerRow) {
 				$container = new CoreContainer($this->app, $containerRow);
 				if(!is_null($ck))
@@ -109,7 +109,7 @@ class CoreCorporation extends CoreBase {
 	public function getControltower ($ck = null) {
 		if(is_null($this->controltower) || !is_null($ck)) {
 			$controltowers = array();
-			$controltowerRows = $this->db->query("SELECT ntItem.ownerID,ntItem.itemID,ntItem.typeID,ntItem.locationID,ntItem.quantity,ntItem.flag,ntLocation.name,ntLocation.x,ntLocation.y,ntLocation.z,ntItemStarbase.state,ntItemStarbase.moonID FROM ntItem,ntLocation,ntItemStarbase,mapSolarSystems,mapRegions WHERE ntItem.ownerID = :corporationID AND ntLocation.itemID = ntItem.itemID AND ntItemStarbase.itemID = ntItem.itemID AND mapSolarSystems.solarSystemID=ntItem.locationID AND mapRegions.regionID=mapSolarSystems.regionID ORDER BY mapRegions.regionName ASC, mapSolarSystems.solarSystemName ASC, ntLocation.name ASC", array(":corporationID" => $this->id));
+			$controltowerRows = $this->db->query("SELECT ntItem.ownerID,ntItem.itemID,ntItem.typeID,ntItem.locationID,ntItem.quantity,ntItem.flag,ntLocation.name,ntLocation.x,ntLocation.y,ntLocation.z,ntItemStarbase.state,ntItemStarbase.moonID,ntItem.lastUpdateTimestamp FROM ntItem,ntLocation,ntItemStarbase,mapSolarSystems,mapRegions WHERE ntItem.ownerID = :corporationID AND ntLocation.itemID = ntItem.itemID AND ntItemStarbase.itemID = ntItem.itemID AND mapSolarSystems.solarSystemID=ntItem.locationID AND mapRegions.regionID=mapSolarSystems.regionID ORDER BY mapRegions.regionName ASC, mapSolarSystems.solarSystemName ASC, ntLocation.name ASC", array(":corporationID" => $this->id));
 			foreach ($controltowerRows as $controltowerRow) {
 				$controltower = new CoreControltower($this->app, $controltowerRow);
 				if(!is_null($ck))
