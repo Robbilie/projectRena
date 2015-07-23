@@ -56,7 +56,7 @@ class NotificationsController
         $notification = null;
         if(isset($_SESSION["loggedIn"])) {
             $character = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
-            $notification = $character->getCNotifcation($notificationID);
+            $notification = $character->getCNotification($notificationID);
         }
         $this->app->response->headers->set('Content-Type', 'application/json');
         $this->app->response->body(json_encode($notification));
