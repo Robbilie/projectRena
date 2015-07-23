@@ -171,7 +171,7 @@ class FetcherController
                     array(
                         ":eveID"        => 0,
                         ":state"        => 0,
-                        ":typeID"       => 10,
+                        ":typeID"       => 151,
                         ":creatorID"    => 0,
                         ":recipientID"  => $pos->getOwnerId(),
                         ":locationID"   => $pos->getId(),
@@ -182,7 +182,7 @@ class FetcherController
                 );
             }
 
-            
+
 
         }
     }
