@@ -267,12 +267,20 @@ class CoreCharacter extends CoreBase {
 		}
 	}
 
-	public function getCNotifications () {
-		if(is_null($this->cnotifications)) {
+	public function getCNotifications ($ck) {
+		if(is_null($this->cnotifications) || !is_null($ck)) {
+			$tnotifs = array();
 			$notifications = $this->getNotifications();
 			$this->cnotifications = array();
-			foreach ($notifications as $notification)
-				array_push($this->cnotifications, new CoreNotification($this->app, $notification));
+			foreach ($notifications as $notification) {
+				if(!is_null($ck) && !$ck($notification))
+					continue;
+				array_push($tnotifs, new CoreNotification($this->app, $notification));
+			}
+			if(is_null($ck))
+				$this->cnotifications = $tnotifs;
+			else
+				return $tnotifs;
 		}
 		return $this->cnotifications;
 	}

@@ -62,4 +62,15 @@ class NotificationsController
         $this->app->response->body(json_encode($notification));
     }
 
+    public function getNotificationsByLocation ($locationID) {
+        $notifications = array();
+        if(isset($_SESSION["loggedIn"])) {
+            $character = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
+            $id = $locationID;
+            $notifications = $character->getCNotifications(function($i) use ($id) { return $i->getLocationId() == $id; });
+        }
+        $this->app->response->headers->set('Content-Type', 'application/json');
+        $this->app->response->body(json_encode($notifications));
+    }
+
 }

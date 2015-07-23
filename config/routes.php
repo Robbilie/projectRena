@@ -255,7 +255,11 @@ $app->get('/json/notifications/templates/', function() use ($app){
    (new \ProjectRena\Controller\NotificationsController($app))->getTemplates();
 });
 
-$app->get('/json/notifications/:notificationID/', function($notificationID) use ($app){
+$app->get('/json/notifications/:locationID/', function($locationID) use ($app){
+    (new \ProjectRena\Controller\NotificationsController($app))->getNotificationsByLocation($locationID);
+});
+
+$app->get('/json/notification/:notificationID/', function($notificationID) use ($app){
     (new \ProjectRena\Controller\NotificationsController($app))->getNotification($notificationID);
 });
 
