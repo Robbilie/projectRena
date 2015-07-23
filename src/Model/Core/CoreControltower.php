@@ -9,9 +9,10 @@ class CoreControltower extends CoreStructure {
 	protected $moonID;
 
 	protected $moon;
-	protected $ressources;
+	protected $resources;
 	protected $modules;
 	protected $reactions;
+	protected $ccontent;
 
 	function __construct (RenaApp $app, $controltowerData = array()) {
 		CoreBase::__construct($app, $controltowerData);
@@ -27,8 +28,8 @@ class CoreControltower extends CoreStructure {
 		return $this->moon;
 	}
 
-	public function getRessources () {
-		return $this->db->query("SELECT * FROM invControlTowerResources WHERE controlTowerTypeID = :controlTowerTypeID", array(":controlTowerTypeID" => $this->typeID));
+	public function getResources () {
+		return $this->db->query("SELECT * FROM invControlTowerResources WHERE controlTowerTypeID = :controlTowerTypeID AND factionID IS NULL", array(":controlTowerTypeID" => $this->typeID));
 	}
 
 	public function jsonSerialize() {
@@ -48,12 +49,12 @@ class CoreControltower extends CoreStructure {
     		"corpID" 			=> (int)$this->getOwner()->getId(),
     		"sov" 				=> $this->getLocation()->getOwner() && $this->getLocation()->getOwner()->getId() == $this->getOwner()->getCAlliance()->getId(),
     		"secondaryCapacity" => (float)$this->app->CoreManager->getDGMAttribute($this->getTypeId(), 1233)['valueFloat'],
-    		"content" 			=> $this->getOwner()->getItems(function($i) use ($id) { return $i->getLocationId() == $id; }),
+    		"content" 			=> $this->getContent(),
 			"reactions"			=> $this->db->query("SELECT source, destination FROM easControltowerReactions WHERE towerID = :towerID", array(":towerID" => $this->getItemId())),
 			"modules"			=> $this->getModules(),
 			"fuel"				=> $this->getFuelLevel(),
 			"strontium"			=> $this->getStrontiumLevel(),
-    		//"ressources" 			=> $ct->getRessources()
+    		//"resources" 			=> $ct->getResources()
 		);
 	}
 
@@ -64,7 +65,7 @@ class CoreControltower extends CoreStructure {
 
 	public function getFuelLevel () {
 		$id = $this->itemID;
-		$content = $this->getOwner()->getItems(function($i) use ($id) { return $i->getLocationId() == $id; });
+		$content = $this->getContent();
 		$fuel = 0;
 		foreach ($content as $item) {
 			if($item->getType()->getGroupId() == 1136) {
@@ -76,7 +77,7 @@ class CoreControltower extends CoreStructure {
 
 	public function getStrontiumLevel () {
 		$id = $this->itemID;
-		$content = $this->getOwner()->getItems(function($i) use ($id) { return $i->getLocationId() == $id; });
+		$content = $this->getContent();
 		$stront = 0;
 		foreach ($content as $item) {
 			if($item->getTypeId() == 16275) {
@@ -107,6 +108,13 @@ class CoreControltower extends CoreStructure {
 					array_push($this->reactions, $module);
 		}
 		return $this->reactions;
+	}
+
+	public function getContent () {
+		if(is_null($this->ccontent)) {
+			$this->ccontent = $this->getOwner()->getItems(function($i) use ($id) { return $i->getLocationId() == $id; });
+		}
+		return $this->ccontent;
 	}
 
 	// default

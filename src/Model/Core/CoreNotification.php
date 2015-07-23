@@ -69,31 +69,31 @@ class CoreNotification extends CoreBase {
 	// default
 
 	public function getId () {
-		return $this->id;
+		return (int)$this->id;
 	}
 
 	public function getEveId () {
-		return $this->eveID;
+		return (int)$this->eveID;
 	}
 
 	public function getState () {
-		return $this->state;
+		return (int)$this->state;
 	}
 
 	public function getTypeId () {
-		return $this->typeID;
+		return (int)$this->typeID;
 	}
 
 	public function getCreatorId () {
-		return $this->creatorID;
+		return (int)$this->creatorID;
 	}
 
 	public function getRecipientId () {
-		return $this->recipientID;
+		return (int)$this->recipientID;
 	}
 
 	public function getLocationId () {
-		return $this->locationID;
+		return (int)$this->locationID;
 	}
 
 	public function getBody () {
@@ -101,11 +101,11 @@ class CoreNotification extends CoreBase {
 	}
 
 	public function getCreated () {
-		return $this->created;
+		return (int)$this->created;
 	}
 
 	public function getRequested () {
-		return $this->requested;
+		return (int)$this->requested;
 	}
 
 	public function getReadState () {

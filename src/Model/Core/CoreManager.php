@@ -66,68 +66,21 @@ class CoreManager {
     }
 
     public function getNotification ($notificationID) {
-        $character = $this->getCharacter($_SESSION['characterID']);
-        $notification = $this->db->queryRow(
-    		"SELECT easNotifications.*, (SELECT 1 as i FROM easNotificationReaders WHERE notificationID = easNotifications.id AND readerID = :characterID) as readState
-    		FROM
-    			easNotifications
-    		LEFT JOIN easNotificationSettings
-    		ON
-    			easNotifications.recipientID = easNotificationSettings.corporationID,
-    			easNotificationTypes,
-    			easPermissions
-    		WHERE
-    			easNotifications.typeID = easNotificationTypes.typeID
-    		AND
-    			easNotificationTypes.permissionID IN (:permissions)
-    		AND
-    			easNotificationTypes.permissionID = easPermissions.id
-    		AND
-    			(
-    		        (
-    		            easNotificationSettings.scope = easPermissions.scope
-    		        )
-    		    OR
-    		        (
-    		            easNotificationSettings.scope IS NULL
-    		        AND
-    		            easPermissions.scope = 'corporation'
-    		        )
-    		    )
-    		AND
-    			(
-    				(
-    					(
-    		                easNotificationSettings.scope = 'corporation'
-    		            OR
-    		                easNotificationSettings.scope IS NULL
-    		            )
-    				AND
-    					easNotifications.recipientID = :corporationID
-    				)
-    			OR
-    				(
-    					easNotificationSettings.scope = 'alliance'
-    				AND
-    					:allianceID = (SELECT alliance FROM ntCorporation WHERE id = easNotifications.recipientID)
-    				)
-    			OR
-    				(
-    					easNotificationSettings.scope = 'blue'
-    				AND
-    					0 = 1
-    				)
-    			)",
-    			array(
-    				":permissions" => implode(",", $character->getPermissions()),
-    				":characterID" => $character->getCharId(),
-    				":corporationID" => $character->getCorpId(),
-    				":allianceID" => $character->getAlliId()
-    			)
-    		);
+        $notification = $this->db->queryRow("SELECT * FROM easNotifications WHERE id = :id", array(":id" => $notificationID));
         if($notification)
             return new CoreNotification($this->app, $notification);
         return null;
+    }
+
+    public function getNotificationByLocation ($locationID) {
+        $notification = $this->db->queryRow("SELECT * FROM easNotifications WHERE locationID = :locationID ORDER BY id DESC", array(":locationID" => $locationID));
+        if($notification)
+            return new CoreNotification($this->app, $notification);
+        return null;
+    }
+
+    public function deleteNotification ($notificationID) {
+        $this->db->execute("DELETE FROM easNotifications WHERE id = :id", array(":id" => $notificationID));
     }
 
     protected $groups = array();
@@ -419,7 +372,7 @@ class CoreManager {
         foreach ($this->items as $item)
             if($item->getId() == $itemID)
                 return $item;
-        $itemRow = $this->db->queryRow("SELECT ntItem.ownerID,ntItem.itemID,ntItem.typeID,ntItem.locationID,ntItem.quantity,ntItem.flag,ntLocation.name FROM ntItem LEFT JOIN ntLocation ON ntItem.itemID = ntLocation.itemID WHERE ntItem.itemID = :itemID", array(":itemID" => $itemID));
+        $itemRow = $this->db->queryRow("SELECT ntItem.ownerID,ntItem.itemID,ntItem.typeID,ntItem.locationID,ntItem.quantity,ntItem.flag,ntLocation.name,ntItem.lastUpdateTimestamp FROM ntItem LEFT JOIN ntLocation ON ntItem.itemID = ntLocation.itemID WHERE ntItem.itemID = :itemID", array(":itemID" => $itemID));
         if($itemRow) {
             $item = new CoreItem($this->app, $itemRow);
             array_push($this->items, $item);

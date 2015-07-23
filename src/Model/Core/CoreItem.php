@@ -12,6 +12,7 @@ class CoreItem extends CoreBase {
 	protected $quantity;
 	protected $flag;
 	protected $name;
+	protected $lastUpdateTimestamp;
 
 	protected $type;
 	protected $owner;
@@ -100,6 +101,10 @@ class CoreItem extends CoreBase {
 			"volume"			=> (float)$this->getType()->getVolume(),
 			"group"				=> (int)$this->getType()->getGroupId()
 		);
+	}
+
+	public function getTimestamp () {
+		return strtotime($this->lastUpdateTimestamp);
 	}
 
 	// default

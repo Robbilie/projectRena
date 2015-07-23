@@ -24,41 +24,42 @@ class NotificationsController
     }
 
     public function getTemplates () {
-      $this->app->response->headers->set('Content-Type', 'application/json');
-      $this->app->response->body(file_get_contents("./notificationtemplates.json"));
+        $this->app->response->headers->set('Content-Type', 'application/json');
+        $this->app->response->body(file_get_contents("./notificationtemplates.json"));
     }
 
     public function getUnreadCount () {
-      $unreadcount = 0;
-      if(isset($_SESSION["loggedIn"])) {
-        $character = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
-        $readcnt = $this->db->queryField(
-          "SELECT count(id) as cnt
-          FROM easNotifications LEFT JOIN easNotificationReaders ON easNotifications.id = easNotificationReaders.notificationID
-          WHERE easNotificationReaders.readerID = :characterID", "cnt", array(":characterID" => $_SESSION['characterID']));
-        $unreadcount = count($character->getNotifications()) - $readcnt;
-      }
-      $this->app->response->headers->set('Content-Type', 'application/json');
-      $this->app->response->body(json_encode(array("unread" => $unreadcount)));
+        $unreadcount = 0;
+        if(isset($_SESSION["loggedIn"])) {
+            $character = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
+            $readcnt = $this->db->queryField(
+                "SELECT count(id) as cnt
+                FROM easNotifications LEFT JOIN easNotificationReaders ON easNotifications.id = easNotificationReaders.notificationID
+                WHERE easNotificationReaders.readerID = :characterID", "cnt", array(":characterID" => $_SESSION['characterID']));
+            $unreadcount = count($character->getNotifications()) - $readcnt;
+        }
+        $this->app->response->headers->set('Content-Type', 'application/json');
+        $this->app->response->body(json_encode(array("unread" => $unreadcount)));
     }
 
     public function getNotifications () {
-      $notifications = array();
-      if(isset($_SESSION["loggedIn"])) {
-        $character = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
-        $notifications = $character->getCNotifications();
-      }
-      $this->app->response->headers->set('Content-Type', 'application/json');
-      $this->app->response->body(json_encode($notifications));
+        $notifications = array();
+        if(isset($_SESSION["loggedIn"])) {
+            $character = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
+            $notifications = $character->getCNotifications();
+        }
+        $this->app->response->headers->set('Content-Type', 'application/json');
+        $this->app->response->body(json_encode($notifications));
     }
 
     public function getNotification ($notificationID) {
-      $notification = null;
-      if(isset($_SESSION["loggedIn"])) {
-        $notification = $this->app->CoreManager->getNotification($notificationID);
-      }
-      $this->app->response->headers->set('Content-Type', 'application/json');
-      $this->app->response->body(json_encode($notification));
+        $notification = null;
+        if(isset($_SESSION["loggedIn"])) {
+            $character = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
+            $notification = $character->getCNotifcation($notificationID);
+        }
+        $this->app->response->headers->set('Content-Type', 'application/json');
+        $this->app->response->body(json_encode($notification));
     }
 
 }
