@@ -165,6 +165,24 @@ class FetcherController
 
             echo "<div> - ".$createTask." | ".$pos->getId()." | ".floor((time() + ($hours * 3600)) / 3600)." | ".(!is_null($lastNotif) ? floor($lastNotif->getRequested() / 3600) : "new")." - </div>";
 
+            if($createTask) {
+                $this->db->execute(
+                    "INSERT INTO easNotifications (eveID, state, typeID, creatorID, recipientID, locationID, body, created, requested) VALUES (:eveID, :state, :typeID, :creatorID, :recipientID, :locationID, :body, :created, :requested)",
+                    array(
+                        ":eveID"        => 0,
+                        ":state"        => 0,
+                        ":typeID"       => 10,
+                        ":creatorID"    => 0,
+                        ":recipientID"  => $pos->getOwnerId(),
+                        ":locationID"   => $pos->getId(),
+                        ":body"         => json_encode(array("msg" => "Fuel running empty")),
+                        ":created"      => $fuelTS,
+                        ":requested"    => $fuelTS + ($hours * 3600)
+                    )
+                );
+            }
+
+            
 
         }
     }
