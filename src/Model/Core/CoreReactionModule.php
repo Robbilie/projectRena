@@ -53,13 +53,15 @@ class CoreReactionModule {
 		"32821" => 0.01
 	);
 
-    public function __construct (RenaApp $app, $container, $tower) {
+    function __construct (RenaApp $app, $params = array()) {
 		$this->app = $app;
 		$this->db = $this->app->Db;
 		$this->config = $this->app->baseConfig;
 
-        $this->container = $container;
-        $this->tower = $tower;
+        $this->container = $params['container'];
+        $this->tower = $params['tower'];
+
+        if(!$this->container || !$this->tower) return;
 
         if($this->getTypeId() == 416) { // moon harvester
             $this->value = 100;
@@ -76,7 +78,7 @@ class CoreReactionModule {
     public function populateInputs () {
         $inputs = $this->db->query("SELECT * FROM easControltowerReactions WHERE destination = :destination AND towerID = :towerID", array(":destination" => $this->container->getId(), ":towerID" => $this->tower->getId()));
         foreach ($inputs as $input) {
-            $inputMod = new CoreReactionModule($this->app, $this->app->CoreManager->getContainer((int)$input['source']), $this->tower);
+            $inputMod = new CoreReactionModule($this->app, array("container" => $this->app->CoreManager->getContainer((int)$input['source']), "tower" => $this->tower));
             $inputMod->setOutput($this);
             $inputMod->populateInputs();
             array_push($this->inputs, $inputMod);
@@ -267,5 +269,5 @@ class CoreReactionModule {
     public function RunAsNew () {
 
     }
-    
+
 }

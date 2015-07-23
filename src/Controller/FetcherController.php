@@ -188,11 +188,11 @@ class FetcherController
             $reactionRows = $this->db->query("SELECT * FROM easControltowerReactions WHERE towerID = :towerID", array(":towerID" => $pos->getId()));
 
             $reactions = array();
-            
+
             foreach ($reactionRows as $reactionRow) {
                 $isOutput = count($this->db->queryRow("SELECT * FROM easControltowerReactions WHERE source = :source AND towerID = :towerID", array(":source" => $reactionRow['destination'], ":towerID" => $pos->getId()))) == 0;
                 if($isOutput)
-                    array_push($reactions, new CoreReactionModule($this->app, $this->app->CoreManager->getContainer((int)$reactionRow['destination']), $pos));
+                    array_push($reactions, new CoreReactionModule($this->app, array("container" => $this->app->CoreManager->getContainer((int)$reactionRow['destination']), "tower" => $pos)));
             }
 
             foreach ($reactions as $reaction) {
