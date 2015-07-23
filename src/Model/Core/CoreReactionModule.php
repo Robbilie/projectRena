@@ -185,7 +185,12 @@ class CoreReactionModule {
                     "name"      => $this->tower->getName(),
                     "location"  => $this->tower->getId(),
                     "value"     => $this->inputValue,
-                    "left"      => $this->inputValue == 0 ? 0 : -(($this->inputValue > 0 ? -($this->getRecCargo() / $this->getRecContents()->getVolume()) : 0) / $this->inputValue),
+                    "left"      => floor($this->inputValue == 0 ? 0 : -(
+                                        (($this->inputValue > 0 ? 
+                                            -($this->getRecCargo() / $this->getRecContents()->getVolume()) :
+                                            0
+                                        ) + $this->getRecQuantity()) / $this->inputValue
+                                    )),
                     "state"     => is_null($this->getRecContents()) && $this->inputValue != 0 ? "empty" :
                         (
                             (floor((($this->getRecCargo() - ($this->getRecQuantity() * $this->getRecContents()->getVolume())) /  $this->getRecContents()->getVolume())) < $this->inputValue * $this->getRecContents()->getVolume() ? true : false) ?
