@@ -40,42 +40,57 @@ class CoreAlliance extends CoreBase {
 	}
 
 	public function getItems ($ck = null) {
-		if(is_null($this->items)) {
-			$this->items = array();
+		if(is_null($this->items) || !is_null($ck)) {
+			$items = array();
 			$corps = $this->getCorpList();
 			foreach ($corps as $corp)
-				$this->items = array_merge($this->items, $corp->getItems($ck));
+				$items = array_merge($items, $corp->getItems($ck));
+			if(is_null($ck))
+				$this->items = $items;
+			else
+				return $items;
 		}
-		return $this->items;
+		return $items;
 	}
 
 	public function getContainers ($ck = null) {
-		if(is_null($this->containers)) {
-			$this->containers = array();
+		if(is_null($this->containers) || !is_null($ck)) {
+			$containers = array();
 			$corps = $this->getCorpList();
 			foreach ($corps as $corp)
-				$this->containers = array_merge($this->containers, $corp->getContainers($ck));
+				$containers = array_merge($containers, $corp->getContainers($ck));
+			if(is_null($ck))
+				$this->containers = $containers;
+			else
+				return $containers;
 		}
 		return $this->containers;
 	}
 
 	public function getControltower ($ck = null) {
-		if(is_null($this->controltower)) {
-			$this->controltower = array();
+		if(is_null($this->controltower) || !is_null($ck)) {
+			$controltowers = array();
 			$corps = $this->getCorpList();
 			foreach ($corps as $corp)
-				$this->controltower = array_merge($this->controltower, $corp->getControltower($ck));
+				$controltowers = array_merge($controltowers, $corp->getControltower($ck));
+			if(is_null($ck))
+				$this->controltower = $controltowers;
+			else
+				return $controltowers;
 		}
 		return $this->controltower;
 	}
 
 	public function getMemberList ($ck = null) {
-		if(is_null($this->memberList)) {
-			$this->memberList = array();
+		if(is_null($this->memberList) || !is_null($ck)) {
+			$memberList = array();
 			$corps = $this->getCorpList();
-			foreach ($corps as $corp) {
-				$this->memberList = array_merge($this->memberList, $corp->getMemberList($ck));
-			}
+			foreach ($corps as $corp)
+				$memberList = array_merge($memberList, $corp->getMemberList($ck));
+			if(is_null($ck))
+				$this->memberList = $memberList;
+			else
+				return $memberList;
 		}
 		return $this->memberList;
 	}

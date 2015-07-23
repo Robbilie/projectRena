@@ -133,7 +133,7 @@ class FetcherController
             $fuelTS = 0;
 
             $fuelResourceCnt = 0;
-            $posResources = $pos->getResources()
+            $posResources = $pos->getResources();
             foreach ($posResources as $posResource)
                 if($posResource['purpose'] == 1)
                     $fuelResourceCnt = (int)$posResource['quantity'];
@@ -165,7 +165,7 @@ class FetcherController
 
             echo "<div> - ".$createTask." | ".$pos->getId()." | ".floor((time() + ($hours * 3600)) / 3600)." | ".(!is_null($lastNotif) ? floor($lastNotif->getRequested() / 3600) : "new")." - </div>";
 
-            
+
         }
     }
 

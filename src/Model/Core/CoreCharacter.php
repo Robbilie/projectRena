@@ -64,29 +64,37 @@ class CoreCharacter extends CoreBase {
 	}
 
 	public function getItems ($ck) {
-		if(is_null($this->items)) {
-			$this->items = array();
+		if(is_null($this->items) || !is_null($ck)) {
+			$items = array();
 			$itemRows = $this->db->query("SELECT ntItem.ownerID,ntItem.itemID,ntItem.typeID,ntItem.locationID,ntItem.quantity,ntItem.flag,ntLocation.name FROM ntItem LEFT JOIN ntLocation ON ntItem.itemID = ntLocation.itemID WHERE ntItem.ownerID = :characterID", array(":characterID" => $this->characterID));
 			foreach ($itemRows as $itemRow) {
 				$item = new CoreItem($this->app, $itemRow);
 				if(!is_null($ck) && !$ck($item))
 					continue;
-				array_push($this->items, $item);
+				array_push($items, $item);
 			}
+			if(is_null($ck))
+				$this->items = $items;
+			else
+				return $items;
 		}
 		return $this->items;
 	}
 
 	public function getContainers ($ck) {
-		if(is_null($this->containers)) {
-			$this->containers = array();
+		if(is_null($this->containers) || !is_null($ck)) {
+			$containers = array();
 			$containerRows = $this->db->query("SELECT ntItem.ownerID,ntItem.itemID,ntItem.typeID,ntItem.locationID,ntItem.quantity,ntItem.flag,ntLocation.name,ntLocation.x,ntLocation.y,ntLocation.z FROM ntItem,ntLocation WHERE ntItem.ownerID = :characterID AND ntLocation.itemID = ntItem.itemID", array(":characterID" => $this->characterID));
 			foreach ($containerRows as $containerRow) {
 				$container = new CoreContainer($this->app, $containerRow);
 				if(!is_null($ck) && !$ck($container))
 					continue;
-				array_push($this->containers, $container);
+				array_push($containers, $container);
 			}
+			if(is_null($ck))
+				$this->containers = $containers;
+			else
+				return $containers;
 		}
 		return $this->containers;
 	}
