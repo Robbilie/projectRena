@@ -85,6 +85,7 @@ class CoreReactionModule {
                     return true;
             }
         }
+        return false;
     }
 
     public function setOutput ($container) {
@@ -170,7 +171,7 @@ class CoreReactionModule {
         return ($this->getTypeId() == 404 ? // silo
             ($this->container->getCapacity() * $this->modifier + (count($this->inputs) == 1 ?
                 $this->inputs[0]->getCargo() : 0
-            ) : 0
+            )) : 0
         );
     }
 
@@ -212,8 +213,8 @@ class CoreReactionModule {
                     count($this->container->getContents()) > 0 && !is_null($this->container->getContents()[0]->getQuantity()) ?
                         $this->container->getContents()[0]->getQuantity() :
                         0
-                ) + (count($this->inputs) == 1 ? $this->inputs[0]->getQuantity() : 0)
-            ) : 0
+                ) + (count($this->inputs) == 1 ? $this->inputs[0]->getQuantity() : 0) :
+                0
         );
     }
 
