@@ -188,49 +188,25 @@ class FetcherController
             $reactionRows = $this->db->query("SELECT * FROM easControltowerReactions WHERE towerID = :towerID", array(":towerID" => $pos->getId()));
 
             $reactions = array();
-            $modRows = array();
-            $modIDs = array();
-            $rowIDs = array();
-
+            
             foreach ($reactionRows as $reactionRow) {
-                $isOutput = is_null($this->db->queryRow("SELECT * FROM easControltowerReactions WHERE source = :source AND towerID = :towerID", array(":source" => $reactionRow['destination'], ":towerID" => $pos->getId())));
-                if($isOutput) {
-                    var_dump("output");
-                    $toConti = $this->app->CoreManager->getContainer((int)$reactionRow['destination']);
-                    $fromConti = $this->app->CoreManager->getContainer((int)$reactionRow['from']);
-                    $stMod = new CoreReactionModule($this->app, $toConti, $pos);
-                    $stMod->append((int)$reactionRow['destination'], new CoreReactionModule($this->app, $fromConti, $pos));
-                    array_push($reactions, $stMod);
-                    array_push($modIDs, (int)$reactionRow['destination']);
-                    array_push($modIDs, (int)$reactionRow['source']);
-                    array_push($rowIDs, (int)$reactionRow['destination']);
-                }
-                array_push($modRows, $reactionRow);
-                array_push($rowIDs, (int)$reactionRow['source']);
-            }
-
-            while(array_count_values($rowIDs) != array_count_values($modIDs)) {
-                foreach ($modRows as $rID => $rValue) {
-                    if(
-                        !isset(array_count_values($modIDs)[$modRows[$rID]['source']]) ||
-                        array_count_values($rowIDs)[$modRows[$rID]['source']] != array_count_values($modIDs)[$modRows[$rID]['source']]
-                    ) {
-                        foreach ($reactions as $reaKey => $reaValue) {
-                            $tFromConti = $this->app->CoreManager->getContainer((int)$modRows[$rID]['source']);
-                            $isAppended = $reactions[$reaKey]->append($modRows[$rID]['destination'], new CoreReactionModule($this->app, $tFromConti, $pos));
-                            if($isAppended) {
-                                array_push($modIDs, $modRows[$rID]['source']);
-                            }
-                        }
-                    }
-                }
+                $isOutput = count($this->db->queryRow("SELECT * FROM easControltowerReactions WHERE source = :source AND towerID = :towerID", array(":source" => $reactionRow['destination'], ":towerID" => $pos->getId()))) == 0;
+                if($isOutput)
+                    array_push($reactions, new CoreReactionModule($this->app, $this->app->CoreManager->getContainer((int)$reactionRow['destination']), $pos));
             }
 
             foreach ($reactions as $reaction) {
-                $reaction->process();
-                $arr = array();
-                $reaction->export($arr);
-                var_dump($arr);
+                $reaction->populateInputs();
+            }
+
+            foreach ($reactions as $reaction) {
+                $reaction->processReaction();
+            }
+
+            foreach ($reactions as $reaction) {
+                $exportedArr = array();
+                $reaction->exportReaction($exportedArr);
+                var_dump($exportedArr);
             }
 
 
