@@ -264,4 +264,8 @@ class CoreReactionModule {
             return $this->inputs[0]->getRecContents();
     }
 
+    public function RunAsNew () {
+
+    }
+    
 }
