@@ -63,7 +63,7 @@ class CoreCharacter extends CoreBase {
 		return $this->apiData;
 	}
 
-	public function getItems ($ck) {
+	public function getItems ($ck = null) {
 		if(is_null($this->items) || !is_null($ck)) {
 			$items = array();
 			$itemRows = $this->db->query("SELECT ntItem.ownerID,ntItem.itemID,ntItem.typeID,ntItem.locationID,ntItem.quantity,ntItem.flag,ntLocation.name,ntItem.lastUpdateTimestamp FROM ntItem LEFT JOIN ntLocation ON ntItem.itemID = ntLocation.itemID WHERE ntItem.ownerID = :characterID", array(":characterID" => $this->characterID));
@@ -81,7 +81,7 @@ class CoreCharacter extends CoreBase {
 		return $this->items;
 	}
 
-	public function getContainers ($ck) {
+	public function getContainers ($ck = null) {
 		if(is_null($this->containers) || !is_null($ck)) {
 			$containers = array();
 			$containerRows = $this->db->query("SELECT ntItem.ownerID,ntItem.itemID,ntItem.typeID,ntItem.locationID,ntItem.quantity,ntItem.flag,ntLocation.name,ntLocation.x,ntLocation.y,ntLocation.z,ntItem.lastUpdateTimestamp FROM ntItem,ntLocation WHERE ntItem.ownerID = :characterID AND ntLocation.itemID = ntItem.itemID", array(":characterID" => $this->characterID));
@@ -267,7 +267,7 @@ class CoreCharacter extends CoreBase {
 		}
 	}
 
-	public function getCNotifications ($ck) {
+	public function getCNotifications ($ck = null) {
 		if(is_null($this->cnotifications) || !is_null($ck)) {
 			$tnotifs = array();
 			$notifications = $this->getNotifications();
