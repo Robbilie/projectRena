@@ -52,7 +52,7 @@ class MailsController
         if(isset($_SESSION["loggedIn"])) {
             $character = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
             $mails = $this->db->query(
-                "SELECT * FROM ntMailMessage,ntMailMessageRecipient,(SELECT id,name,'A' as type FROM ntAlliance UNION SELECT id,name,'C' as type FROM ntCorporation UNION SELECT id,name,'ML' as type FROM ntMailingList) recp
+                "SELECT * FROM ntMailMessage,ntMailMessageRecipient,(SELECT id,name,'P' as type FROM ntCharacter UNION SELECT id,name,'A' as type FROM ntAlliance UNION SELECT id,name,'C' as type FROM ntCorporation UNION SELECT id,name,'ML' as type FROM ntMailingList) recp
                 WHERE ntMailMessage.messageID=ntMailMessageRecipient.messageID AND ntMailMessageRecipient.recipientID=recp.id AND ntMailMessageRecipient.recipientID = :characterID ORDER BY ntMailMessage.sentDate DESC LIMIT 100",
                 array(
                     ":characterID" => $character->getCharId()
@@ -74,7 +74,7 @@ class MailsController
         if(isset($_SESSION["loggedIn"])) {
             $character = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
             $mails = $this->db->query(
-                "SELECT * FROM ntMailMessage,ntMailMessageRecipient,(SELECT id,name,'A' as type FROM ntAlliance UNION SELECT id,name,'C' as type FROM ntCorporation UNION SELECT id,name,'ML' as type FROM ntMailingList) recp
+                "SELECT * FROM ntMailMessage,ntMailMessageRecipient,(SELECT id,name,'P' as type FROM ntCharacter UNION SELECT id,name,'A' as type FROM ntAlliance UNION SELECT id,name,'C' as type FROM ntCorporation UNION SELECT id,name,'ML' as type FROM ntMailingList) recp
                 WHERE ntMailMessage.messageID=ntMailMessageRecipient.messageID AND ntMailMessageRecipient.recipientID=recp.id AND ntMailMessageRecipient.recipientID = :corporationID ORDER BY ntMailMessage.sentDate DESC LIMIT 100",
                 array(
                     ":corporationID" => $character->getCorpId()
@@ -96,12 +96,18 @@ class MailsController
         if(isset($_SESSION["loggedIn"])) {
             $character = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
             $mails = $this->db->query(
-                "SELECT * FROM ntMailMessage,ntMailMessageRecipient,(SELECT id,name,'A' as type FROM ntAlliance UNION SELECT id,name,'C' as type FROM ntCorporation UNION SELECT id,name,'ML' as type FROM ntMailingList) recp
+                "SELECT * FROM ntMailMessage,ntMailMessageRecipient,(SELECT id,name,'P' as type FROM ntCharacter UNION SELECT id,name,'A' as type FROM ntAlliance UNION SELECT id,name,'C' as type FROM ntCorporation UNION SELECT id,name,'ML' as type FROM ntMailingList) recp
                 WHERE ntMailMessage.messageID=ntMailMessageRecipient.messageID AND ntMailMessageRecipient.recipientID=recp.id AND ntMailMessageRecipient.recipientID = :allianceID ORDER BY ntMailMessage.sentDate DESC LIMIT 100",
                 array(
                     ":allianceID" => $character->getAlliId()
                 )
             );
+            foreach ($mails as &$mail) {
+                $mail['sentDate'] = date("Y-m-d\TH:i:s\Z", $mail['sentDate']);
+                $mail['message'] = utf8_encode(preg_replace('/(color="#)[a-f0-9]{2}([a-f0-9]{6}")/', '\1\2', preg_replace('/size="[^"]*[^"]"/', "", $mail['message'])));
+                $mail['senderName'] = utf8_encode($mail['type'] == "ML" ? "" : $this->app->CoreManager->getCharacter($mail['senderID'])->getCharName());
+                $mail['name'] = utf8_encode($mail['name']);
+            }
         }
         $this->app->response->headers->set('Content-Type', 'application/json');
         $this->app->response->body(json_encode($mails));
