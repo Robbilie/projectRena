@@ -338,7 +338,7 @@ class CoreCharacter extends CoreBase {
         if($alliance) {
 			$allianceGroup = $this->app->CoreManager->getGroup($this->getAlliName());
 	        if(is_null($allianceGroup))
-	            $allianceGroup = $this->app->CoreManager->createGroup($alliance>getName(), "alliance", $this->getAlliId(), 0);
+	            $allianceGroup = $this->app->CoreManager->createGroup($alliance->getName(), "alliance", $this->getAlliId(), 0);
 	        $allianceGroup->addCharacter($this->getCharId());
 
 	        if($alliance->getExecCorp()->getCeoCharacterId() == $this->getCharId())
