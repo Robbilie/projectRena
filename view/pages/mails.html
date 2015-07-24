@@ -15,7 +15,15 @@
 	</div>
 	<div id="mailsContent" class="sidenav"></div>
 	<script type="text/template" id="mailsTemplate">
-		<div class="hover paddedp"><a {0} onclick="click(this);">{1}</a></div>
+		<div class="mail hover paddedp">
+			<input class="details" type="checkbox" onchange="refreshDom();" id="{messageID}"/>
+			<label for="{messageID}">
+				<h5>[<a href="?id={messageID}">l</a>] {sentDate}</h5>
+				<h5>{senderID}</h5>
+				<h3><span>[<a href="?id={messageID}">l</a>] {sentDate}</span> [{type}] {name} : {title}</h3>
+				<div><p class="inset">{message}</p></div>
+			</label>
+		</div>
 	</script>
 </div>
 <label id="maxBtn" for="checkMaxed">+</label>

@@ -700,6 +700,7 @@
         margin-right: 10px;
         margin-left: -5px;
         width: 200px;
+        padding-bottom: 200px;
     }
 
     .sidenavigation > .bar {
@@ -1201,4 +1202,37 @@
         #scrollHere {
             display: none;
         }
+    }
+
+    .details[type=checkbox] {
+    	display: none;
+    }
+
+    .details[type=checkbox] + label {
+    	display: block;
+    	position: relative;
+    }
+
+    .details[type=checkbox]:not(:checked) + label > * {
+    	display: none;
+    }
+
+    .details[type=checkbox] + label > h2, .details[type=checkbox] + label > h3, .details[type=checkbox] + label > h4 {
+    	display: block !important;
+    	position: relative;
+    }
+
+    .details + label > h2, .details + label > h3, .details + label > h4, .details + label > h5 {
+    	margin: 5px 0px;
+    }
+
+    .details[type=checkbox] + label > div > p {
+    	background: gray;
+    	padding: 5px;
+    	margin: 0px;
+    	margin-bottom: 5px;
+    }
+
+    .details[type=checkbox]:checked + label > h3 > span {
+    	display: none;
     }
