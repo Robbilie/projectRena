@@ -29,6 +29,11 @@ function mailsallJS (cb) {
 
 function mailspersonalJS (cb) {
 	ajax("/json/mails/personal/", function (r) {
+		var tmpl = $("#mailsTemplate").innerHTML;
+		var mailsCont = $("#mailsContent");
+
+		for(var i = 0; i < r.length; i++)
+			mailsCont.appendChild(createElement(tmpl.format(["", r[i].name + " : " + r[i].title])));
 
 		cb();
 	}, "json");
@@ -36,6 +41,11 @@ function mailspersonalJS (cb) {
 
 function mailscorporationJS (cb) {
 	ajax("/json/mails/corporation/", function (r) {
+		var tmpl = $("#mailsTemplate").innerHTML;
+		var mailsCont = $("#mailsContent");
+
+		for(var i = 0; i < r.length; i++)
+			mailsCont.appendChild(createElement(tmpl.format(["", r[i].name + " : " + r[i].title])));
 
 		cb();
 	}, "json");
@@ -43,6 +53,11 @@ function mailscorporationJS (cb) {
 
 function mailsallianceJS (cb) {
 	ajax("/json/mails/alliance/", function (r) {
+		var tmpl = $("#mailsTemplate").innerHTML;
+		var mailsCont = $("#mailsContent");
+
+		for(var i = 0; i < r.length; i++)
+			mailsCont.appendChild(createElement(tmpl.format(["", r[i].name + " : " + r[i].title])));
 
 		cb();
 	}, "json");
