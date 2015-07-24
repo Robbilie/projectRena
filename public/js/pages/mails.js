@@ -21,7 +21,7 @@ function mailsallJS (cb) {
 		var mailsCont = $("#mailsContent");
 
 		for(var i = 0; i < r.length; i++)
-			mailsCont.appendChild(createElement(tmpl.format(["", r[i].name + " : " + r[i].title])));
+			mailsCont.appendChild(createElement(tmpl.format(r[i])));
 
 		cb();
 	}, "json");
@@ -33,7 +33,7 @@ function mailspersonalJS (cb) {
 		var mailsCont = $("#mailsContent");
 
 		for(var i = 0; i < r.length; i++)
-			mailsCont.appendChild(createElement(tmpl.format(["", r[i].name + " : " + r[i].title])));
+			mailsCont.appendChild(createElement(tmpl.format(r[i])));
 
 		cb();
 	}, "json");
@@ -45,7 +45,7 @@ function mailscorporationJS (cb) {
 		var mailsCont = $("#mailsContent");
 
 		for(var i = 0; i < r.length; i++)
-			mailsCont.appendChild(createElement(tmpl.format(r[i].name)));
+			mailsCont.appendChild(createElement(tmpl.format(r[i])));
 
 		cb();
 	}, "json");
@@ -57,7 +57,7 @@ function mailsallianceJS (cb) {
 		var mailsCont = $("#mailsContent");
 
 		for(var i = 0; i < r.length; i++)
-			mailsCont.appendChild(createElement(tmpl.format(["", r[i].name + " : " + r[i].title])));
+			mailsCont.appendChild(createElement(tmpl.format(r[i])));
 
 		cb();
 	}, "json");
