@@ -265,6 +265,28 @@ $app->get('/json/notification/:notificationID/', function($notificationID) use (
 
 
 /*
+ * Mails
+ */
+
+
+$app->get('/json/mails/all/', function() use ($app){
+    (new \ProjectRena\Controller\MailsController($app))->getAllMails();
+});
+
+$app->get('/json/mails/personal/', function() use ($app){
+    (new \ProjectRena\Controller\MailsController($app))->getPersonalMails();
+});
+
+$app->get('/json/mails/corporation/', function() use ($app){
+    (new \ProjectRena\Controller\MailsController($app))->getCorporationMails();
+});
+
+$app->get('/json/mails/alliance/', function() use ($app){
+    (new \ProjectRena\Controller\MailsController($app))->getAllianceMails();
+});
+
+
+/*
  * Timerboard
  */
 
@@ -314,6 +336,10 @@ $app->get('/mails/', function() use ($app){
     $app->render("/pages/mails.html");
 });
 
+$app->get('/mails/:recipient/', function($recipient) use ($app){
+    $app->render("/pages/mails.html");
+});
+
 $app->get('/intel/', function() use ($app){
     $app->render("/pages/intel.html");
 });
@@ -339,7 +365,7 @@ $app->get('/corporation/wallet/', function() use ($app){
 });
 
 $app->get('/structures/', function() use ($app){
-    $app->render("/pages/structures.html", array("structure" => ""));
+    $app->render("/pages/structures.html");
 });
 
 $app->get('/structures/:structure/', function($structure) use ($app){

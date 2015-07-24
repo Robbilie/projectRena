@@ -1,19 +1,22 @@
 <div class="contentConti" id="mailsConti">
-	<div id="structuresNav" class="sidenavigation">
-		<div id="controltowerNav" class="bar">
-            <a onclick="click(this);" href="#!/structures/controltower/">All</a>
-        </div>
-        <div id="warpdisruptorNav" class="bar">
-            <a onclick="click(this);" href="#!/structures/warpdisruptor/">Personal</a>
-        </div>
-        <div id="sovereigntyNav" class="bar">
-            <a onclick="click(this);" href="#!/structures/sovereignty/">Corporation</a>
+	<div id="mailsNav" class="sidenavigation">
+		<div id="allNav" class="bar">
+            <a onclick="click(this);" href="#!/mails/all/">All</a>
         </div>
         <div id="personalNav" class="bar">
-            <a onclick="click(this);" href="#!/structures/personal/">Alliance</a>
+            <a onclick="click(this);" href="#!/mails/personal/">Personal</a>
+        </div>
+        <div id="corporationNav" class="bar">
+            <a onclick="click(this);" href="#!/mails/corporation/">Corporation</a>
+        </div>
+        <div id="allianceNav" class="bar">
+            <a onclick="click(this);" href="#!/mails/alliance/">Alliance</a>
         </div>
 	</div>
-	<div id="structuresContent" class="undernav"></div>
+	<div id="mailsContent" class="sidenav"></div>
+	<script type="text/template" id="mailsTemplate">
+		<div class="hover paddedp"><a {0} onclick="click(this);">{1}</a></div>
+	</script>
 </div>
 <label id="maxBtn" for="checkMaxed">+</label>
 <script type="text/javascript" src="/js/pages/mails.js"></script>

@@ -778,6 +778,16 @@
         overflow: auto;
     }
 
+    .sidenav {
+        position: absolute;
+        left: 205px;
+        right: 0;
+        bottom: 0;
+        top: 0;
+        padding: 10px;
+        overflow: auto;
+    }
+
     #structuresContent table, #controltowerConti table {
         width: 100%;
         position: relative;
