@@ -74,4 +74,8 @@
           -webkit-transition: bottom .3s;
           transition: bottom .3s;
       }
+
+      #scrollHere {
+          display: none;
+      }
   }
