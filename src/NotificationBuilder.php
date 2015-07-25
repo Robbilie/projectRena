@@ -1,7 +1,10 @@
 <?php
 
+    namespace NotificationBuilder;
+
     require_once __DIR__.'/NotificationBuilder/const.php';
     require_once __DIR__.'/NotificationBuilder/formatters.php';
+
 
     $notificationData = json_decode(file_get_contents(__DIR__."/NotificationBuilder/notifications.json"), true);
 

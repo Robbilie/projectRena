@@ -169,6 +169,101 @@ $app->container->singleton("mapSolarSystems", function($container) use ($app)
 		return new \ProjectRena\Model\CCP\mapSolarSystems($app);
 });
 
+$app->container->set("CoreAlliance", function($container) use ($app)
+{
+		return new \ProjectRena\Model\Core\CoreAlliance($app);
+});
+
+$app->container->set("CoreBase", function($container) use ($app)
+{
+		return new \ProjectRena\Model\Core\CoreBase($app);
+});
+
+$app->container->set("CoreCharacter", function($container) use ($app)
+{
+		return new \ProjectRena\Model\Core\CoreCharacter($app);
+});
+
+$app->container->set("CoreContainer", function($container) use ($app)
+{
+		return new \ProjectRena\Model\Core\CoreContainer($app);
+});
+
+$app->container->set("CoreControltower", function($container) use ($app)
+{
+		return new \ProjectRena\Model\Core\CoreControltower($app);
+});
+
+$app->container->set("CoreCorporation", function($container) use ($app)
+{
+		return new \ProjectRena\Model\Core\CoreCorporation($app);
+});
+
+$app->container->set("CoreFleet", function($container) use ($app)
+{
+		return new \ProjectRena\Model\Core\CoreFleet($app);
+});
+
+$app->container->set("CoreFleetParticipant", function($container) use ($app)
+{
+		return new \ProjectRena\Model\Core\CoreFleetParticipant($app);
+});
+
+$app->container->set("CoreGroup", function($container) use ($app)
+{
+		return new \ProjectRena\Model\Core\CoreGroup($app);
+});
+
+$app->container->set("CoreItem", function($container) use ($app)
+{
+		return new \ProjectRena\Model\Core\CoreItem($app);
+});
+
+$app->container->set("CoreItemType", function($container) use ($app)
+{
+		return new \ProjectRena\Model\Core\CoreItemType($app);
+});
+
+$app->container->set("CoreLocation", function($container) use ($app)
+{
+		return new \ProjectRena\Model\Core\CoreLocation($app);
+});
+
+$app->container->singleton("CoreManager", function($container) use ($app)
+{
+		return new \ProjectRena\Model\Core\CoreManager($app);
+});
+
+$app->container->set("CoreNotification", function($container) use ($app)
+{
+		return new \ProjectRena\Model\Core\CoreNotification($app);
+});
+
+$app->container->set("CorePermission", function($container) use ($app)
+{
+		return new \ProjectRena\Model\Core\CorePermission($app);
+});
+
+$app->container->set("CoreReactionModule", function($container) use ($app)
+{
+		return new \ProjectRena\Model\Core\CoreReactionModule($app);
+});
+
+$app->container->set("CoreStructure", function($container) use ($app)
+{
+		return new \ProjectRena\Model\Core\CoreStructure($app);
+});
+
+$app->container->set("CoreTimer", function($container) use ($app)
+{
+		return new \ProjectRena\Model\Core\CoreTimer($app);
+});
+
+$app->container->set("CoreUser", function($container) use ($app)
+{
+		return new \ProjectRena\Model\Core\CoreUser($app);
+});
+
 $app->container->singleton("alliances", function($container) use ($app)
 {
 		return new \ProjectRena\Model\EVE\alliances($app);

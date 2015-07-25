@@ -58,6 +58,8 @@ foreach($configFiles as $configFile)
 				require_once $configFile;
 }
 
+require_once __DIR__."/src/NotificationBuilder.php";
+
 // Try and auto login the person
 $app->Users->tryAutologin();
 
@@ -74,4 +76,3 @@ function dd($input)
 				var_dump($input); die();
 }
 
-require_once __DIR__."/src/NotificationBuilder.php";

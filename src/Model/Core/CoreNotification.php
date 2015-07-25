@@ -2,6 +2,7 @@
 namespace ProjectRena\Model\Core;
 
 use ProjectRena\RenaApp;
+use NotificationBuilder;
 
 class CoreNotification extends CoreBase {
 
@@ -51,7 +52,7 @@ class CoreNotification extends CoreBase {
 	}
 
 	public function jsonSerialize() {
-		return array(
+		$retArr = array(
 			"id"			=> (int)$this->id,
 			"eveID"			=> (int)$this->eveID,
 			"state"			=> (int)$this->state,
@@ -61,9 +62,15 @@ class CoreNotification extends CoreBase {
 			"locationID"	=> (int)$this->locationID,
 			"created"		=> (int)$this->created,
 			"requested"		=> (int)$this->requested,
-			"body"			=> $this->body,
+			"body"			=> $this->getBodyData(),
 			"readState"		=> $this->isRead()
 		);
+
+		$builtNotif = NotificationBuilder\format($retArr);
+		$retArr['subject'] = $builtNotif[0];
+		$retArr['message'] = $builtNotif[1];
+
+		return $retArr;
 	}
 
 	// default

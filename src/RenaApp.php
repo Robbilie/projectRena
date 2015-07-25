@@ -36,6 +36,25 @@ use ProjectRena\Model\CCP\invTypes;
 use ProjectRena\Model\CCP\mapDenormalize;
 use ProjectRena\Model\CCP\mapRegions;
 use ProjectRena\Model\CCP\mapSolarSystems;
+use ProjectRena\Model\Core\CoreAlliance;
+use ProjectRena\Model\Core\CoreBase;
+use ProjectRena\Model\Core\CoreCharacter;
+use ProjectRena\Model\Core\CoreContainer;
+use ProjectRena\Model\Core\CoreControltower;
+use ProjectRena\Model\Core\CoreCorporation;
+use ProjectRena\Model\Core\CoreFleet;
+use ProjectRena\Model\Core\CoreFleetParticipant;
+use ProjectRena\Model\Core\CoreGroup;
+use ProjectRena\Model\Core\CoreItem;
+use ProjectRena\Model\Core\CoreItemType;
+use ProjectRena\Model\Core\CoreLocation;
+use ProjectRena\Model\Core\CoreManager;
+use ProjectRena\Model\Core\CoreNotification;
+use ProjectRena\Model\Core\CorePermission;
+use ProjectRena\Model\Core\CoreReactionModule;
+use ProjectRena\Model\Core\CoreStructure;
+use ProjectRena\Model\Core\CoreTimer;
+use ProjectRena\Model\Core\CoreUser;
 use ProjectRena\Model\EVE\alliances;
 use ProjectRena\Model\EVE\characters;
 use ProjectRena\Model\EVE\corporations;
@@ -161,6 +180,25 @@ use ProjectRena\Model\EVEApi\Server\ServerStatus as EVEServerServerStatus;
  * @property mapDenormalize mapDenormalize
  * @property mapRegions mapRegions
  * @property mapSolarSystems mapSolarSystems
+ * @property CoreAlliance CoreAlliance
+ * @property CoreBase CoreBase
+ * @property CoreCharacter CoreCharacter
+ * @property CoreContainer CoreContainer
+ * @property CoreControltower CoreControltower
+ * @property CoreCorporation CoreCorporation
+ * @property CoreFleet CoreFleet
+ * @property CoreFleetParticipant CoreFleetParticipant
+ * @property CoreGroup CoreGroup
+ * @property CoreItem CoreItem
+ * @property CoreItemType CoreItemType
+ * @property CoreLocation CoreLocation
+ * @property CoreManager CoreManager
+ * @property CoreNotification CoreNotification
+ * @property CorePermission CorePermission
+ * @property CoreReactionModule CoreReactionModule
+ * @property CoreStructure CoreStructure
+ * @property CoreTimer CoreTimer
+ * @property CoreUser CoreUser
  * @property alliances alliances
  * @property characters characters
  * @property corporations corporations
