@@ -39,3 +39,5 @@ if(file_exists(__DIR__ . "/src/Loader.php"))
 {
 				throw new Exception("Loader.php could not be found");
 }
+
+require_once __DIR__."/src/NotificationBuilder.php";

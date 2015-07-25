@@ -28,7 +28,7 @@
 
     function format (&$notification) {
         global $formatters;
-        if(isset($formatters[$notification['typeID']])) {
+        if(isset($formatters[$notification['typeID']]) && in_array($notification['typeID'], [5])) {
             // strange if
 
             $subject;
@@ -49,7 +49,7 @@
             return [$subject, $body];
         } else {
             $subject = GetByLabel("Notifications/subjBadNotificationMessage");
-            $body = GetByLabel('Notifications/bodyBadNotificationMessage', array("id" => $notification['notificationID']));
+            $body = GetByLabel('Notifications/bodyBadNotificationMessage', array("id" => $notification['id']));
             return [$subject, $body];
         }
     }
