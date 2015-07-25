@@ -253,18 +253,12 @@ class CoreCharacter extends CoreBase {
 
 	public function getCNotification ($notificationID) {
 		$notifications = $this->getNotifications();
-		if(in_array($notificationID, $notifications)) {
-			$this->getCNotifications();
-			if(!is_null($this->cnotifications)) {
-				foreach ($this->cnotifications as $cnotification)
-					if($cnotification->getId() == $notificationID)
-						return $cnotification;
-			} else {
+		foreach ($notifications as $notification) {
+			if($notification['id'] == $notificationID) {
 				return $this->app->CoreManager->getNotification($notificationID);
 			}
-		} else {
-			return null;
 		}
+		return null;
 	}
 
 	public function getCNotifications ($ck = null) {
