@@ -3,6 +3,7 @@
     namespace NotificationBuilder;
 
     require_once __DIR__.'/NotificationBuilder/const.php';
+    require_once __DIR__.'/NotificationBuilder/functions.php';
     require_once __DIR__.'/NotificationBuilder/formatters.php';
 
 
@@ -20,8 +21,8 @@
                 if(count($formatters[$notification['typeID']]) > 2) { // has a lambda
                     $formatters[$notification['typeID']][2]($notification);
                 }
-                $subject = GetByLabel($formatters[$notification['typeID']][0], $notification);
-                $body = GetByLabel($formatters[$notification['typeID']][1], $notification);
+                $subject = GetByLabel($formatters[$notification['typeID']][0], $notification['body']);
+                $body = GetByLabel($formatters[$notification['typeID']][1], $notification['body']);
             } else { // is a function
                 $retArr = $formatters[$notification['typeID']]($notification);
                 $subject = $retArr[0];
