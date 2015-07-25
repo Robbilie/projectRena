@@ -187,19 +187,19 @@ class IntelController
         if(count($members) <= 50) {
             $intel['membertype'] = "characters";
             foreach ($members as &$member) {
-              if(!$char->getCAlliance()->hasStandingsTowards($this->app->CoreManager->getCharacter($member['submitterID']))) continue;
+                if(!$char->getCAlliance()->hasStandingsTowards($this->app->CoreManager->getCharacter($member['submitterID']))) continue;
                 if(!$char->getCAlliance()->hasStandingsTowards($this->app->CoreManager->getCharacter($member['id']))) {
-                  $member['standing'] = "negative";
-                  $intel['hostilecount']++;
+                    $member['standing'] = "negative";
+                    $intel['hostilecount']++;
                 } else {
-                  $member['standing'] = "positive";
+                    $member['standing'] = "positive";
                 }
             }
         } else {
             $intel['membertype'] = "alliances";
             $alliances = array();
             foreach ($members as $member) {
-              if(!$char->getCAlliance()->hasStandingsTowards($this->app->CoreManager->getCharacter($member['submitterID']))) continue;
+                if(!$char->getCAlliance()->hasStandingsTowards($this->app->CoreManager->getCharacter($member['submitterID']))) continue;
                 //if($this->haveStandings($characterID, $member['submitterID']) <= 0) continue;
                 if(is_null($alliances[$member['allianceID']]))
                     $alliances[$member['allianceID']] = array();
@@ -208,23 +208,23 @@ class IntelController
             $alliancesSorted = array();
             foreach ($alliances as $key => $alliance) {
                 if(!$char->getCAlliance()->hasStandingsTowards($this->app->CoreManager->getAlliance($key)->getExecCorp()->getCEOChar())) {
-                  array_push($alliancesSorted,
-                    array(
-                      "id" => $key,
-                      "name" => $this->app->CoreManager->getAlliance($key)->getName(),
-                      "count" => count($alliance),
-                      "standing" => "negative"
-                    )
-                  );
-                  $intel['hostilecount'] += count($alliance);
+                    array_push($alliancesSorted,
+                        array(
+                            "id" => $key,
+                            "name" => $this->app->CoreManager->getAlliance($key)->getName(),
+                            "count" => count($alliance),
+                            "standing" => "negative"
+                        )
+                    );
+                    $intel['hostilecount'] += count($alliance);
                 } else {
                     array_push($alliancesSorted,
-                      array(
-                        "id" => $key,
-                        "name" => $this->app->CoreManager->getAlliance($key)->getName(),
-                        "count" => count($alliance),
-                        "standing" => "positive"
-                      )
+                        array(
+                            "id" => $key,
+                            "name" => $this->app->CoreManager->getAlliance($key)->getName(),
+                            "count" => count($alliance),
+                            "standing" => "positive"
+                        )
                     );
                 }
 

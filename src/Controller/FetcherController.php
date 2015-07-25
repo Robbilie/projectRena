@@ -217,7 +217,7 @@ class FetcherController
 
                         echo " - recalculate<br>";
 
-                        $tsOffset = floor(($lastSiloNotif->getCreated() - ($silo['ts'] + ($silo['left'] * 3600))) / 3600);
+                        $tsOffset = floor(($lastSiloNotif->getRequested() - ($silo['ts'] + ($silo['left'] * 3600))) / 3600);
 
                         if($silo['state'] == "running") {
 
@@ -336,7 +336,7 @@ class FetcherController
                             );
 
                         }
-                        
+
                     } else if(!is_null($lastSiloNotif) && $silo['ts'] == $lastSiloNotif->getCreated()) {
                         echo " - old<br>";
     					if($silo['state'] == "running") {
