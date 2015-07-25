@@ -61,7 +61,7 @@ class CoreNotification extends CoreBase {
 			"locationID"	=> (int)$this->locationID,
 			"created"		=> (int)$this->created,
 			"requested"		=> (int)$this->requested,
-			"body"			=> $this->body,
+			"body"			=> $this->getBodyData(),
 			"readState"		=> $this->isRead()
 		);
 	}
