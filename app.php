@@ -73,3 +73,5 @@ function dd($input)
 {
 				var_dump($input); die();
 }
+
+require_once __DIR__."/src/NotificationBuilder.php";
