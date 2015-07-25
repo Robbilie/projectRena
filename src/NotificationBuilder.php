@@ -3,7 +3,7 @@
     require_once __DIR__.'/src/NotificationBuilder/const.php';
     require_once __DIR__.'/src/NotificationBuilder/formatters.php';
 
-    $notificationData = json_decode(file_get_contents("./NotificationBuilder/notifications.json"), true);
+    $notificationData = json_decode(file_get_contents(__DIR__."/src/NotificationBuilder/notifications.json"), true);
 
     function format (&$notification) {
         global $formatters;
