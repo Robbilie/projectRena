@@ -1,5 +1,7 @@
 <?php
 
+    namespace NotificationBuilder;
+    
     function FormatAllWarDeclared (&$notification) {
     //ParamAllWarNotificationWithCost($notification);
         $heading = GetByLabel('Notifications/subjWarDeclare', $notification);

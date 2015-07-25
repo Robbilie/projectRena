@@ -1,5 +1,7 @@
 <?php
 
+    namespace NotificationBuilder;
+
     $formatters = [
         $notificationTypeOldLscMessages =>
             ['Notifications/subjLegacy', 'Notifications/bodyLegacy'],

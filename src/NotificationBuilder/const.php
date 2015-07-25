@@ -1,5 +1,7 @@
 <?php
 
+    namespace NotificationBuilder;
+
     $notificationTypeOldLscMessages = 1;
     $notificationTypeCharTerminationMsg = 2;
     $notificationTypeCharMedalMsg = 3;

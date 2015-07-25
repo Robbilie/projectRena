@@ -9,6 +9,23 @@
 
     $notificationData = json_decode(file_get_contents(__DIR__."/NotificationBuilder/notifications.json"), true);
 
+    function GetByLabel ($label, $params = array()) {
+        global $notificationData;
+        $tempNotification;
+        foreach ($notificationData as $notification) {
+            if($notification['label'] == explode("/", $label)[1]) {
+                $tempNotification = $notification;
+                break;
+            }
+        }
+        $message = $tempNotification['message'][0];
+        if(!is_null($tempNotification['message'][2]))
+            foreach ($tempNotification['message'][2] as $varName => $varValue)
+                if(isset($params[$varValue['variableName']]))
+                    $message = str_replace($varName, $params[$varValue['variableName']], $message);
+        return $message;
+    }
+
     function format (&$notification) {
         global $formatters;
         if(isset($formatters[$notification['typeID']])) {
@@ -35,21 +52,4 @@
             $body = GetByLabel('Notifications/bodyBadNotificationMessage', array("id" => $notification['notificationID']));
             return [$subject, $body];
         }
-    }
-
-    function GetByLabel ($label, $params = array()) {
-        global $notificationData;
-        $tempNotification;
-        foreach ($notificationData as $notification) {
-            if($notification['label'] == explode("/", $label)[1]) {
-                $tempNotification = $notification;
-                break;
-            }
-        }
-        $message = $tempNotification['message'][0];
-        if(!is_null($tempNotification['message'][2]))
-            foreach ($tempNotification['message'][2] as $varName => $varValue)
-                if(isset($params[$varValue['variableName']]))
-                    $message = str_replace($varName, $params[$varValue['variableName']], $message);
-        return $message;
     }
