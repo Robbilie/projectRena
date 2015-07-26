@@ -33,7 +33,7 @@
         if(!is_null($creditorEntity))
             $notification['body']['creditorsName'] = $creditorEntity->getName();
         else
-            $notification['body']['creditorsName'] = $app->CoreManager->getLocation($notification['body']['creditorID'])->getName();
+            $notification['body']['creditorsName'] = $app->CoreManager->getLocation($notification['body']['creditorID'], true)->getName();
         $debtorEntity = $app->CoreManager->getCorporation($notification['body']['debtorID']);
         $notification['body']['debtorsName'] = $debtorEntity->getName();
         if($billTypeID == $billTypeMarketFine) {
@@ -65,4 +65,121 @@
         $notification['body']['towerName'] = $pos->getName();
         $notification['body']['solarSystemName'] = $pos->getLocation()->getName();
         $notification['body']['leftHours'] = ($notification['requested'] - $notification['created']) / 3600;
+    }
+
+    function WarSurrenderOffer (&$notification) {
+        global $app;
+        $notification['body']['iskOffered'] = $notification['body']['iskValue'];
+        $owner1entity = $app->CoreManager->getAlliance($notification['body']['ownerID1']);
+        if(is_null($owner1entity))
+            $owner1entity = $app->CoreManager->getCorporation($notification['body']['ownerID1']);
+        $notification['body']['owner1'] = $owner1entity->getName();
+        
+        $owner2entity = $app->CoreManager->getAlliance($notification['body']['ownerID2']);
+        if(is_null($owner2entity))
+            $owner2entity = $app->CoreManager->getCorporation($notification['body']['ownerID2']);
+        $notification['body']['owner2'] = $owner2entity->getName();
+    }
+
+    function AcceptedSurrender (&$notification) {
+        global $app;
+        $notification['body']['iskOffer'] = $notification['body']['iskValue'];
+        $entityEntity = $app->CoreManager->getAlliance($notification['body']['entityID']);
+        if(is_null($entityEntity))
+            $entityEntity = $app->CoreManager->getCorporation($notification['body']['entityID']);
+        $notification['body']['entityName'] = $entityEntity->getName();
+
+        $offeringEntity = $app->CoreManager->getAlliance($notification['body']['offeringID']);
+        if(is_null($offeringEntity))
+            $offeringEntity = $app->CoreManager->getCorporation($notification['body']['offeringID']);
+        $notification['body']['offeringName'] = $offeringEntity->getName();
+
+        $notification['body']['charName'] = $app->CoreManager->getCharacter($notification['body']['charID'])->getCharName();
+    }
+
+    function ParamAllWarNotification (&$notification) {
+        global $app;
+
+        $againstEntity = $app->CoreManager->getAlliance($notification['body']['againstID']);
+        if(is_null($againstEntity))
+            $againstEntity = $app->CoreManager->getCorporation($notification['body']['againstID']);
+        $notification['body']['againstName'] = $againstEntity->getName();
+
+        $declaredEntity = $app->CoreManager->getAlliance($notification['body']['declaredByID']);
+        if(is_null($declaredEntity))
+            $declaredEntity = $app->CoreManager->getCorporation($notification['body']['declaredByID']);
+        $notification['body']['declaredByName'] = $declaredEntity->getName();
+    }
+
+    function ReactionProgressMsg (&$notification) {
+        global $app;
+        $pos = $app->CoreManager->getControltower($notification['body']['towerID']);
+        $notification['body']['towerName'] = $pos->getName();
+        $reaction = $app->CoreManager->getContainer($notification['body']['reactionID']);
+        $notification['body']['reactionName'] = $reaction->getName();
+
+        $notification['body']['progressMsg'] = $notification['body']["state"] == "running" ? (($notification['body']["value"] >= 0 ? "full" : "empty")." in ".(($notification['requested'] - $notification['created']) / 3600)." hours") : "";
+    }
+
+    function ReactionInactiveMsg (&$notification) {
+        global $app;
+        $pos = $app->CoreManager->getControltower($notification['body']['towerID']);
+        $notification['body']['towerName'] = $pos->getName();
+        $reaction = $app->CoreManager->getContainer($notification['body']['reactionID']);
+        $notification['body']['reactionName'] = $reaction->getName();
+    }
+/*
+     'otherTowersText': localization.GetByLabel('Notifications/bodyPOSAnchoredNoTowers')}
+   
+    corpsPresent = notification.data.get('corpsPresent', None)
+    if corpsPresent is not None and len(notification.data['corpsPresent']):
+
+        otherTowers = localization.GetByLabel('Notifications/bodyPOSAnchoredOtherTowers')
+        for corp in notification.data['corpsPresent']:
+            if len(corp['towers']) > 0:
+                allianceText = ''
+                if corp['allianceID'] is not None:
+                    allianceName = CreateItemInfoLink(corp['allianceID'])
+                    allianceText = localization.GetByLabel('Notifications/bodyPOSAnchoredOthersTowerAlliance', allianceName=allianceName)
+                otherTowers += localization.GetByLabel('Notifications/bodyPOSAnchoredTowersByCorp', towerCorp=CreateItemInfoLink(corp['corpID']), allianceText=allianceText)
+                
+                for tower in corp['towers']:
+                    otherTowers += localization.GetByLabel('Notifications/bodyPOSAnchoredTower', **tower)
+
+                otherTowers += '<br>'
+
+        res['otherTowersText'] = otherTowers
+    return res*/
+
+    function ParamAllAnchoringNotification (&$notification) {
+        global $app;
+        $notification['body']['solarSystemID'] = $app->CoreManager->getLocation($notification['body']['solarSystemID'], true)->getName();
+        $notification['body']['moonID'] = $app->CoreManager->getLocation($notification['body']['moonID'], true)->getName();
+        $notification['body']['typeID'] = $app->CoreManager->getItemType($notification['body']['typeID'])->getName();
+
+        $notification['body']['corpName'] = $app->CoreManager->getCorporation($notification['body']['corpID'])->getName();
+        $notification['body']['otherTowersText'] = GetByLabel('Notifications/bodyPOSAnchoredNoTowers');
+
+        if(!is_null($notification['body']['allianceID'])) {
+            $notification['body']['allianceText'] = GetByLabel("Notifications/bodyPOSAnchoredAlliance", array("allianceName" => $app->CoreManager->getAlliance($notification['body']['allianceID'])->getName()));
+        } else {
+            $notification['body']['allianceText'] = "";
+        }
+        if(isset($notification['body']['corpsPresent']) && count($notification['body']['corpsPresent']) > 0) {
+            $otherTowers = GetByLabel("Notifications/bodyPOSAnchoredOtherTowers");
+            foreach ($notification['body']['corpsPresent'] as $corp) {
+                if(count($corp['towers']) > 0) {
+                    $allianceText = "";
+                    if(!is_null($corp['allianceID'])) {
+                        $allianceText = GetByLabel("Notifications/bodyPOSAnchoredOthersTowerAlliance", array("allianceName" => $app->CoreManager->getAlliance($corp['allianceID'])->getName()));
+                    }
+                    $otherTowers .= GetByLabel("Notifications/bodyPOSAnchoredTowersByCorp", array("towerCorp" => $app->CoreManager->getCorporation($corp['corpID'])->getName(), "allianceText" => $allianceText));
+                    foreach ($corp['towers'] as $tower) {
+                        $otherTowers .= GetByLabel("Notifications/bodyPOSAnchoredTower", array("moonID" => $app->CoreManager->getLocation($tower['moonID'], true)->getName(), "typeID" => $app->CoreManager->getItemType($tower['typeID'])->getName()));
+                    }
+                    $otherTowers .= '<br>';
+                }
+            }
+            $notification['body']['otherTowersText'] = $otherTowers;
+        }
     }

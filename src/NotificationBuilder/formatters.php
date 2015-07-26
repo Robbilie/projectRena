@@ -53,9 +53,7 @@
 
         $notificationTypeWarSurrenderOfferMsg =>
             ['Notifications/subjWarSurrenderOffer', 'Notifications/bodyWarSurrenderOffer',
-                function (&$data) { return array('owner1' => CreateItemInfoLink($data['ownerID1']),
-                                         'owner2' => CreateItemInfoLink($data['ownerID1']),
-                                         'iskOffered' => evefmt.FmtISK($data['iskValue'])); }],
+                function (&$notification) { WarSurrenderOffer($notification); }],
 
          $notificationTypeWarSurrenderDeclinedMsg =>
              ['Notifications/subjWarSurrenderDeclined', 'Notifications/bodyWarSurrenderDeclined',
@@ -81,7 +79,7 @@
 
         $notificationTypeAllWarRetractedMsg =>
             ['Notifications/subjWarRetracts', 'Notifications/bodyWarRetract',
-                function (&$data) { return ParamAllWarNotification($data); }],
+                function (&$notification) { ParamAllWarNotification($notification); }],
 
         $notificationTypeAllWarInvalidatedMsg =>
             ['Notifications/subjWarConcordInvalidates', 'Notifications/bodyWarConcordInvalidates',
@@ -256,7 +254,7 @@
 
         $notificationTypeAllAnchoringMsg =>
             ['Notifications/subjPOSAnchored', 'Notifications/bodyPOSAnchored',
-                function (&$data) { return ParamAllAnchoringNotification($data); }],
+                function (&$notification) { ParamAllAnchoringNotification($notification); }],
 
         $notificationTypeAllStructVulnerableMsg =>
             ['Notifications/subjSovVulnerable', 'Notifications/bodySovVulnerable'],
@@ -514,10 +512,7 @@
 
         $notificationTypeAcceptedSurrender =>
             ['Notifications/subjAcceptedSurrender', 'Notifications/bodyAcceptedSurrender',
-                function (&$data) { return array('entityName' => CreateItemInfoLink($data['entityID']),
-                                          'offeringName' => CreateItemInfoLink($data['offeringID']),
-                                          'charName' => CreateItemInfoLink($data['charID']),
-                                          'iskOffer' => evefmt.FmtISK($data['iskValue'], 0)); }],
+                function (&$notification) { AcceptedSurrender($notification); }],
 
         $notificationTypeMadeWarMutual =>
             ['Notifications/subjMadeWarMutual', 'Notifications/bodyMadeWarMutual',
@@ -614,5 +609,13 @@
 
         $notificationTypeTowerFuelMsg =>
             ['Notifications/Custom/subjTowerFuelMsg', 'Notifications/Custom/bodyTowerFuelMsg',
-                function (&$notification) { TowerFuelMsg($notification); }]
+                function (&$notification) { TowerFuelMsg($notification); }],
+
+        $notificationTypeReactionProgressMsg =>
+            ['Notifications/Custom/subjReactionProgressMsg', 'Notifications/Custom/bodyReactionProgressMsg',
+                function (&$notification) { ReactionProgressMsg($notification); }],
+
+        $notificationTypeReactionInactiveMsg =>
+            ['Notifications/Custom/subjReactionInactiveMsg', 'Notifications/Custom/bodyReactionInactiveMsg',
+                function (&$notification) { ReactionInactiveMsg($notification); }],
     ];

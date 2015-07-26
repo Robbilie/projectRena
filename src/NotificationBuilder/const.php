@@ -154,6 +154,8 @@
 
     // custom
     $notificationTypeTowerFuelMsg = 151;
+    $notificationTypeReactionProgressMsg = 152;
+    $notificationTypeReactionInactiveMsg = 153;
 
 
     $notificationTypeSkillEmptyQueue = 1002;

@@ -12789,5 +12789,193 @@
                 }
             }
         ]
+    },
+    "1337004": {
+        "FullPath": "Notifications\/Custom",
+        "label": "subjReactionProgressMsg",
+        "messageID": 1337004,
+        "message": [
+            "{reactionName} at {towerName} is {state} {progressMsg}",
+            null,
+            {
+                "{reactionName}": {
+                    "conditionalValues": [
+
+                    ],
+                    "variableType": 10,
+                    "propertyName": null,
+                    "args": 0,
+                    "kwargs": [
+
+                    ],
+                    "variableName": "reactionName"
+                },
+                "{towerName}": {
+                    "conditionalValues": [
+
+                    ],
+                    "variableType": 10,
+                    "propertyName": null,
+                    "args": 0,
+                    "kwargs": [
+
+                    ],
+                    "variableName": "towerName"
+                },
+                "{state}": {
+                    "conditionalValues": [
+
+                    ],
+                    "variableType": 10,
+                    "propertyName": null,
+                    "args": 0,
+                    "kwargs": [
+
+                    ],
+                    "variableName": "state"
+                },
+                "{progressMsg}": {
+                    "conditionalValues": [
+
+                    ],
+                    "variableType": 10,
+                    "propertyName": null,
+                    "args": 0,
+                    "kwargs": [
+
+                    ],
+                    "variableName": "progressMsg"
+                }
+            }
+        ]
+    },
+    "1337005": {
+        "FullPath": "Notifications\/Custom",
+        "label": "bodyReactionProgressMsg",
+        "messageID": 1337005,
+        "message": [
+            "{reactionName} at {towerName} is {state} {progressMsg}",
+            null,
+            {
+                "{reactionName}": {
+                    "conditionalValues": [
+
+                    ],
+                    "variableType": 10,
+                    "propertyName": null,
+                    "args": 0,
+                    "kwargs": [
+
+                    ],
+                    "variableName": "reactionName"
+                },
+                "{towerName}": {
+                    "conditionalValues": [
+
+                    ],
+                    "variableType": 10,
+                    "propertyName": null,
+                    "args": 0,
+                    "kwargs": [
+
+                    ],
+                    "variableName": "towerName"
+                },
+                "{state}": {
+                    "conditionalValues": [
+
+                    ],
+                    "variableType": 10,
+                    "propertyName": null,
+                    "args": 0,
+                    "kwargs": [
+
+                    ],
+                    "variableName": "state"
+                },
+                "{progressMsg}": {
+                    "conditionalValues": [
+
+                    ],
+                    "variableType": 10,
+                    "propertyName": null,
+                    "args": 0,
+                    "kwargs": [
+
+                    ],
+                    "variableName": "progressMsg"
+                }
+            }
+        ]
+    },
+    "1337006": {
+        "FullPath": "Notifications\/Custom",
+        "label": "subjReactionInactiveMsg",
+        "messageID": 1337006,
+        "message": [
+            "{reactionName} at {towerName} is inactive",
+            null,
+            {
+                "{reactionName}": {
+                    "conditionalValues": [
+
+                    ],
+                    "variableType": 10,
+                    "propertyName": null,
+                    "args": 0,
+                    "kwargs": [
+
+                    ],
+                    "variableName": "reactionName"
+                },
+                "{towerName}": {
+                    "conditionalValues": [
+
+                    ],
+                    "variableType": 10,
+                    "propertyName": null,
+                    "args": 0,
+                    "kwargs": [
+
+                    ],
+                    "variableName": "towerName"
+                }
+            }
+        ]
+    },
+    "1337007": {
+        "FullPath": "Notifications\/Custom",
+        "label": "bodyReactionInactiveMsg",
+        "messageID": 1337007,
+        "message": [
+            "{reactionName} at {towerName} is inactive",
+            null,
+            {
+                "{reactionName}": {
+                    "conditionalValues": [
+
+                    ],
+                    "variableType": 10,
+                    "propertyName": null,
+                    "args": 0,
+                    "kwargs": [
+
+                    ],
+                    "variableName": "reactionName"
+                },
+                "{towerName}": {
+                    "conditionalValues": [
+
+                    ],
+                    "variableType": 10,
+                    "propertyName": null,
+                    "args": 0,
+                    "kwargs": [
+
+                    ],
+                    "variableName": "towerName"
+                }
+            }
+        ]
     }
 }

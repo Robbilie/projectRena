@@ -242,7 +242,7 @@ class FetcherController
                                             ":creatorID"    => 0,
                                             ":recipientID"  => $pos->getOwnerId(),
                                             ":locationID"   => $silo['id'],
-                                            ":body"         => json_encode(array("msg" => "Silo inactive")),
+                                            ":body"         => json_encode(array("reactionID" => $silo['id'], "towerID" => $pos->getId())),
                                             ":created"      => $silo['ts'],
                                             ":requested"    => $silo['ts']
                                         )
@@ -259,7 +259,7 @@ class FetcherController
                                             ":creatorID"    => 0,
                                             ":recipientID"  => $pos->getOwnerId(),
                                             ":locationID"   => $silo['id'],
-                                            ":body"         => json_encode(array("msg" => "Silo Progress")),
+                                            ":body"         => json_encode(array("reactionID" => $silo['id'], "towerID" => $pos->getId(), "state" => $silo['state'], "value" => $silo['value'])),
                                             ":created"      => $silo['ts'],
                                             ":requested"    => $silo['ts'] + ($silo['left'] * 3600)
                                         )
@@ -287,7 +287,7 @@ class FetcherController
                                         ":creatorID"    => 0,
                                         ":recipientID"  => $pos->getOwnerId(),
                                         ":locationID"   => $silo['id'],
-                                        ":body"         => json_encode(array("msg" => "Silo inactive")),
+                                        ":body"         => json_encode(array("reactionID" => $silo['id'], "towerID" => $pos->getId())),
                                         ":created"      => $silo['ts'],
                                         ":requested"    => $silo['ts']
                                     )
@@ -311,7 +311,7 @@ class FetcherController
                                     ":creatorID"    => 0,
                                     ":recipientID"  => $pos->getOwnerId(),
                                     ":locationID"   => $silo['id'],
-                                    ":body"         => json_encode(array("msg" => "Silo Progress")),
+                                    ":body"         => json_encode(array("reactionID" => $silo['id'], "towerID" => $pos->getId(), "state" => $silo['state'], "value" => $silo['value'])),
                                     ":created"      => $silo['ts'],
                                     ":requested"    => $silo['ts'] + ($silo['left'] * 3600)
                                 )
@@ -329,7 +329,7 @@ class FetcherController
                                     ":creatorID"    => 0,
                                     ":recipientID"  => $pos->getOwnerId(),
                                     ":locationID"   => $silo['id'],
-                                    ":body"         => json_encode(array("msg" => "Silo inactive")),
+                                    ":body"         => json_encode(array("reactionID" => $silo['id'], "towerID" => $pos->getId())),
                                     ":created"      => $silo['ts'],
                                     ":requested"    => $silo['ts']
                                 )
