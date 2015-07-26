@@ -203,7 +203,7 @@ function getNotif (id, el) {
       if(!r) return;
         el.getElementsByClassName("notif")[0].innerHTML = "";
         for(var i = 0; i < r.length; i++)
-            el.getElementsByClassName("notif")[0].innerHTML = '<div>' + r[i].text + '</div>';
+            el.getElementsByClassName("notif")[0].innerHTML = '<div>' + r[i].subject + '</div>';
     }, "json");
 }
 

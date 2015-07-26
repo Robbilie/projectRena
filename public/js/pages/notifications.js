@@ -7,6 +7,7 @@ function notificationsJS () {
 
 		for(var i = 0; i < r.length; i++) {
 			var bod = "";
+			bod += '<span class="fr">' + (new Date(r[i].created * 1000)) + '</span>';
 			bod += '<input type="checkbox" id="notificationToggle' + r[i].id + '" onchange="markRead(' + r[i].id + ');" class="details"/>';
 			bod += '<label for="notificationToggle' + r[i].id + '">';
 			if(r[i].subject == "!!Unable to read notification") {
