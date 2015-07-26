@@ -1251,3 +1251,7 @@
     #notificationsList div:nth-child(odd) {
         background-color: rgba(0,0,0,.1);
     }
+
+    .unread {
+        text-shadow: 0px 2px 5px rgba(10,10,10,.6);
+    }

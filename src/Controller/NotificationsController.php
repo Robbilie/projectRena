@@ -82,7 +82,14 @@ class NotificationsController
 
             $vals = array_map(function ($a) use ($charID) { return is_null($a['readState']) ? '('.$a['id'].','.$charID.')' : null; } , $notifications);
             $imp = implode(",", $vals);
-            $imp = str_replace(",,", ",", $imp);
+            while(strpos($imp, ",,") !== FALSE)
+                $imp = str_replace(",,", ",", $imp);
+
+            $imp .= ",";
+            if($imp[0] == ",")
+                $imp = substr($imp, 1);
+            if($imp[strlen($imp) - 1] == ",")
+                $imp = substr($imp, 0, strlen($imp) - 1);
             if(count($vals) > 0)
                 $this->db->execute("INSERT INTO easNotificationReaders (notificationID, readerID) VALUES $imp");
             $resp['state'] = "success";

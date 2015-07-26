@@ -7,8 +7,8 @@ function notificationsJS () {
 
 		for(var i = 0; i < r.length; i++) {
 			var bod = "";
-			bod += '<input type="checkbox" id="notification' + r[i].id + '" class="details"/>';
-			bod += '<label for="notification' + r[i].id + '">';
+			bod += '<input type="checkbox" id="notificationToggle' + r[i].id + '" onchange="markRead(' + r[i].id + ');" class="details"/>';
+			bod += '<label for="notificationToggle' + r[i].id + '">';
 			if(r[i].subject == "!!Unable to read notification") {
 				bod += '<h4 class="mtn mbn">ID: ' + r[i].id + ' , TYPE: ' + r[i].typeID + '</h4>';
 				bod += '<p>' + JSON.stringify(r[i]) + '</p>';
@@ -17,7 +17,7 @@ function notificationsJS () {
 				bod += '<p>' + r[i].message + '</p>';
 			}
 			bod += '</label>';
-			list.appendChild(createElement(tmpl.format([r[i].typeID, bod])));
+			list.appendChild(createElement(tmpl.format([r[i].id, r[i].typeID, bod, r[i].readState ? '' : 'unread'])));
 		}
 
 		fadeOn($("#notificationsConti"), 1);
@@ -34,5 +34,14 @@ function notificationsJS () {
 			css += '#' + tid + ':not(:checked) ~ #notificationsConti div[data-type="' + r[i].typeID + '"] { display: none; } ';
 		}
 		conti.parentNode.appendChild(createElement('<style type="text/css">' + css + '</style>'));
+	}, "json");
+}
+
+function markRead (notificationID) {
+	ajax("/json/notification/" + notificationID + "/read/", function (r) {
+		if(r.state == "success") {
+			$('#notification' + notificationID).className = $('#notification' + notificationID).className.replace("unread", "");
+			console.log(notificationID + " marked as read");
+		}
 	}, "json");
 }

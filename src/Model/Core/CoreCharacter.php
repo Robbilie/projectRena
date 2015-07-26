@@ -191,7 +191,7 @@ class CoreCharacter extends CoreBase {
 			if($permString == "")
 				$permString = "0";
 			$this->notifications = $this->db->query(
-				"SELECT easNotifications.*, (SELECT 1 as i FROM easNotificationReaders WHERE notificationID = easNotifications.id AND readerID = :characterID) as readState
+				"SELECT easNotifications.*, (SELECT 1 as i FROM easNotificationReaders WHERE notificationID = easNotifications.id AND readerID = :characterID LIMIT 0, 1) as readState
 				FROM
 					easNotifications
 				LEFT JOIN easNotificationSettings
@@ -255,7 +255,7 @@ class CoreCharacter extends CoreBase {
 		$notifications = $this->getNotifications();
 		foreach ($notifications as $notification) {
 			if($notification['id'] == $notificationID) {
-				return $this->app->CoreManager->getNotification($notificationID);
+				return new CoreNotification($this->app, $notification);
 			}
 		}
 		return null;
