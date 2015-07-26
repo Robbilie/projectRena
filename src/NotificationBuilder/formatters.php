@@ -89,7 +89,7 @@
 
         $notificationTypeCharBillMsg => function (&$data) { return FormatBillNotification($data); },
 
-        $notificationTypeCorpAllBillMsg => function (&$data) { return FormatBillNotification($data); },
+        $notificationTypeCorpAllBillMsg => function (&$notification) { return FormatBillNotification($notification); },
 
         $notificationTypeBillOutOfMoneyMsg =>
             ['Notifications/subjBillOutOfMoney', 'Notifications/bodyBillOutOfMoney',

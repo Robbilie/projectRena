@@ -598,3 +598,15 @@
     	else
     		return true;
     }
+
+    $billTypeMarketFine = 1;
+    $billTypeRentalBill = 2;
+    $billTypeBrokerBill = 3;
+    $billTypeWarBill = 4;
+    $billTypeAllianceMaintainanceBill = 5;
+    $billTypeSovereignityMarker = 6;
+    $billTypeInfrastructureHub = 7;
+    $billUnpaid = 0;
+    $billPaid = 1;
+    $billCancelled = 2;
+    $billHidden = 3;
