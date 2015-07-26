@@ -83,7 +83,7 @@
 
         $notificationTypeAllWarInvalidatedMsg =>
             ['Notifications/subjWarConcordInvalidates', 'Notifications/bodyWarConcordInvalidates',
-                function (&$data) { return ParamAllWarNotification($data); }],
+                function (&$notification) { ParamAllWarNotification($notification); }],
 
         $notificationTypeCharBillMsg => function (&$data) { return FormatBillNotification($data); },
 
@@ -97,7 +97,8 @@
             ['Notifications/subjBillPaid', 'Notifications/bodyBillPaid'],
 
         $notificationTypeBillPaidCorpAllMsg =>
-            ['Notifications/subjBillPaid', 'Notifications/bodyBillPaid'],
+            ['Notifications/subjBillPaid', 'Notifications/bodyBillPaid',
+                function (&$notification) { BillPaidCorpAllMsg($notification); }],
 
         $notificationTypeBountyClaimMsg =>
             ['Notifications/subjBountyPayment', 'Notifications/bodyBountyPayment'],
@@ -237,15 +238,15 @@
                 function (&$data) { return array('corporation' => CreateItemInfoLink($data['corpID'])); }],
 
         $notificationTypeSovAllClaimLostMsg =>
-            ['Notifications/subjSovAllianceClaimLost', 'Notifications/bodySovAllianceClaimLost'],
+            ['Notifications/subjSovAllianceClaimLost', 'Notifications/bodySovAllianceClaimLost',
+                function (&$notification) { SovAllClaimLostMsg($notification); }],
 
         $notificationTypeSovCorpClaimLostMsg =>
             ['Notifications/subjSovCorporationClaimLost', 'Notifications/bodySovCorporationClaimLost'],
 
         $notificationTypeSovAllClaimAquiredMsg =>
             ['Notifications/subjSovClaimAquiredAlliance', 'Notifications/bodySovClaimAquiredAlliance',
-                function (&$data) { return array('corporation' => CreateItemInfoLink($data['corpID']),
-                                              'alliance' => CreateItemInfoLink($data['allianceID'])); }],
+                function (&$notification) { SovAllClaimAquiredMsg($notification); }],
 
         $notificationTypeSovCorpClaimAquiredMsg =>
             ['Notifications/subjSovClaimAquiredCorporation', 'Notifications/bodySovClaimAquiredCorporation',
@@ -360,7 +361,7 @@
 
         $notificationTypeTowerAlertMsg => function (&$data) { return FormatTowerAlertNotification($data); },
 
-        $notificationTypeTowerResourceAlertMsg => function (&$data) { return FormatTowerResourceAlertNotification($data); },
+        $notificationTypeTowerResourceAlertMsg => function (&$notification) { return FormatTowerResourceAlertNotification($notification); },
 
         $notificationTypeStationAggressionMsg1 =>
             ['Notifications/subjOutpostAgression', 'Notifications/bodyOutpostAgression',
@@ -591,19 +592,19 @@
 
         $notificationTypeEntosisCaptureStarted =>
             ['Notifications/subjSovereigntyCaptureStarted', 'Notifications/bodySovereigntyCaptureStarted',
-                function (&$data) { return _FormatSovCaptureNotification($data); }],
+                function (&$notification) { _FormatSovCaptureNotification($notification); }],
 
         $notificationTypeStationServiceEnabled =>
             ['Notifications/subjSovereigntyServiceEnabled', 'Notifications/bodySovereigntyServiceEnabled',
-                function (&$data) { return _FormatSovCaptureNotification($data); }],
+                function (&$notification) { _FormatSovCaptureNotification($notification); }],
 
         $notificationTypeStationServiceDisabled =>
             ['Notifications/subjSovereigntyServiceDisabled', 'Notifications/bodySovereigntyServiceDisabled',
-                function (&$data) { return _FormatSovCaptureNotification($data); }],
+                function (&$notification) { _FormatSovCaptureNotification($notification); }],
 
         $notificationTypeStationServiceHalfCaptured =>
             ['Notifications/subjSovereigntyServiceHalfCapture', 'Notifications/bodySovereigntyServiceHalfCapture',
-                function (&$data) { return _FormatSovCaptureNotification($data); }],
+                function (&$notification) { _FormatSovCaptureNotification($notification); }],
 
         // custom
 

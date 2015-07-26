@@ -28,7 +28,7 @@
 
     function format (&$notification) {
         global $formatters;
-        if(isset($formatters[$notification['typeID']]) && in_array($notification['typeID'], [5, 7, 10, 45, 103, 123, 151, 152])) {
+        if(isset($formatters[$notification['typeID']]) && in_array($notification['typeID'], [5, 7, 8, 10, 13, 41, 43, 45, 76, 103, 123, 147, 151, 152, 153])) {
             // strange if
 
             $subject;

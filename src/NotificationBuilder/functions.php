@@ -25,7 +25,7 @@
     }
 
     function FormatBillNotification (&$notification) {
-        global $app, $billTypeMarketFine, $billTypeRentalBill, $billTypeBrokerBill, $billTypeWarBill, $billTypeAllianceMaintainanceBill, $billTypeSovereignityMarker;
+        global $app, $billTypeMarketFine, $billTypeRentalBill, $billTypeBrokerBill, $billTypeWarBill, $billTypeAllianceMaintainanceBill, $billTypeSovereignityMarker, $billTypeInfrastructureHub;
         $billTypeID = $notification['body']['billTypeID'];
         if(!isset($notification['body']['currentDate']))
             $notification['body']['currentDate'] = $notification['created'];
@@ -53,10 +53,12 @@
             $messagePath = 'Notifications/bodyBillAllianceMaintenance';
         } else if($billTypeID == $billTypeSovereignityMarker) {
             $messagePath = 'Notifications/bodyBillSovereignty';
+        } else if($billTypeID == $billTypeInfrastructureHub) {
+            $messagePath = 'Notifications/bodyBillSovereignty';
         }
         $message = GetByLabel($messagePath, $notification['body']);
         $subject = GetByLabel('Notifications/subjBill', $notification['body']);
-        return [$subject, $message];
+        return [$subject, !is_null($message) ? $message : $billTypeID];
     }
 
     function TowerFuelMsg (&$notification) {
@@ -128,28 +130,6 @@
         $reaction = $app->CoreManager->getContainer($notification['body']['reactionID']);
         $notification['body']['reactionName'] = $reaction->getName();
     }
-/*
-     'otherTowersText': localization.GetByLabel('Notifications/bodyPOSAnchoredNoTowers')}
-   
-    corpsPresent = notification.data.get('corpsPresent', None)
-    if corpsPresent is not None and len(notification.data['corpsPresent']):
-
-        otherTowers = localization.GetByLabel('Notifications/bodyPOSAnchoredOtherTowers')
-        for corp in notification.data['corpsPresent']:
-            if len(corp['towers']) > 0:
-                allianceText = ''
-                if corp['allianceID'] is not None:
-                    allianceName = CreateItemInfoLink(corp['allianceID'])
-                    allianceText = localization.GetByLabel('Notifications/bodyPOSAnchoredOthersTowerAlliance', allianceName=allianceName)
-                otherTowers += localization.GetByLabel('Notifications/bodyPOSAnchoredTowersByCorp', towerCorp=CreateItemInfoLink(corp['corpID']), allianceText=allianceText)
-                
-                for tower in corp['towers']:
-                    otherTowers += localization.GetByLabel('Notifications/bodyPOSAnchoredTower', **tower)
-
-                otherTowers += '<br>'
-
-        res['otherTowersText'] = otherTowers
-    return res*/
 
     function ParamAllAnchoringNotification (&$notification) {
         global $app;
@@ -182,4 +162,52 @@
             }
             $notification['body']['otherTowersText'] = $otherTowers;
         }
+    }
+
+    function BillPaidCorpAllMsg (&$notification) {
+        $notification['body']['notification_created'] = $notification['created'];
+        //$notification['body']['dueDate'] = 
+        //$notification['body']['amount'] = 
+    }
+
+    function FormatTowerResourceAlertNotification (&$notification) {
+        global $app;
+        $notification['body']['solarSystemID'] = $app->CoreManager->getLocation($notification['body']['solarSystemID'], true)->getName();
+        $notification['body']['moonID'] = $app->CoreManager->getLocation($notification['body']['moonID'], true)->getName();
+        $notification['body']['typeID'] = $app->CoreManager->getItemType($notification['body']['typeID'])->getName();
+        if(isset($notification['body']['corpID'])) {
+            $notification['body']['corpName'] = $app->CoreManager->getCorporation($notification['body']['corpID'])->getName();
+            $msg = GetByLabel('Notifications/bodyStarbaseLowResourcesCorp', array("corpName" => $notification['body']['corpName']));
+            if(!is_null($notification['body']['allianceID'])) {
+                $msg .= GetByLabel('Notifications/bodyStarbaseLowResourcesAlliance', array("allianceName" => $app->CoreManager->getAlliance($notification['body']['allianceID'])->getName()));
+            }
+            $notification['body']['corpAllianceText'] = $msg;
+        } else {
+            $notification['body']['corpAllianceText'] = "";
+        }
+        $message = GetByLabel('Notifications/bodyStarbaseLowResources', $notification['body']);
+        foreach ($notification['body']['wants'] as &$want) {
+            $want['typeID'] = $app->CoreManager->getItemType($want['typeID'])->getName();
+            $message .= GetByLabel('Notifications/bodyStarbaseLowResourcesWants', $want);
+        }
+        return [GetByLabel('Notifications/subjStarbaseLowResources', $notification['body']), $message];
+    }
+
+    function _FormatSovCaptureNotification (&$notification) {
+        global $app;
+        if(!is_null($app->CoreManager->getItemType($notification['body']['structureTypeID'])))
+            $notification['body']['structureTypeID'] = $app->CoreManager->getItemType($notification['body']['structureTypeID'])->getName();
+        $notification['body']['solarSystemID'] = $app->CoreManager->getLocation($notification['body']['solarSystemID'], true)->getName();
+    }
+
+    function SovAllClaimAquiredMsg (&$notification) {
+        global $app;
+        $notification['body']['corporation'] = $app->CoreManager->getCorporation($notification['body']['corpID'])->getName();
+        $notification['body']['alliance'] = $app->CoreManager->getAlliance($notification['body']['allianceID'])->getName();
+        $notification['body']['solarSystemID'] = $app->CoreManager->getLocation($notification['body']['solarSystemID'], true)->getName();
+    }
+
+    function SovAllClaimLostMsg (&$notification) {
+        global $app;
+        $notification['body']['solarSystemID'] = $app->CoreManager->getLocation($notification['body']['solarSystemID'], true)->getName();
     }

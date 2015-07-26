@@ -10,7 +10,7 @@ function notificationsJS () {
 			bod += '<input type="checkbox" id="notification' + r[i].id + '" class="details"/>';
 			bod += '<label for="notification' + r[i].id + '">';
 			if(r[i].subject == "!!Unable to read notification") {
-				bod += '<h4 class="mtn mbn">ID: ' + r[i].id + ' , TYPE:' + r[i].typeID + '</h4>';
+				bod += '<h4 class="mtn mbn">ID: ' + r[i].id + ' , TYPE: ' + r[i].typeID + '</h4>';
 				bod += '<p>' + JSON.stringify(r[i]) + '</p>';
 			} else {
 				bod += '<h4 class="mtn mbn">' + r[i].subject + '</h4>';

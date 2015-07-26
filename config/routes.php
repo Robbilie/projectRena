@@ -251,6 +251,10 @@ $app->get('/json/corpallinames/:name', function ($name) use ($app){
      (new \ProjectRena\Controller\NotificationsController($app))->getUnreadCount();
  });
 
+ $app->get('/json/notifications/read/', function() use ($app){
+     (new \ProjectRena\Controller\NotificationsController($app))->markAllAsRead();
+ });
+
 $app->get('/json/notifications/templates/', function() use ($app){
    (new \ProjectRena\Controller\NotificationsController($app))->getTemplates();
 });
@@ -261,6 +265,10 @@ $app->get('/json/notifications/:locationID/', function($locationID) use ($app){
 
 $app->get('/json/notification/:notificationID/', function($notificationID) use ($app){
     (new \ProjectRena\Controller\NotificationsController($app))->getNotification($notificationID);
+});
+
+$app->get('/json/notification/:notificationID/read/', function($notificationID) use ($app){
+    (new \ProjectRena\Controller\NotificationsController($app))->markAsRead($notificationID);
 });
 
 

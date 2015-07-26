@@ -73,4 +73,37 @@ class NotificationsController
         $this->app->response->body(json_encode($notifications));
     }
 
+    public function markAllAsRead () {
+        $resp = array("state" => "error");
+        if(isset($_SESSION["loggedIn"])) {
+            $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
+            $charID = $char->getCharId();
+            $notifications = $char->getNotifications();
+
+            $vals = array_map(function ($a) use ($charID) { return is_null($a['readState']) ? '('.$a['id'].','.$charID.')' : null; } , $notifications);
+            $imp = implode(",", $vals);
+            $imp = str_replace(",,", ",", $imp);
+            if(count($vals) > 0)
+                $this->db->execute("INSERT INTO easNotificationReaders (notificationID, readerID) VALUES $imp");
+            $resp['state'] = "success";
+        }
+        $this->app->response->headers->set('Content-Type', 'application/json');
+        $this->app->response->body(json_encode($resp));
+    }
+
+    public function markAsRead ($notificationID) {
+        $resp = array("state" => "error");
+        if(isset($_SESSION["loggedIn"])) {
+            $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
+            $notification = $char->getCNotification($notificationID);
+            if(!is_null($notification)) {
+                if(!$notification->isRead())
+                    $this->db->execute("INSERT INTO easNotificationReaders (notificationID, readerID) VALUES (:notificationID, :readerID)", array(":notificationID" => $notificationID, ":readerID" => $char->getCharId()));
+                $resp['state'] = "success";
+            }
+        }
+        $this->app->response->headers->set('Content-Type', 'application/json');
+        $this->app->response->body(json_encode($resp));
+    }
+
 }
