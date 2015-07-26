@@ -243,20 +243,24 @@ $app->get('/json/corpallinames/:name', function ($name) use ($app){
  */
 
 
- $app->get('/json/notifications/', function() use ($app){
-     (new \ProjectRena\Controller\NotificationsController($app))->getNotifications();
- });
+$app->get('/json/notifications/', function() use ($app){
+    (new \ProjectRena\Controller\NotificationsController($app))->getNotifications();
+});
 
- $app->get('/json/notifications/unread/', function() use ($app){
-     (new \ProjectRena\Controller\NotificationsController($app))->getUnreadCount();
- });
+$app->get('/json/notifications/unread/', function() use ($app){
+    (new \ProjectRena\Controller\NotificationsController($app))->getUnreadCount();
+});
 
- $app->get('/json/notifications/read/', function() use ($app){
-     (new \ProjectRena\Controller\NotificationsController($app))->markAllAsRead();
- });
+$app->get('/json/notifications/read/', function() use ($app){
+    (new \ProjectRena\Controller\NotificationsController($app))->markAllAsRead();
+});
 
 $app->get('/json/notifications/templates/', function() use ($app){
    (new \ProjectRena\Controller\NotificationsController($app))->getTemplates();
+});
+
+$app->get('/json/notifications/types/', function() use ($app){
+   (new \ProjectRena\Controller\NotificationsController($app))->getTypes();
 });
 
 $app->get('/json/notifications/:locationID/', function($locationID) use ($app){

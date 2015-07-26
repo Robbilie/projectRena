@@ -17,9 +17,22 @@ function notificationsJS () {
 				bod += '<p>' + r[i].message + '</p>';
 			}
 			bod += '</label>';
-			list.appendChild(createElement(tmpl.format([bod])));
+			list.appendChild(createElement(tmpl.format([r[i].typeID, bod])));
 		}
 
 		fadeOn($("#notificationsConti"), 1);
+	}, "json");
+	ajax("/json/notifications/types/", function (r) {
+		var conti = $("#notificationsConti");
+		var settings = $("#notificationForm");
+		var css = "";
+		for(var i = 0; i < r.length; i++) {
+			var tid = 'notificationType' + r[i].typeID;
+			conti.parentNode.insertBefore(createElement('<input type="checkbox" class="details" id="' + tid + '" checked/>'), conti);
+			settings.appendChild(createElement('<div><label for="' + tid + '">' + r[i].name + '</label></div>'));
+			css += '#' + tid + ':not(:checked) ~ #notificationSettings label[for="' + tid + '"] { color: gray; } ';
+			css += '#' + tid + ':not(:checked) ~ #notificationsConti div[data-type="' + r[i].typeID + '"] { display: none; } ';
+		}
+		conti.parentNode.appendChild(createElement('<style type="text/css">' + css + '</style>'));
 	}, "json");
 }
