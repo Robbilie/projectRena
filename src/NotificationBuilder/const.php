@@ -151,6 +151,11 @@
     $notificationTypeStationServiceEnabled = 148;
     $notificationTypeStationServiceDisabled = 149;
     $notificationTypeStationServiceHalfCaptured = 150;
+
+    // custom
+    $notificationTypeTowerFuelMsg = 151;
+
+
     $notificationTypeSkillEmptyQueue = 1002;
     $notificationTypeSkillFinished = 1000;
     $notificationTypeMailSummary = 1003;
@@ -322,7 +327,11 @@
         $notificationTypeEntosisCaptureStarted => 'Notifications/NotificationNames/SovereigntyCaptureStarted',
         $notificationTypeStationServiceEnabled => 'Notifications/NotificationNames/SovereigntyServiceEnabled',
         $notificationTypeStationServiceDisabled => 'Notifications/NotificationNames/SovereigntyServiceDisabled',
-        $notificationTypeStationServiceHalfCaptured => 'Notifications/NotificationNames/SovereigntyServiceHalfCaptured'
+        $notificationTypeStationServiceHalfCaptured => 'Notifications/NotificationNames/SovereigntyServiceHalfCaptured',
+
+        // custom
+
+        $notificationTypeTowerFuelMsg => 'Notifications/Custom/TowerFuelMsg'
     ];
 
     $groupUnread = 0;

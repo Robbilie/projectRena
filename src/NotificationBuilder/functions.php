@@ -58,3 +58,11 @@
         $subject = GetByLabel('Notifications/subjBill', $notification['body']);
         return [$subject, $message];
     }
+
+    function TowerFuelMsg (&$notification) {
+        global $app;
+        $pos = $app->CoreManager->getControltower($notification['body']['towerID']);
+        $notification['body']['towerName'] = $pos->getName();
+        $notification['body']['solarSystemName'] = $pos->getLocation()->getName();
+        $notification['body']['leftHours'] = ($notification['requested'] - $notification['created']) / 3600;
+    }

@@ -12685,5 +12685,109 @@
             null,
             null
         ]
+    },
+    "1337001": {
+        "FullPath": "Notifications\/Custom",
+        "label": "TowerFuelMsg",
+        "messageID": 1337001,
+        "message": [
+            "Tower Fuel Message",
+            null,
+            null
+        ]
+    },
+    "1337002": {
+        "FullPath": "Notifications\/Custom",
+        "label": "subjTowerFuelMsg",
+        "messageID": 1337002,
+        "message": [
+            "{towerName} in {solarSystemName} has Fuel left for {leftHours} hours",
+            null,
+            {
+                "{towerName}": {
+                    "conditionalValues": [
+
+                    ],
+                    "variableType": 10,
+                    "propertyName": null,
+                    "args": 0,
+                    "kwargs": [
+
+                    ],
+                    "variableName": "towerName"
+                },
+                "{solarSystemName}": {
+                    "conditionalValues": [
+
+                    ],
+                    "variableType": 10,
+                    "propertyName": null,
+                    "args": 0,
+                    "kwargs": [
+
+                    ],
+                    "variableName": "solarSystemName"
+                },
+                "{leftHours}": {
+                    "conditionalValues": [
+
+                    ],
+                    "variableType": 10,
+                    "propertyName": null,
+                    "args": 0,
+                    "kwargs": [
+
+                    ],
+                    "variableName": "leftHours"
+                }
+            }
+        ]
+    },
+    "1337003": {
+        "FullPath": "Notifications\/Custom",
+        "label": "bodyTowerFuelMsg",
+        "messageID": 1337003,
+        "message": [
+            "{towerName} in {solarSystemName} has Fuel left for {leftHours} hours",
+            null,
+            {
+                "{towerName}": {
+                    "conditionalValues": [
+
+                    ],
+                    "variableType": 10,
+                    "propertyName": null,
+                    "args": 0,
+                    "kwargs": [
+
+                    ],
+                    "variableName": "towerName"
+                },
+                "{solarSystemName}": {
+                    "conditionalValues": [
+
+                    ],
+                    "variableType": 10,
+                    "propertyName": null,
+                    "args": 0,
+                    "kwargs": [
+
+                    ],
+                    "variableName": "solarSystemName"
+                },
+                "{leftHours}": {
+                    "conditionalValues": [
+
+                    ],
+                    "variableType": 10,
+                    "propertyName": null,
+                    "args": 0,
+                    "kwargs": [
+
+                    ],
+                    "variableName": "leftHours"
+                }
+            }
+        ]
     }
 }

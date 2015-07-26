@@ -608,5 +608,11 @@
 
         $notificationTypeStationServiceHalfCaptured =>
             ['Notifications/subjSovereigntyServiceHalfCapture', 'Notifications/bodySovereigntyServiceHalfCapture',
-                function (&$data) { return _FormatSovCaptureNotification($data); }]
+                function (&$data) { return _FormatSovCaptureNotification($data); }],
+
+        // custom
+
+        $notificationTypeTowerFuelMsg =>
+            ['Notifications/Custom/subjTowerFuelMsg', 'Notifications/Custom/bodyTowerFuelMsg',
+                function (&$notification) { TowerFuelMsg($notification); }]
     ];

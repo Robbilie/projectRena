@@ -13,7 +13,7 @@
         global $notificationData;
         $tempNotification;
         foreach ($notificationData as $notification) {
-            if($notification['label'] == explode("/", $label)[1]) {
+            if($notification['FullPath']."/".$notification['label'] == $label) {
                 $tempNotification = $notification;
                 break;
             }
@@ -28,7 +28,7 @@
 
     function format (&$notification) {
         global $formatters;
-        if(isset($formatters[$notification['typeID']]) && in_array($notification['typeID'], [5, 10])) {
+        if(isset($formatters[$notification['typeID']]) && in_array($notification['typeID'], [5, 10, 151])) {
             // strange if
 
             $subject;

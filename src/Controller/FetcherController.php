@@ -176,7 +176,7 @@ class FetcherController
                         ":creatorID"    => 0,
                         ":recipientID"  => $pos->getOwnerId(),
                         ":locationID"   => $pos->getId(),
-                        ":body"         => json_encode(array("msg" => "Fuel running empty")),
+                        ":body"         => json_encode(array("towerID" => $pos->getId())),
                         ":created"      => $fuelTS,
                         ":requested"    => $fuelTS + ($hours * 3600)
                     )
