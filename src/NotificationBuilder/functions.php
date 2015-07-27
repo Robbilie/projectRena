@@ -26,6 +26,11 @@
 
     function FormatBillNotification (&$notification) {
         global $app, $billTypeMarketFine, $billTypeRentalBill, $billTypeBrokerBill, $billTypeWarBill, $billTypeAllianceMaintainanceBill, $billTypeSovereignityMarker, $billTypeInfrastructureHub;
+        $notification['body']['notification_created'] = date('l, F j, Y', $notification['created']);
+        $notification['body']['dueDate'] = date('l, F j, Y', (int)($notification['body']['dueDate'] / 10000000) - 11644473600);
+        $notification['body']['currentDate'] = date('l, F j, Y', (int)($notification['body']['currentDate'] / 10000000) - 11644473600);
+        $notification['body']['amount'] = number_format($notification['body']['amount'], 2, ",", ".")." ISK";
+
         $billTypeID = $notification['body']['billTypeID'];
         if(!isset($notification['body']['currentDate']))
             $notification['body']['currentDate'] = $notification['created'];
@@ -39,6 +44,8 @@
         if($billTypeID == $billTypeMarketFine) {
             $messagePath = 'Notifications/bodyBillMarketFine';
         } else if($billTypeID == $billTypeRentalBill) {
+            $notification['body']['externalID'] = $app->CoreManager->getItemType($notification['body']['externalID'])->getName();
+            $notification['body']['externalID2'] = $app->Db->queryField("SELECT stationName FROM ntOutpost WHERE stationID = :stationID", "stationName", array(":stationID" => $notification['body']['externalID2']));
             $messagePath = 'Notifications/bodyBillRental';
         } else if($billTypeID == $billTypeBrokerBill) {
             $messagePath = 'Notifications/bodyBillBroker';
@@ -54,6 +61,7 @@
         } else if($billTypeID == $billTypeSovereignityMarker) {
             $messagePath = 'Notifications/bodyBillSovereignty';
         } else if($billTypeID == $billTypeInfrastructureHub) {
+            $notification['body']['externalID2'] = $app->CoreManager->getLocation($notification['body']['externalID2'], true)->getName();
             $messagePath = 'Notifications/bodyBillSovereignty';
         }
         $message = GetByLabel($messagePath, $notification['body']);
@@ -165,9 +173,9 @@
     }
 
     function BillPaidCorpAllMsg (&$notification) {
-        $notification['body']['notification_created'] = $notification['created'];
-        //$notification['body']['dueDate'] = 
-        //$notification['body']['amount'] = 
+        $notification['body']['notification_created'] = date('l, F j, Y', $notification['created']);
+        $notification['body']['dueDate'] = date('l, F j, Y', (int)($notification['body']['dueDate'] / 10000000) - 11644473600);
+        $notification['body']['amount'] = number_format($notification['body']['amount'], 2, ",", ".")." ISK";
     }
 
     function FormatTowerResourceAlertNotification (&$notification) {
@@ -210,4 +218,149 @@
     function SovAllClaimLostMsg (&$notification) {
         global $app;
         $notification['body']['solarSystemID'] = $app->CoreManager->getLocation($notification['body']['solarSystemID'], true)->getName();
+    }
+
+    function ParamCloneActivation2Notification (&$notification) {
+        global $app;
+        $notification['body']['cloningServiceText'] = "";
+        if($notification['body']['cloneStationID'] != $notification['body']['corpStationID'])
+            $notification['body']['cloningServiceText'] = GetByLabel('Notifications/bodyCloneActivatedStationChange2', $notification['body']);
+        $notification['body']['cloneStationID'] = $app->Db->queryField("SELECT stationName FROM ntOutpost WHERE stationID = :stationID", "stationName", array(":stationID" => $notification['body']['cloneStationID']));
+        $notification['body']['corpStationID'] = $app->Db->queryField("SELECT stationName FROM ntOutpost WHERE stationID = :stationID", "stationName", array(":stationID" => $notification['body']['corpStationID']));
+        $notification['body']['lastCloneText'] = "";
+        if(!is_null($notification['body']['lastCloned'])) {
+            $notification['body']['lastCloned'] = date('l, F j, Y', (int)($notification['body']['lastCloned'] / 10000000) - 11644473600);
+            $notification['body']['lastCloneText'] = '<br><br>'.GetByLabel('Notifications/bodyCloneActivatedLastCloned2', $notification['body']);
+        }
+    }
+
+    function ParamInsuranceFirstShipNotification (&$notification) {
+        global $app, $deftypeHouseWarmingGift;
+        $notification['body']['shipTypeID'] = $app->CoreManager->getItemType($notification['body']['shipTypeID'])->getName();
+        if($notification['body']['isHouseWarmingGift'] == 0)
+            $notification['body']['gift'] = $app->CoreManager->getItemType($deftypeHouseWarmingGift)->getName();
+        else
+            $notification['body']['gift'] = GetByLabel('Notifications/bodyNoobShipNoGift');
+    }
+
+    function BountyClaimMsg (&$notification) {
+        global $app;
+        $notification['body']['amount'] = number_format($notification['body']['amount'], 2, ",", ".")." ISK";
+        $notification['body']['charID'] = $app->CoreManager->getCharacter($notification['body']['charID'])->getCharName();
+    }
+
+    function ParamFmtSovDamagedNotification (&$notification) {
+        global $app;
+        $notification['body']['shieldValue'] = (int)($notification['body']['shieldValue'] * 100);
+        $notification['body']['armorValue'] = (int)($notification['body']['armorValue'] * 100);
+        $notification['body']['hullValue'] = (int)($notification['body']['hullValue'] * 100);
+        $notification['body']['solarSystemID'] = $app->CoreManager->getLocation($notification['body']['solarSystemID'], true)->getName();
+
+        if(!is_null($notification['body']['aggressorID']))
+            $notification['body']['aggressor'] = $app->CoreManager->getCharacter($notification['body']['aggressorID'])->getCharName();
+        else
+            $notification['body']['aggressor'] = GetByLabel('UI/Common/Unknown');
+
+        if(!is_null($notification['body']['aggressorCorpID']))
+            $notification['body']['aggressorCorp'] = $app->CoreManager->getCorporation($notification['body']['aggressorCorpID'])->getName();
+        else
+            $notification['body']['aggressorCorp'] = GetByLabel('UI/Common/Unknown');
+
+        if(!is_null($notification['body']['aggressorAllianceID']))
+            $notification['body']['aggressorAlliance'] = $app->CoreManager->getAlliance($notification['body']['aggressorAllianceID'])->getName();
+        else
+            $notification['body']['aggressorAlliance'] = GetByLabel('UI/Common/Unknown');
+    }
+
+    function ParamStationAggression2Notification (&$notification) {
+        global $app;
+        $notification['body']['solarSystemID'] = $app->CoreManager->getLocation($notification['body']['solarSystemID'], true)->getName();
+        $notification['body']['stationID'] = $app->Db->queryField("SELECT stationName FROM ntOutpost WHERE stationID = :stationID", "stationName", array(":stationID" => $notification['body']['stationID']));
+        
+        $notification['body']['shieldDamage'] = (int)($notification['body']['shieldValue'] * 100);
+        $notification['body']['armorDamage'] = (int)($notification['body']['armorValue'] * 100);
+        $notification['body']['hullDamage'] = (int)($notification['body']['hullValue'] * 100);
+        $notification['body']['aggressor'] = GetByLabel('UI/Common/Unknown');
+        $notification['body']['aggressorCorp'] = GetByLabel('UI/Common/Unknown');
+        $notification['body']['aggressorAlliance'] = GetByLabel('UI/Common/Unknown');
+
+        if(!is_null($notification['body']['aggressorID']))
+            $notification['body']['aggressor'] = $app->CoreManager->getCharacter($notification['body']['aggressorID'])->getCharName();
+
+        if(!is_null($notification['body']['aggressorCorpID']))
+            $notification['body']['aggressorCorp'] = $app->CoreManager->getCorporation($notification['body']['aggressorCorpID'])->getName();
+
+        if(!is_null($notification['body']['aggressorAllianceID']))
+            $notification['body']['aggressorAlliance'] = $app->CoreManager->getAlliance($notification['body']['aggressorAllianceID'])->getName();
+        else
+            $notification['body']['aggressorAlliance'] = GetByLabel('UI/Common/CorporationNotInAlliance');
+    }
+
+    function FormatTowerAlertNotification (&$notification) {
+        global $app;
+        $notification['body']['solarSystemID'] = $app->CoreManager->getLocation($notification['body']['solarSystemID'], true)->getName();
+        $notification['body']['typeID'] = $app->CoreManager->getItemType($notification['body']['typeID'])->getName();
+
+        if(!is_null($notification['body']['moonID']))
+            $notification['body']['moonName'] = $app->CoreManager->getLocation($notification['body']['moonID'], true)->getName();
+        else
+            $notification['body']['moonName'] = GetByLabel('Notifications/UnknownSystem');
+
+        $message = GetByLabel('Notifications/bodyStarbaseDamageLocation', $notification['body']);
+
+        if(!is_null($notification['body']['shieldValue']) && !is_null($notification['body']['armorValue']) && !is_null($notification['body']['hullValue'])) {
+            $notification['body']['shieldDamage'] = (int)($notification['body']['shieldValue'] * 100);
+            $notification['body']['armorDamage'] = (int)($notification['body']['armorValue'] * 100);
+            $notification['body']['hullDamage'] = (int)($notification['body']['hullValue'] * 100);
+            $message .= GetByLabel('Notifications/bodyStarbaseDamageValues', $notification['body']);
+        } else {
+            $message .= GetByLabel('Notifications/bodyStarbaseDamageMissing');
+        }
+
+        if(!is_null($notification['body']['aggressorID'])) {
+            $char = $app->CoreManager->getCharacter($notification['body']['aggressorID']);
+            if(!is_null($char)) {
+                $notification['body']['aggressorID'] = $char->getCharName();
+                $notification['body']['agressorCorp'] = $app->CoreManager->getCorporation($notification['body']['aggressorCorpID'])->getName();
+                $notification['body']['agressorAlliance'] = '-';
+                if(!is_null($notification['body']['aggressorAllianceID']))
+                    $notification['body']['agressorAlliance'] = $app->CoreManager->getAlliance($notification['body']['aggressorAllianceID'])->getName();
+                $message .= GetByLabel('Notifications/bodyStarbaseDamageAttacker', $notification['body']);
+            } else {
+                $message .= GetByLabel('Notifications/bodyStarbaseDamageAgressorNotCharacter', array("aggressorName" => $app->CoreManager->getCorporation($notification['body']['aggressorID'])->getName()));
+            }
+        }
+        return [GetByLabel('Notifications/subjStarbaseDamage', $notification['body']), $message];
+    }
+
+    function BountyYourBountyClaimed (&$notification) {
+        global $app;
+        $notification['body']['victim'] = $app->CoreManager->getCharacter($notification['body']['victimID'])->getCharName();
+        $notification['body']['bountyPaid'] = number_format($notification['body']['bounty'], 2, ",", ".")." ISK";
+    }
+
+    function ContactAdd (&$notification) {
+        global $app;
+        $notification['body']['messageText'] = $notification['body']['message'] ? $notification['body']['message'] : '';
+        $notification['body']['notification_senderID'] = $app->CoreManager->getCharacter($notification['creatorID'])->getCharName();
+    }
+
+    function CorpAppNewMsg (&$notification) {
+        global $app;
+        $notification['body']['charID'] = $app->CoreManager->getCharacter($notification['body']['charID'])->getCharName();
+    }
+
+    function CorpNewCEOMsg (&$notification) {
+        global $app;
+        $notification['body']['oldCeoID'] = $app->CoreManager->getCharacter($notification['body']['oldCeoID'])->getCharName();
+        $notification['body']['newCeoID'] = $app->CoreManager->getCharacter($notification['body']['newCeoID'])->getCharName();
+        $notification['body']['charID'] = $app->CoreManager->getCharacter($notification['body']['charID'])->getCharName();
+        $notification['body']['corporationName'] = $app->CoreManager->getCorporation($notification['body']['corpID'])->getName();
+    }
+
+    function ParamFmtInsurancePayout (&$notification) {
+        global $app;
+        if($notification['body']['payout'])
+            $notification['body']['defaultPayoutText'] = GetByLabel('Notifications/bodyInsurancePayoutDefault');
+        $notification['body']['amount'] = number_format($notification['body']['amount'], 2, ",", ".")." ISK";
     }

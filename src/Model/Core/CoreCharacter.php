@@ -190,7 +190,7 @@ class CoreCharacter extends CoreBase {
 			$permString = implode(",", $this->getPermissions());
 			if($permString == "")
 				$permString = "0";
-			$this->notifications = $this->db->query(
+			$corpNotifications = $this->db->query(
 				"SELECT easNotifications.*, (SELECT 1 as i FROM easNotificationReaders WHERE notificationID = easNotifications.id AND readerID = :characterID LIMIT 0, 1) as readState
 				FROM
 					easNotifications
@@ -247,6 +247,12 @@ class CoreCharacter extends CoreBase {
 					":allianceID" => $this->getAlliId()
 				)
 			);
+			$charNotifications = $this->db->query(
+				"SELECT easNotifications.*, (SELECT 1 as i FROM easNotificationReaders WHERE notificationID = easNotifications.id AND readerID = :characterID LIMIT 0, 1) as readState
+				FROM easNotifications
+				WHERE recipientID = :characterID",
+				array(":characterID" => $this->getCharId()));
+			$this->notifications = array_merge($corpNotifications, $charNotifications);
 		}
 		return $this->notifications;
 	}

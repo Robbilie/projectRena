@@ -18,7 +18,7 @@
              ['Notifications/subjMaintenanceBill', 'Notifications/bodyMaintenanceBill',
                  function (&$data) { return array('allianceName' => CreateItemInfoLink($data['allianceID'])); }],
 
-         $notificationTypeAllWarDeclaredMsg => function (&$data) { return FormatAllWarDeclared($data); },
+         $notificationTypeAllWarDeclaredMsg => function (&$notification) { return FormatAllWarDeclared($notification); },
 
          $notificationTypeAllWarCorpJoinedAllianceMsg =>
              ['Notifications/subjWarCorpJoinAlliance', 'Notifications/bodyWarCorpJoinAlliance',
@@ -101,7 +101,8 @@
                 function (&$notification) { BillPaidCorpAllMsg($notification); }],
 
         $notificationTypeBountyClaimMsg =>
-            ['Notifications/subjBountyPayment', 'Notifications/bodyBountyPayment'],
+            ['Notifications/subjBountyPayment', 'Notifications/bodyBountyPayment',
+                function (&$notification) { BountyClaimMsg($notification); }],
 
         $notificationTypeCloneActivationMsg =>
             ['Notifications/subjCloneActivated', 'Notifications/bodyCloneActivated',
@@ -109,10 +110,11 @@
 
         $notificationTypeCloneActivationMsg2 =>
             ['Notifications/subjCloneActivated2', 'Notifications/bodyCloneActivated2',
-                function (&$data) { return ParamCloneActivation2Notification($data); }],
+                function (&$notification) { ParamCloneActivation2Notification($notification); }],
 
         $notificationTypeCorpAppNewMsg =>
-            ['Notifications/subjCorpApplicationNew', 'Notifications/bodyApplicationNew'],
+            ['Notifications/subjCorpApplicationNew', 'Notifications/bodyApplicationNew',
+                function (&$notification) { CorpAppNewMsg($notification); }],
 
         $notificationTypeCorpAppRejectMsg =>
             ['Notifications/subjCorpAppRejected', 'Notifications/bodyCorpAppRejected',
@@ -164,7 +166,7 @@
 
         $notificationTypeCorpNewCEOMsg =>
             ['Notifications/subjCEOQuit', 'Notifications/bodyCEOQuit',
-                function (&$data) { return array('corporationName' => CreateItemInfoLink($data['corpID'])); }],
+                function (&$notification) { CorpNewCEOMsg($notification); }],
 
         $notificationTypeCorpLiquidationMsg =>
             ['Notifications/subjCorpLiquidation', 'Notifications/bodyCorpLiquidation',
@@ -183,7 +185,7 @@
 
         $notificationTypeCorpWarDeclaredMsg =>
             ['Notifications/subjWarDeclare', 'Notifications/bodyWarDeclare',
-                function (&$data) { return ParamAllWarNotificationWithCost($data); }],
+                function (&$notification) { ParamAllWarNotificationWithCost($notification); }],
 
         $notificationTypeCorpWarFightingLegalMsg =>
             ['Notifications/subjWarDeclare', 'Notifications/bodyWarLegal',
@@ -211,11 +213,11 @@
 
         $notificationTypeInsuranceFirstShipMsg =>
             ['Notifications/subjNoobShip', 'Notifications/bodyNoobShip',
-                function (&$data) { return ParamInsuranceFirstShipNotification($data); }],
+                function (&$notification) { ParamInsuranceFirstShipNotification($notification); }],
 
         $notificationTypeInsurancePayoutMsg =>
             ['Notifications/subjInsurancePayout', 'Notifications/bodyInsurancePayout',
-                function (&$data) { return ParamFmtInsurancePayout($data); }],
+                function (&$notification) { ParamFmtInsurancePayout($notification); }],
 
         $notificationTypeInsuranceInvalidatedMsg =>
             ['Notifications/subjInsuranceInvalid', 'Notifications/bodyInsuranceInvalid',
@@ -359,7 +361,7 @@
             ['Notifications/subjStoryLineMissionAvilable', 'Notifications/bodyLegacy',
                 function (&$data) { return ParamStoryLineMissionAvailableNotification($data); }],
 
-        $notificationTypeTowerAlertMsg => function (&$data) { return FormatTowerAlertNotification($data); },
+        $notificationTypeTowerAlertMsg => function (&$notification) { return FormatTowerAlertNotification($notification); },
 
         $notificationTypeTowerResourceAlertMsg => function (&$notification) { return FormatTowerResourceAlertNotification($notification); },
 
@@ -377,7 +379,7 @@
 
         $notificationTypeStationAggressionMsg2 =>
             ['Notifications/subjOutpostAgressed', 'Notifications/bodyOutpostAgressed',
-                function (&$data) { return ParamStationAggression2Notification($data); }],
+                function (&$notification) { ParamStationAggression2Notification($notification); }],
 
         $notificationTypeFacWarCorpJoinRequestMsg =>
             ['Notifications/subjFacWarCorpJoinRequest', 'Notifications/bodyFacWarCorpJoinRequest',
@@ -397,20 +399,19 @@
 
         $notificationTypeSovereigntyTCUDamageMsg =>
             ['Notifications/subjSovTCUDamaged', 'Notifications/bodySovTCUDamaged',
-                function (&$data) { return ParamFmtSovDamagedNotification($data); }],
+                function (&$notification) { ParamFmtSovDamagedNotification($notification); }],
 
         $notificationTypeSovereigntySBUDamageMsg =>
             ['Notifications/subjSovSBUDamaged', 'Notifications/bodySovSBUDamaged',
-                function (&$data) { return ParamFmtSovDamagedNotification($data); }],
+                function (&$notification) { ParamFmtSovDamagedNotification($notification); }],
 
         $notificationTypeSovereigntyIHDamageMsg =>
             ['Notifications/subjSovIHDamaged', 'Notifications/bodySovIHDamaged',
-                function (&$data) { return ParamFmtSovDamagedNotification($data); }],
+                function (&$notification) {  ParamFmtSovDamagedNotification($notification); }],
 
         $notificationTypeContactAdd =>
             ['Notifications/subjContactAdd', 'Notifications/bodyContactAdd',
-                function (&$data) { return array('messageText' => $data.get('message', ''),
-                                   'level' => GetRelationshipName($data['level'])); }],
+                function (&$notification) { ContactAdd($notification); }],
 
         $notificationTypeContactEdit =>
             ['Notifications/subjContactEdit', 'Notifications/bodyContactEdit',
@@ -452,8 +453,7 @@
 
         $notificationTypeBountyYourBountyClaimed =>
             ['Notifications/subjBountyYourBountyClaimed', 'Notifications/bodyBountyYourBountyClaimed',
-                function (&$data) { return array('victim' => CreateItemInfoLink($data['victimID']),
-                                                'bountyPaid' => evefmt.FmtISK($data['bounty'], 0)); }],
+                function (&$notification) { BountyYourBountyClaimed($notification); }],
 
         $notificationTypeBountyPlacedChar =>
             ['Notifications/subjBountyPlacedChar', 'Notifications/bodyBountyPlacedChar',

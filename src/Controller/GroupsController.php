@@ -62,7 +62,7 @@ class GroupsController
                 $groups['owned'] = array_merge($groups['owned'], $this->app->CoreManager->getGroupsByOwnerAndScope($char->getCorpId(), "corporation"));
             }
             // alliance group if alli ceo and alliance scoped groups
-            if($char->getCCorporation()->getCAlliance()->getExecCorp()->getCeoCharacterId() == $char->getCharId()) {
+            if(!is_null($char->getCCorporation()->getCAlliance()) && $char->getCCorporation()->getCAlliance()->getExecCorp()->getCeoCharacterId() == $char->getCharId()) {
                 $groups['owned'] = array_merge($groups['owned'], $this->app->CoreManager->getGroupsByOwnerAndScope($char->getAlliId(), "alliance"));
             }
             // admin scoped groups if user admin

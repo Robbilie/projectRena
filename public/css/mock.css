@@ -290,7 +290,7 @@
     }
 
     #switchlabel:hover + #charlist, #charlist:hover {
-        max-height: 250px;
+        max-height: 256px;
     }
 
     #charlist {
@@ -693,7 +693,7 @@
     }
 
     .hover:hover {
-        background-color: rgba(0,0,0,.2) !important;
+        background-color: rgba(0,0,0,.2);
     }
 
     .navigation {
@@ -1250,6 +1250,10 @@
 
     #notificationsList div:nth-child(odd) {
         background-color: rgba(0,0,0,.1);
+    }
+
+    #notificationsList div:nth-child(odd):hover {
+        background-color: rgba(0,0,0,.2);
     }
 
     .unread {

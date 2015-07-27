@@ -95,6 +95,8 @@ class FetcherController
     }
 
     function convertNotifications () {
+        $corpNotificationTypes = [5, 7, 8, 10, 13, 16, 22, 27, 41, 43, 45, 75, 76, 80, 86, 87, 88, 95, 103, 123, 147, 1337001, 1337002, 1337003];
+        $charNotifcationTypes = [14, 34, 35, 89, 111, 138, 140];
         $notificationRows = $this->db->query(
             "SELECT DISTINCT ntNotification.notificationID as distID, ntNotification.*, ntNotificationRecipient.recipientID
             FROM ntNotification LEFT JOIN easNotifications ON ntNotification.notificationID = easNotifications.eveID, ntNotificationRecipient
@@ -105,20 +107,21 @@ class FetcherController
         );
         foreach ($notificationRows as $notificationRow) {
             $recipient = $this->app->CoreManager->getCharacter($notificationRow['recipientID']);
-            $this->db->execute(
-                "INSERT INTO easNotifications (eveID, state, typeID, creatorID, recipientID, locationID, body, created, requested) VALUES (:eveID, :state, :typeID, :creatorID, :recipientID, :locationID, :body, :created, :requested)",
-                array(
-                    ":eveID"        => $notificationRow['notificationID'],
-                    ":state"        => 0,
-                    ":typeID"       => $notificationRow['typeID'],
-                    ":creatorID"    => $notificationRow['senderID'],
-                    ":recipientID"  => $recipient->getCorpId(),
-                    ":locationID"   => 0,
-                    ":body"         => json_encode(yaml_parse($notificationRow['body'])),
-                    ":created"      => $notificationRow['sentDate'],
-                    ":requested"    => $notificationRow['sentDate']
-                )
-            );
+            if(in_array($notificationRow['typeID'], $corpNotificationTypes) || in_array($notificationRow['typeID'], $charNotifcationTypes))
+                $this->db->execute(
+                    "INSERT INTO easNotifications (eveID, state, typeID, creatorID, recipientID, locationID, body, created, requested) VALUES (:eveID, :state, :typeID, :creatorID, :recipientID, :locationID, :body, :created, :requested)",
+                    array(
+                        ":eveID"        => $notificationRow['notificationID'],
+                        ":state"        => 0,
+                        ":typeID"       => $notificationRow['typeID'],
+                        ":creatorID"    => $notificationRow['senderID'],
+                        ":recipientID"  => in_array($notificationRow['typeID'], $corpNotificationTypes) ? $recipient->getCorpId() : $recipient->getCharId(),
+                        ":locationID"   => 0,
+                        ":body"         => json_encode(yaml_parse($notificationRow['body'])),
+                        ":created"      => $notificationRow['sentDate'],
+                        ":requested"    => $notificationRow['sentDate']
+                    )
+                );
         }
         echo " + - ".count($notificationRows)." Notifications converted<br>";
     }
@@ -172,7 +175,7 @@ class FetcherController
                     array(
                         ":eveID"        => 0,
                         ":state"        => 0,
-                        ":typeID"       => 151,
+                        ":typeID"       => 1337001,
                         ":creatorID"    => 0,
                         ":recipientID"  => $pos->getOwnerId(),
                         ":locationID"   => $pos->getId(),
@@ -238,7 +241,7 @@ class FetcherController
                                         array(
                                             ":eveID"        => 0,
                                             ":state"        => 0,
-                                            ":typeID"       => 153,
+                                            ":typeID"       => 1337003,
                                             ":creatorID"    => 0,
                                             ":recipientID"  => $pos->getOwnerId(),
                                             ":locationID"   => $silo['id'],
@@ -255,7 +258,7 @@ class FetcherController
                                         array(
                                             ":eveID"        => 0,
                                             ":state"        => 0,
-                                            ":typeID"       => 152,
+                                            ":typeID"       => 1337002,
                                             ":creatorID"    => 0,
                                             ":recipientID"  => $pos->getOwnerId(),
                                             ":locationID"   => $silo['id'],
@@ -272,7 +275,7 @@ class FetcherController
 
 						    echo " - - inactive<br>";
 
-                            if($lastSiloNotif->getTypeId() == 153) {
+                            if($lastSiloNotif->getTypeId() == 1337003) {
                                 echo " - - - correct<br>";
                             } else {
                                 echo " - - - incorrect<br>";
@@ -283,7 +286,7 @@ class FetcherController
                                     array(
                                         ":eveID"        => 0,
                                         ":state"        => 0,
-                                        ":typeID"       => 153,
+                                        ":typeID"       => 1337003,
                                         ":creatorID"    => 0,
                                         ":recipientID"  => $pos->getOwnerId(),
                                         ":locationID"   => $silo['id'],
@@ -307,7 +310,7 @@ class FetcherController
                                 array(
                                     ":eveID"        => 0,
                                     ":state"        => 0,
-                                    ":typeID"       => 152,
+                                    ":typeID"       => 1337002,
                                     ":creatorID"    => 0,
                                     ":recipientID"  => $pos->getOwnerId(),
                                     ":locationID"   => $silo['id'],
@@ -325,7 +328,7 @@ class FetcherController
                                 array(
                                     ":eveID"        => 0,
                                     ":state"        => 0,
-                                    ":typeID"       => 153,
+                                    ":typeID"       => 1337003,
                                     ":creatorID"    => 0,
                                     ":recipientID"  => $pos->getOwnerId(),
                                     ":locationID"   => $silo['id'],

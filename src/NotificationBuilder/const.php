@@ -151,11 +151,19 @@
     $notificationTypeStationServiceEnabled = 148;
     $notificationTypeStationServiceDisabled = 149;
     $notificationTypeStationServiceHalfCaptured = 150;
+    $notificationTypeInfrastructureHubBillAboutToExpireDEPRECATED = 151
+    $notificationTypeInfrastructureHubBillAboutToExpire = 152;
+    $notificationTypeSovStructureReinforced = 160;
+    $notificationTypeSovCommandNodeEventStarted = 161;
+    $notificationTypeSovStructureDestroyed = 162;
+    $notificationTypeSovStationEnteredFreeport = 163;
+    $notificationTypeIHubDestroyedByBillFailure = 164;
+    $notificationTypeAllianceCapitalChanged = 165;
 
     // custom
-    $notificationTypeTowerFuelMsg = 151;
-    $notificationTypeReactionProgressMsg = 152;
-    $notificationTypeReactionInactiveMsg = 153;
+    $notificationTypeTowerFuelMsg = 1337001;
+    $notificationTypeReactionProgressMsg = 1337002;
+    $notificationTypeReactionInactiveMsg = 1337003;
 
 
     $notificationTypeSkillEmptyQueue = 1002;
@@ -168,10 +176,18 @@
     $notificationTypeAchievementTaskFinished = 1010;
     $notificationTypeOpportunityFinished = 1011;
     $notificationTypeNewRedeemableItem = 1020;
+    $notificationTypeGameTimeReceived = 1030;
+    $notificationTypeGameTimeSent = 1031;
     $notificationTypeContactSignedOn = 2001;
     $notificationTypeContactSignedOff = 2002;
 
     $notificationToSettingDescription = [
+        $notificationTypeSovStructureReinforced => 'Notifications/NotificationNames/SovereigntyStructuresReinforced',
+        $notificationTypeSovCommandNodeEventStarted => 'Notifications/NotificationNames/SovereigntyCommandNodeEventStarted',
+        $notificationTypeSovStructureDestroyed => 'Notifications/NotificationNames/SovereigntyStructureDestroyed',
+        $notificationTypeSovStationEnteredFreeport => 'Notifications/NotificationNames/SovereigntyStationEnteredFreeport',
+        $notificationTypeIHubDestroyedByBillFailure => 'Notifications/NotificationNames/SovereigntyIHubDestroyedByBillFailure',
+        $notificationTypeAllianceCapitalChanged => 'Notifications/NotificationNames/SovereigntyAllianceCapitalChanged',
         $notificationTypeContactSignedOn => 'Notifications/NotificationNames/WatchedContactOnline',
         $notificationTypeContactSignedOff => 'Notifications/NotificationNames/WatchedContactOffline',
         $notificationTypeSkillFinished => 'Notifications/NotificationNames/SkillTrainingComplete',
@@ -330,6 +346,7 @@
         $notificationTypeStationServiceEnabled => 'Notifications/NotificationNames/SovereigntyServiceEnabled',
         $notificationTypeStationServiceDisabled => 'Notifications/NotificationNames/SovereigntyServiceDisabled',
         $notificationTypeStationServiceHalfCaptured => 'Notifications/NotificationNames/SovereigntyServiceHalfCaptured',
+        $notificationTypeInfrastructureHubBillAboutToExpire => 'Notifications/NotificationNames/SovereigntyIHubBillAboutToExpire',
 
         // custom
 
@@ -457,7 +474,14 @@
             $notificationTypeEntosisCaptureStarted,
             $notificationTypeStationServiceEnabled,
             $notificationTypeStationServiceDisabled,
-            $notificationTypeStationServiceHalfCaptured
+            $notificationTypeStationServiceHalfCaptured,
+            $notificationTypeInfrastructureHubBillAboutToExpire,
+            $notificationTypeSovStructureReinforced,
+            $notificationTypeSovCommandNodeEventStarted,
+            $notificationTypeSovStructureDestroyed,
+            $notificationTypeSovStationEnteredFreeport,
+            $notificationTypeIHubDestroyedByBillFailure,
+            $notificationTypeAllianceCapitalChanged
         ],
         $groupStructures => [
             $notificationTypeAllAnchoringMsg,
@@ -593,7 +617,18 @@
         $notificationTypeSovereigntyIHDamageMsg,
         $notificationTypeCharTerminationMsg,
         $notificationTypeCharMedalMsg,
-        $notificationTypeNewMailFrom
+        $notificationTypeNewMailFrom,
+        $notificationTypeInfrastructureHubBillAboutToExpire,
+        $notificationTypeSovStructureReinforced,
+        $notificationTypeSovCommandNodeEventStarted,
+        $notificationTypeSovStructureDestroyed,
+        $notificationTypeSovStationEnteredFreeport,
+        $notificationTypeIHubDestroyedByBillFailure,
+        $notificationTypeAllianceCapitalChanged,
+        $notificationTypeEntosisCaptureStarted,
+        $notificationTypeStationServiceDisabled,
+        $notificationTypeStationServiceEnabled,
+        $notificationTypeStationServiceHalfCaptured
     ]);
     $notificationShowStanding = [$notificationTypeContactSignedOn, $notificationTypeContactSignedOff, $notificationTypeNewMailFrom];
 
@@ -621,3 +656,5 @@
     $billPaid = 1;
     $billCancelled = 2;
     $billHidden = 3;
+
+    $deftypeHouseWarmingGift = 34;

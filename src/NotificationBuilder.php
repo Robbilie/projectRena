@@ -27,8 +27,8 @@
     }
 
     function format (&$notification) {
-        global $formatters;
-        if(isset($formatters[$notification['typeID']]) && in_array($notification['typeID'], [5, 7, 8, 10, 13, 41, 43, 45, 76, 103, 123, 147, 151, 152, 153])) {
+        global $formatters, $notificationToSettingDescription;
+        if(isset($formatters[$notification['typeID']]) && in_array($notification['typeID'], [5, 7, 8, 10, 13, 14, 16, 22, 27, 34, 35, 41, 43, 45, 75, 76, 80, 86, 87, 88, 89, 95, 103, 111, 123, 138, 140, 147, 1337001, 1337002, 1337003])) { // 46, 48, 77
             // strange if
 
             $subject;
@@ -47,6 +47,9 @@
             }
 
             return [$subject, $body];
+        } else if(isset($notificationToSettingDescription[$notification['typeID']])) {
+        	$msg = GetByLabel($notificationToSettingDescription[$notification['typeID']]);
+        	return [$msg, $msg];
         } else {
             $subject = GetByLabel("Notifications/subjBadNotificationMessage");
             $body = GetByLabel('Notifications/bodyBadNotificationMessage', array("id" => $notification['id']));
