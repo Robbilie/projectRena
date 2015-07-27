@@ -160,15 +160,16 @@ class IntelController
                     )
                 );
         }
-
         // initial values
         $solarSystem = $this->app->mapSolarSystems->getAllByID($systemID);
+        $region = $this->app->mapRegions->getAllByID($solarSystem['regionID']);
+        
         $intel['state'] = 1;
         $intel['status'] = "Online";
         $intel['systemID'] = $solarSystem['solarSystemID'];
         $intel['systemName'] = $solarSystem['solarSystemName'];
         $intel['regionID'] = $solarSystem['regionID'];
-        $intel['regionName'] = $this->app->mapRegions->getAllByID($solarSystem['regionID'])['regionName'];
+        $intel['regionName'] = $region['regionName'];
         $intel['hostilecount'] = 0;
 
         // get members

@@ -131,16 +131,18 @@ class CoreCorporation extends CoreBase {
 
 	public function hasStandingsTowards ($character) {
 		if(is_null($character)) return false;
-		$r = $this->db->queryField(
-			"SELECT count(contactID) as cnt FROM ntContactList WHERE
+		$r = $this->db->queryRow(
+			"SELECT 1 as i  
+			FROM ntContactList 
+			WHERE
 				ownerID = :ownerID AND
 				(
 					contactID = :characterID OR
 					contactID = :corporationID OR
 					contactID = :allianceID
 				) AND
-				standing > 0",
-			"cnt",
+				standing > 0
+			LIMIT 0, 1",
 			array(
 				":ownerID" => $this->getId(),
 				":characterID" => $character->getCharId(),
@@ -148,7 +150,7 @@ class CoreCorporation extends CoreBase {
 				":allianceID" => $character->getAlliId()
 			)
 		);
-		if($r == 0 && $this->getId() != $character->getCorpId()) {
+		if(!$r && $this->getId() != $character->getCorpId()) {
 				return false;
 		} else {
 				return true;
