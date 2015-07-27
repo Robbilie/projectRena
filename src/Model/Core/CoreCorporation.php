@@ -48,12 +48,16 @@ class CoreCorporation extends CoreBase {
 		return $this->memberList;
 	}
 
-	public function getFullMemberList ($ck = null) {
+	public function getFullMemberList ($ck = null, $showVerified = false) {
 		if(is_null($this->fullMemberList) || !is_null($ck)) {
 			$fullMemberList = array();
 			$memberRows = $this->db->query("SELECT ntCharacter.id as characterID, ntCharacter.name as characterName, ntCharacter.corporation as corporationID, ntCorporation.name as corporationName, ntCorporation.alliance as allianceID, ntAlliance.name as allianceName FROM ntCharacter LEFT JOIN ntCorporation ON ntCharacter.corporation = ntCorporation.id LEFT JOIN ntAlliance ON ntCorporation.alliance = ntAlliance.id WHERE corporation = :corporationID", array(":corporationID" => $this->id));
-			foreach ($memberRows as $memberRow)
-				array_push($fullMemberList, new CoreCharacter($this->app, $memberRow));
+			foreach ($memberRows as $memberRow) {
+				$character = new CoreCharacter($this->app, $memberRow);
+				if($showVerified)
+					$character->setVerified(!is_null($this->db->queryRow("SELECT * FROM ntAPIKeyCharacter WHERE characterID = :characterID", array(":characterID" => $character->getCharId()))) ? true : false);
+				array_push($fullMemberList, $character);
+			}
 			if(is_null($ck))
 				$this->fullMemberList = $fullMemberList;
 			else

@@ -234,8 +234,9 @@ class JSONController
     public function getCorporationMembers ($corporationID) {
         $members = array();
         if(isset($_SESSION["loggedIn"])) {
+            $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
             $corp = $this->app->CoreManager->getCorporation($corporationID);
-            $members = $corp->getFullMemberList();
+            $members = $corp->getFullMemberList(null, $corp->getCeoCharacterId() == $char->getCharId());
         }
         $this->app->response->headers->set('Content-Type', 'application/json');
         $this->app->response->body(json_encode($members));
@@ -256,9 +257,11 @@ class JSONController
         $members = array();
         if(isset($_SESSION["loggedIn"])) {
             $alliance = $this->app->CoreManager->getAlliance($allianceID);
-            $corporations = $alliance->getCorpList();
-            foreach ($corporations as $corporation)
-                $members = array_merge($members, $corporation->getFullMemberList());
+            if($alliance) {
+                $corporations = $alliance->getCorpList();
+                foreach ($corporations as $corporation)
+                    $members = array_merge($members, $corporation->getFullMemberList());
+            }
         }
         $this->app->response->headers->set('Content-Type', 'application/json');
         $this->app->response->body(json_encode($members));

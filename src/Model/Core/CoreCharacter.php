@@ -34,6 +34,7 @@ class CoreCharacter extends CoreBase {
 	protected $cnotifications;
 
 	protected $options;
+	protected $verified;
 
 	protected $apiData;
 
@@ -357,6 +358,31 @@ class CoreCharacter extends CoreBase {
 
 	public function getStripCharName () {
 		return preg_replace(array("/ /", "/'/"), array("_", "."), strtolower($this->getCharName()));
+	}
+
+	public function setVerified ($verified) {
+		$this->verified = $verified;
+	}
+
+	public function getVerified () {
+		return $this->verified;
+	}
+
+	public function jsonSerialize() {
+		$ret = array(
+			"id"				=> $this->getId(),
+			//"user"			=> $this->getUser(),
+			"characterID"		=> $this->getCharId(),
+			"characterName"		=> $this->getCharName(),
+			"corporationID"		=> $this->getCorpId(),
+			"corporationName"	=> $this->getCorpName(),
+			"allianceID"		=> $this->getAlliId(),
+			"allianceName"		=> $this->getAlliName()
+		);
+
+		if(!is_null($this->verified))
+			$ret['verified'] = $this->getVerified();
+		return $ret;
 	}
 
 	// default

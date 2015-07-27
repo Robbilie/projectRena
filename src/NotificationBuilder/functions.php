@@ -16,6 +16,8 @@
     function ParamAllWarNotificationWithCost (&$notification) {
         global $app;
         $againstEntity = $app->CoreManager->getAlliance($notification['body']['againstID']);
+        if(is_null($againstEntity))
+            $againstEntity = $app->CoreManager->getCorporation($notification['body']['againstID']);
         $notification['body']['againstName'] = isset($againstEntity) ? $againstEntity->getName() : "";
         $declareEntity = $app->CoreManager->getAlliance($notification['body']['declaredByID']);
         if(is_null($declareEntity))

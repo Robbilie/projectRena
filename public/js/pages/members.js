@@ -29,11 +29,18 @@ function listCorpMembers (id, cb) {
 	ajax("/json/corporation/" + id + "/", function (r) {
 		$("#memberTitle").innerHTML = r.name;
 		ajax("/json/corporation/" + id + "/members/", function (s) {
+			var showCoverage = false;
+			var cntVerified = 0;
 			var tmpl = $("#memberTemplate").innerHTML;
 			var el = $("#corporationList");
 			el.innerHTML = "";
-			for(var i = 0; i < s.length; i++)
-				el.appendChild(createElement(tmpl.format([s[i].characterID, s[i].characterName, ''])));
+			for(var i = 0; i < s.length; i++) {
+				if(s[i].verified) showCoverage = true;
+				if(s[i].verified && s[i].verified == true) cntVerified++;
+				el.appendChild(createElement(tmpl.format([s[i].characterID, s[i].characterName, s[i].verified && s[i].verified == true ? '<span class="fr">[verified]</span>' : ''])));
+			}
+			if(showCoverage)
+				$("#memberTitle").innerHTML += '<span class="fr">[coverage_' + ((cntVerified / s.length) * 100) + '%]</span>';
 			cb();
 		}, "json");
 	}, "json");
@@ -43,7 +50,10 @@ function listCorpMembers (id, cb) {
 function membersallianceJS (cb) {
 	if(location.hash.split("/")[3] === "") {
 		ajax("/json/character/" + coreStatus.charid + "/", function (r) {
-			listAlliMembers(r.allianceID, cb);
+			if(r.allianceID != 0)
+				listAlliMembers(r.allianceID, cb);
+			else
+				cb();
 		}, "json");
 	} else {
 		listAlliCorps(location.hash.split("/")[3], cb);
