@@ -493,17 +493,6 @@ $app->get('/login/eve/', function () use ($app)
                 (new \ProjectRena\Controller\LoginController($app))->loginEVE();
 });
 
-// Admin
-$app->get("/controlpanel/(/:subPage)/", function($subPage = null) use ($app)
-{
-				(new \ProjectRena\Controller\ControlPanelController($app))->index();
-});
-
-// Search
-$app->map("/search(/:term).json", function($searchTerm = null) use ($app){
-				var_dump($app->Search->search($searchTerm));
-})->via("POST", "GET");
-
 // Logout
 $app->get('/logout/', function () use ($app)
 {
@@ -518,3 +507,19 @@ $app->get('/logout/', function () use ($app)
                 $app->deleteCookie($cookieName, "/", $app->request->getHost(), $cookieSSL, true);
                 $app->redirect("/");
 });
+
+// Admin
+$app->map("/controlpanel(/:subPage)/", function($subPage = null) use ($app)
+{
+				(new \ProjectRena\Controller\ControlPanelController($app))->index($subPage);
+})->via("POST", "GET");
+
+// Search
+$app->map("/search(/:term).json", function($searchTerm = null) use ($app){
+				var_dump($app->Search->search($searchTerm));
+})->via("POST", "GET");
+
+// API
+$app->map("/api(/:request)/", function($request = null) use ($app){
+				(new \ProjectRena\Controller\APIController($app))->main($request);
+})->via("POST", "GET");

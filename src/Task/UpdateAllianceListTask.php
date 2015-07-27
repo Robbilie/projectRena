@@ -17,7 +17,7 @@ class UpdateAllianceListTask extends Command
      */
     protected function configure()
     {
-        $this->setName('update:alliancelist')->setDescription('Updates the alliance list on demand instead of automatically');
+        $this->setName('update:alist')->setDescription('Updates the alliance list on demand instead of automatically');
     }
 
     /**

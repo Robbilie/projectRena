@@ -38,7 +38,7 @@ class CharacterInfo
     {
         try
         {
-            $pheal = $this->app->Pheal->Pheal();
+            $pheal = $this->app->Pheal->Pheal($apiKey, $vCode);
             $pheal->scope = 'EVE';
             $requestArray = array('characterID' => $characterID);
 

@@ -38,7 +38,7 @@ class CorporationSheet
     {
         try
         {
-            $pheal = $this->app->Pheal->Pheal();
+            $pheal = $this->app->Pheal->Pheal($apiKey, $vCode);
             $pheal->scope = 'Corp';
             $requestArray = array();
             if(isset($corporationID))

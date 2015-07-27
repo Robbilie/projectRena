@@ -14,11 +14,38 @@ class out
     private $app;
 
     /**
+     * @var null|string
+     */
+    protected $contentType;
+
+    /**
      * @param RenaApp $app
      */
     public function __construct(RenaApp $app)
     {
         $this->app = $app;
+        $this->contentType = $app->request->getContentType();
+    }
+
+    /**
+     * Figures out what the user has requested, and returns the data as the user wants it..
+     *
+     * @param $templateFile
+     * @param array $dataArray
+     * @param null $status
+     * @param null $contentType
+     */
+    public function render($templateFile, $dataArray = array(), $status = null, $contentType = null)
+    {
+        if($contentType)
+            $this->contentType = $contentType;
+
+        if($this->contentType == "application/json")
+            return $this->toJson($dataArray);
+        if($this->contentType == "application/xml")
+            return $this->toXML($dataArray);
+
+        return $this->toTwig($templateFile, $dataArray, $status);
     }
 
     /**

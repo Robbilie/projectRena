@@ -20,7 +20,7 @@ class CCPDataTask extends Command
 				 */
 				protected function configure()
 				{
-								$this->setName('ccp:data')->setDescription('Updates the CCP database tables');
+								$this->setName('update:ccp')->setDescription('Updates the CCP database tables');
 				}
 
 				/**
@@ -48,6 +48,7 @@ class CCPDataTask extends Command
 
 								if($lastSeenMD5 != $md5)
 								{
+												$output->writeln("Updating to latest CCP data dump");
 												$dbFiles = array(
 													"dgmAttributeCategories",
 													"dgmAttributeTypes",

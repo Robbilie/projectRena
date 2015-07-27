@@ -4,9 +4,9 @@ namespace ProjectRena\Controller;
 use ProjectRena\RenaApp;
 
 /**
- * AdminController for /admin/ pages
+ * Functions for the API
  */
-class ControlPanelController
+class APIController
 {
 
     /**
@@ -45,6 +45,10 @@ class ControlPanelController
     private $statsd;
 
     /**
+     * @var string
+     */
+    private $contentType;
+    /**
      * @param RenaApp $app
      */
     public function __construct(RenaApp $app)
@@ -56,30 +60,19 @@ class ControlPanelController
         $this->curl = $app->cURL;
         $this->statsd = $app->StatsD;
         $this->log = $app->Logging;
-    }
 
-    public function index($subPage)
-    {
-        $validPages = array("accountservices", "groups");
-
-        if(in_array($subPage, $validPages))
-            $this->{$subPage}();
+        // Only accept json and xml as valid outputs otherwise default to json
+        if(in_array($app->request->getContentType(), array("application/json", "application/xml")))
+            $this->contentType = $app->request->getContentType();
         else
-            $this->mainPage();
+            $this->contentType = "application/json";
     }
 
-    private function groups()
+    /**
+     * @param $page
+     */
+    public function main($page)
     {
-        render("controlpanel/account/groups.twig");
-    }
-
-    private function accountservices()
-    {
-        render("controlpanel/account/servicesaccess.twig");
-    }
-
-    private function mainPage()
-    {
-        render("controlpanel/index.twig");
+        render("", array($page), null, $this->contentType);
     }
 }

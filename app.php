@@ -76,3 +76,16 @@ function dd($input)
 				var_dump($input); die();
 }
 
+/**
+	* Quick access to rendering templates, json, xml and probably more down the line.
+	*
+	* @param $templateFile
+	* @param array $dataArray
+	* @param null $status
+	* @param null $contentType
+	*/
+function render($templateFile, $dataArray = array(), $status = null, $contentType = null)
+{
+				$app = \ProjectRena\RenaApp::getInstance();
+				$app->out->render($templateFile, $dataArray, $status, $contentType);
+}
