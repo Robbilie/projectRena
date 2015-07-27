@@ -62,7 +62,7 @@ class Db
 								if(!$this->persistence)
 												$this->cache->persistence = false;
 
-								$dsn = 'mysql:dbname=' . $app->baseConfig->getConfig('name', 'database') . ';host=' . $app->baseConfig->getConfig('host', 'database');
+								$dsn = 'mysql:dbname=' . $app->baseConfig->getConfig('name', 'database') . ';host=' . $app->baseConfig->getConfig('host', 'database') . ';charset=utf8';
 								try
 								{
 												$this->pdo = new PDO($dsn, $app->baseConfig->getConfig('username', 'database'), $app->baseConfig->getConfig('password', 'database'), array(
@@ -70,7 +70,7 @@ class Db
 													PDO::ATTR_EMULATE_PREPARES         => $app->baseConfig->getConfig('emulatePrepares', 'database'),
 													PDO::ATTR_ERRMODE                  => PDO::ERRMODE_EXCEPTION,
 													PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => $app->baseConfig->getConfig('useBufferedQuery', 'database'),
-													PDO::MYSQL_ATTR_INIT_COMMAND       => "SET time_Zone = '+00:00'",
+													PDO::MYSQL_ATTR_INIT_COMMAND       => "SET time_Zone = '+00:00';SET NAMES utf8",
 												));
 								} catch(Exception $e)
 								{
