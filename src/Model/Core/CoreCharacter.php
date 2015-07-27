@@ -251,9 +251,11 @@ class CoreCharacter extends CoreBase {
 			$charNotifications = $this->db->query(
 				"SELECT easNotifications.*, (SELECT 1 as i FROM easNotificationReaders WHERE notificationID = easNotifications.id AND readerID = :characterID LIMIT 0, 1) as readState
 				FROM easNotifications
-				WHERE recipientID = :characterID",
+				WHERE recipientID = :characterID
+				ORDER BY requested DESC",
 				array(":characterID" => $this->getCharId()));
 			$this->notifications = array_merge($corpNotifications, $charNotifications);
+			usort($this->notifications, function ($a, $b) { return $a['requested'] < $b['requested']; });
 		}
 		return $this->notifications;
 	}

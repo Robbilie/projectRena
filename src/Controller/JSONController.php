@@ -96,7 +96,7 @@ class JSONController
         $controlTower = array();
         if(isset($_SESSION["loggedIn"])) {
             $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
-            if($char->hasPermission("readControltower", "alliance")) {
+            if($char->hasPermission("readControltower", "alliance") && $char->getAlliId() != 0) {
                 $controlTower = $char->getCCorporation()->getCAlliance()->getControltower();
             } else if($char->hasPermission("readControltower", "corporation")) {
                 $controlTower = $char->getCCorporation()->getControltower();
