@@ -38,9 +38,8 @@ class MailsController
             );
             foreach ($mails as &$mail) {
                 $mail['sentDate'] = date("Y-m-d\TH:i:s\Z", $mail['sentDate']);
-                $mail['message'] = utf8_encode(preg_replace('/(color="#)[a-f0-9]{2}([a-f0-9]{6}")/', '\1\2', preg_replace('/size="[^"]*[^"]"/', "", $mail['message'])));
-                $mail['senderName'] = utf8_encode($mail['type'] == "ML" ? "" : $this->app->CoreManager->getCharacter($mail['senderID'])->getCharName());
-                $mail['name'] = utf8_encode($mail['name']);
+                $mail['message'] = preg_replace('/(color="#)[a-f0-9]{2}([a-f0-9]{6}")/', '\1\2', preg_replace('/size="[^"]*[^"]"/', "", $mail['message']));
+                $mail['senderName'] = $mail['type'] == "ML" ? "" : $this->app->CoreManager->getCharacter($mail['senderID'])->getCharName();
             }
         }
         $this->app->response->headers->set('Content-Type', 'application/json');
@@ -60,9 +59,8 @@ class MailsController
             );
             foreach ($mails as &$mail) {
                 $mail['sentDate'] = date("Y-m-d\TH:i:s\Z", $mail['sentDate']);
-                $mail['message'] = utf8_encode(preg_replace('/(color="#)[a-f0-9]{2}([a-f0-9]{6}")/', '\1\2', preg_replace('/size="[^"]*[^"]"/', "", $mail['message'])));
-                $mail['senderName'] = utf8_encode($mail['type'] == "ML" ? "" : $this->app->CoreManager->getCharacter($mail['senderID'])->getCharName());
-                $mail['name'] = utf8_encode($mail['name']);
+                $mail['message'] = preg_replace('/(color="#)[a-f0-9]{2}([a-f0-9]{6}")/', '\1\2', preg_replace('/size="[^"]*[^"]"/', "", $mail['message']));
+                $mail['senderName'] = $mail['type'] == "ML" ? "" : $this->app->CoreManager->getCharacter($mail['senderID'])->getCharName();
             }
         }
         $this->app->response->headers->set('Content-Type', 'application/json');
@@ -82,9 +80,8 @@ class MailsController
             );
             foreach ($mails as &$mail) {
                 $mail['sentDate'] = date("Y-m-d\TH:i:s\Z", $mail['sentDate']);
-                $mail['message'] = utf8_encode(preg_replace('/(color="#)[a-f0-9]{2}([a-f0-9]{6}")/', '\1\2', preg_replace('/size="[^"]*[^"]"/', "", $mail['message'])));
-                $mail['senderName'] = utf8_encode($mail['type'] == "ML" ? "" : $this->app->CoreManager->getCharacter($mail['senderID'])->getCharName());
-                $mail['name'] = utf8_encode($mail['name']);
+                $mail['message'] = preg_replace('/(color="#)[a-f0-9]{2}([a-f0-9]{6}")/', '\1\2', preg_replace('/size="[^"]*[^"]"/', "", $mail['message']));
+                $mail['senderName'] = $mail['type'] == "ML" ? "" : $this->app->CoreManager->getCharacter($mail['senderID'])->getCharName();
             }
         }
         $this->app->response->headers->set('Content-Type', 'application/json');
@@ -104,9 +101,8 @@ class MailsController
             );
             foreach ($mails as &$mail) {
                 $mail['sentDate'] = date("Y-m-d\TH:i:s\Z", $mail['sentDate']);
-                $mail['message'] = utf8_encode(preg_replace('/(color="#)[a-f0-9]{2}([a-f0-9]{6}")/', '\1\2', preg_replace('/size="[^"]*[^"]"/', "", $mail['message'])));
-                $mail['senderName'] = utf8_encode($mail['type'] == "ML" ? "" : $this->app->CoreManager->getCharacter($mail['senderID'])->getCharName());
-                $mail['name'] = utf8_encode($mail['name']);
+                $mail['message'] = preg_replace('/(color="#)[a-f0-9]{2}([a-f0-9]{6}")/', '\1\2', preg_replace('/size="[^"]*[^"]"/', "", $mail['message']));
+                $mail['senderName'] = $mail['type'] == "ML" ? "" : $this->app->CoreManager->getCharacter($mail['senderID'])->getCharName();
             }
         }
         $this->app->response->headers->set('Content-Type', 'application/json');

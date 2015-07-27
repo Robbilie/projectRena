@@ -8,8 +8,10 @@ function timersJS () {
 		var el = $("#timersList");
 		el.innerHTML = "";
 
-		for(var i = 0; i < r.timers.length; i++)
+		for(var i = 0; i < r.timers.length; i++) {
+			r.timers[i].timestamp = (new Date(r.timers[i].timestamp * 1000));
 			el.innerHTML += tmpl.format(r.timers[i]);
+		}
 
 	    var acOwner = new AutoComplete($("#timerOwner"));
 	    acOwner.oncomplete = function (self, el) {

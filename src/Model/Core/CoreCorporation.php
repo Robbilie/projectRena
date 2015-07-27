@@ -55,7 +55,7 @@ class CoreCorporation extends CoreBase {
 			foreach ($memberRows as $memberRow) {
 				$character = new CoreCharacter($this->app, $memberRow);
 				if($showVerified)
-					$character->setVerified(!is_null($this->db->queryRow("SELECT * FROM ntAPIKeyCharacter WHERE characterID = :characterID", array(":characterID" => $character->getCharId()))) ? true : false);
+					$character->setVerified(count($this->db->queryRow("SELECT * FROM ntAPIKeyCharacter WHERE characterID = :characterID", array(":characterID" => $character->getCharId()))) > 0 ? true : false);
 				array_push($fullMemberList, $character);
 			}
 			if(is_null($ck))
