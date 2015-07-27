@@ -184,16 +184,18 @@ class IntelController
             )
         );
 
+        $entit = null;
+
+        if($char->getAlliId() != 0) {
+            $entit = $char->getCAlliance();
+        } else {
+            $entit = $char->getCCorporation();
+        }
+
         if(count($members) <= 50) {
             $intel['membertype'] = "characters";
+            $newmembers = array();
             foreach ($members as &$member) {
-                $entit = null;
-
-                if($char->getAlliId() != 0) {
-                    $entit = $char->getCAlliance();
-                } else {
-                    $entit = $char->getCCorporation();
-                }
 
                 if(!$entit->hasStandingsTowards($this->app->CoreManager->getCharacter($member['submitterID']))) continue;
                 if(!$entit->hasStandingsTowards($this->app->CoreManager->getCharacter($member['id']))) {
@@ -202,19 +204,14 @@ class IntelController
                 } else {
                     $member['standing'] = "positive";
                 }
+                array_push($newmembers, $member);
             }
+            $members = $newmembers;
         } else {
             $intel['membertype'] = "alliances";
             $alliances = array();
             foreach ($members as $member) {
-                $entit = null;
-
-                if($char->getAlliId() != 0) {
-                    $entit = $char->getCAlliance();
-                } else {
-                    $entit = $char->getCCorporation();
-                }
-
+                
                 if(!$entit->hasStandingsTowards($this->app->CoreManager->getCharacter($member['submitterID']))) continue;
                 if(is_null($alliances[$member['allianceID']]))
                     $alliances[$member['allianceID']] = array();
@@ -222,14 +219,6 @@ class IntelController
             }
             $alliancesSorted = array();
             foreach ($alliances as $key => $alliance) {
-                $entit = null;
-
-                if($char->getAlliId() != 0) {
-                    $entit = $char->getCAlliance();
-                } else {
-                    $entit = $char->getCCorporation();
-                }
-
                 if(!$entit->hasStandingsTowards($this->app->CoreManager->getAlliance($key)->getExecCorp()->getCEOChar())) {
                     array_push($alliancesSorted,
                         array(
