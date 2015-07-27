@@ -38,7 +38,7 @@ class Pheal
         ));
 
         $psrLogger = new \Monolog\Logger("PhealLogger");
-        $psrLogger->pushHandler(new \Monolog\Handler\StreamHandler(__DIR__ . "/../../logs/pheal.log", Logger::DEBUG));
+        $psrLogger->pushHandler(new \Monolog\Handler\StreamHandler(__DIR__ . "/../../logs/pheal.log", Logger::INFO));
         Config::getInstance()->log = new \Pheal\Log\PsrLogger($psrLogger);
         Config::getInstance()->api_customkeys = true;
         Config::getInstance()->api_base = $app->baseConfig->getConfig("apiServer", "ccp", "https://api.eveonline.com/");
