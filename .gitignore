@@ -4,6 +4,7 @@ composer.phar
 sami.phar
 phpunit.phar
 logs/app.log
+logs/pheal.log
 phinx.yml
 .phpintel/
 .idea/
