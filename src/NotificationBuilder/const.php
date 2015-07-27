@@ -151,7 +151,7 @@
     $notificationTypeStationServiceEnabled = 148;
     $notificationTypeStationServiceDisabled = 149;
     $notificationTypeStationServiceHalfCaptured = 150;
-    $notificationTypeInfrastructureHubBillAboutToExpireDEPRECATED = 151
+    $notificationTypeInfrastructureHubBillAboutToExpireDEPRECATED = 151;
     $notificationTypeInfrastructureHubBillAboutToExpire = 152;
     $notificationTypeSovStructureReinforced = 160;
     $notificationTypeSovCommandNodeEventStarted = 161;
