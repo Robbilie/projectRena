@@ -117,7 +117,7 @@ class JSONController
                 $resp['name'] = $item->getName();
             if(
                 ($corp->getId() == $char->getCorpId() && $char->hasPermission("readAssets", "corporation")) ||
-                ($corp->getAlliance() == $char->getAlliId() && $char->hasPermission("readAssets", "alliance"))
+                ($char->getAlliId() != 0 && $corp->getAlliance() == $char->getAlliId() && $char->hasPermission("readAssets", "alliance"))
             ) {
                 $resp['list'] = $corp->getItems(function ($i) use ($containerID) { return $i->getLocationId() == $containerID; });
             }
@@ -134,7 +134,7 @@ class JSONController
             $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
             $tower = $this->app->CoreManager->getControlTower($towerID);
             if(
-                ($tower->getOwner()->getCAlliance()->getId() == $char->getAlliId() && $char->hasPermission("readControltower", "alliance")) ||
+                ($char->getAlliId() != 0 && $tower->getOwner()->getCAlliance()->getId() == $char->getAlliId() && $char->hasPermission("readControltower", "alliance")) ||
                 ($tower->getOwner()->getId() == $char->getCorpId() && $char->hasPermission("readControltower", "corporation"))
             ) {
                 $towerresp = $tower;

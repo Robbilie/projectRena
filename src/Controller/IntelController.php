@@ -187,8 +187,16 @@ class IntelController
         if(count($members) <= 50) {
             $intel['membertype'] = "characters";
             foreach ($members as &$member) {
-                if(!$char->getCAlliance()->hasStandingsTowards($this->app->CoreManager->getCharacter($member['submitterID']))) continue;
-                if(!$char->getCAlliance()->hasStandingsTowards($this->app->CoreManager->getCharacter($member['id']))) {
+                $entit = null;
+
+                if($char->getAlliId() != 0) {
+                    $entit = $char->getCAlliance();
+                } else {
+                    $entit = $char->getCCorporation();
+                }
+
+                if(!$entit->hasStandingsTowards($this->app->CoreManager->getCharacter($member['submitterID']))) continue;
+                if(!$entit->hasStandingsTowards($this->app->CoreManager->getCharacter($member['id']))) {
                     $member['standing'] = "negative";
                     $intel['hostilecount']++;
                 } else {
@@ -199,15 +207,30 @@ class IntelController
             $intel['membertype'] = "alliances";
             $alliances = array();
             foreach ($members as $member) {
-                if(!$char->getCAlliance()->hasStandingsTowards($this->app->CoreManager->getCharacter($member['submitterID']))) continue;
-                //if($this->haveStandings($characterID, $member['submitterID']) <= 0) continue;
+                $entit = null;
+
+                if($char->getAlliId() != 0) {
+                    $entit = $char->getCAlliance();
+                } else {
+                    $entit = $char->getCCorporation();
+                }
+
+                if(!$entit->hasStandingsTowards($this->app->CoreManager->getCharacter($member['submitterID']))) continue;
                 if(is_null($alliances[$member['allianceID']]))
                     $alliances[$member['allianceID']] = array();
                 array_push($alliances[$member['allianceID']], $member);
             }
             $alliancesSorted = array();
             foreach ($alliances as $key => $alliance) {
-                if(!$char->getCAlliance()->hasStandingsTowards($this->app->CoreManager->getAlliance($key)->getExecCorp()->getCEOChar())) {
+                $entit = null;
+
+                if($char->getAlliId() != 0) {
+                    $entit = $char->getCAlliance();
+                } else {
+                    $entit = $char->getCCorporation();
+                }
+
+                if(!$entit->hasStandingsTowards($this->app->CoreManager->getAlliance($key)->getExecCorp()->getCEOChar())) {
                     array_push($alliancesSorted,
                         array(
                             "id" => $key,
@@ -461,39 +484,21 @@ class IntelController
                 )
             );
             foreach ($members as &$member) {
-                if(!$char->getCAlliance()->hasStandingsTowards($this->app->CoreManager->getCharacter($member['id'])))
-                  $sys['hostilecount']++;
+                $entit = null;
+
+                if($char->getAlliId() != 0) {
+                    $entit = $char->getCAlliance();
+                } else {
+                    $entit = $char->getCCorporation();
+                }
+
+                if(!$entit->hasStandingsTowards($this->app->CoreManager->getCharacter($member['id'])))
+                    $sys['hostilecount']++;
             }
             array_push($intel, $sys);
         }
 
         return $intel;
     }
-
-    public function haveStandings ($charOneID, $charTwoID) {
-        $charOne = $this->app->CoreManager->getCharacter($charOneID);
-        $charTwo = $this->app->CoreManager->getCharacter($charTwoID);
-        $r = $this->db->queryField(
-            "SELECT count(contactID) as cnt FROM ntContactList WHERE
-                ownerID = :ownerID AND
-                (
-                    contactID = :characterID OR
-                    contactID = :corporationID OR
-                    contactID = :allianceID
-                ) AND
-                standing > 0",
-            "cnt",
-            array(
-                ":ownerID" => $charTwo->getAlliId(),
-                ":characterID" => $charOneID,
-                ":corporationID" => $charOne->getCorpId(),
-                ":allianceID" => $charOne->getAlliId()
-            )
-        );
-        if($r == 0 && $charOne->getAlliId() != $charTwo->getAlliId()) {
-            return 0;
-        } else {
-            return 1;
-        }
-    }
+    
 }

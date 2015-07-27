@@ -118,7 +118,7 @@ class GroupsController
                 foreach ($apps as $applier) {
                   if(
                     ($group->getScope() == "corporation" && $applier->getCorpId() == $char->getCorpId()) ||
-                    ($group->getScope() == "alliance" && $applier->getAlliId() == $char->getAlliId())
+                    ($group->getScope() == "alliance" && $applier->getAlliId() == $char->getAlliId() && $char->getAlliId() != 0)
                   ) {
                       array_push($applications, $applier);
                   }
