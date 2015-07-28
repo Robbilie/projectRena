@@ -9,7 +9,7 @@ function timersJS () {
 		el.innerHTML = "";
 
 		for(var i = 0; i < r.timers.length; i++) {
-			r.timers[i].timestamp = (new Date(r.timers[i].timestamp * 1000));
+			r.timers[i].timestamp = (new Date(r.timers[i].timestamp * 1000).toLocaleString());
 			el.innerHTML += tmpl.format(r.timers[i]);
 		}
 

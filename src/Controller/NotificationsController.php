@@ -114,7 +114,7 @@ class NotificationsController
     }
 
     public function getTypes () {
-        $types = $this->db->query("SELECT * FROM easNotificationTypes");
+        $types = $this->db->query("SELECT * FROM easNotificationTypes GROUP BY(name)");
         $this->app->response->headers->set('Content-Type', 'application/json');
         $this->app->response->body(json_encode($types));
     }

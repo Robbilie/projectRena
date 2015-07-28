@@ -184,24 +184,26 @@ class JSONController
         if(isset($_SESSION["loggedIn"])) {
             $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
 
-            $journalRows = $this->db->query("SELECT * FROM ntJournal WHERE ownerID = :ownerID AND accountKey = 1000 AND date > :from AND date < :till AND refTypeID IN (17,33,34,85,99) ORDER BY date DESC",
-                array(
-                    ":ownerID"=> $char->getCorpId(),
-                    ":from"=> !is_null($from) ? strtotime($from) : mktime(0, 0, 0, date("m"), 1, date("Y")),
-                    ":till"=> !is_null($till) ? strtotime($till) : time()
-                    )
-                );
-            $tmpdata = array();
-            $tmpuser = array();
-            foreach ($journalRows as $journalRow) {
-                if(!isset($tmpdata[$journalRow['ownerID2']])) $tmpdata[$journalRow['ownerID2']] = 0;
-                $tmpdata[$journalRow['ownerID2']] += $journalRow['amount'];
-                $taxes['global'] += $journalRow['amount'];
-                $tmpuser[$journalRow['ownerID2']] = $journalRow['ownerName2'];
-            }
-            arsort($tmpdata);
-            foreach($tmpdata as $key => $value) {
-                array_push($taxes['entries'], array("ownerID" => $key, "ownerName" => $tmpuser[$key], "valuestr" => number_format($tmpdata[$key], 2, ',', '.'), "value" => $tmpdata[$key]));
+            if($char->hasPermission("readJournal", "corporation")) {
+                $journalRows = $this->db->query("SELECT * FROM ntJournal WHERE ownerID = :ownerID AND accountKey = 1000 AND date > :from AND date < :till AND refTypeID IN (17,33,34,85,99) ORDER BY date DESC",
+                    array(
+                        ":ownerID"=> $char->getCorpId(),
+                        ":from"=> !is_null($from) ? strtotime($from) : mktime(0, 0, 0, date("m"), 1, date("Y")),
+                        ":till"=> !is_null($till) ? strtotime($till) : time()
+                        )
+                    );
+                $tmpdata = array();
+                $tmpuser = array();
+                foreach ($journalRows as $journalRow) {
+                    if(!isset($tmpdata[$journalRow['ownerID2']])) $tmpdata[$journalRow['ownerID2']] = 0;
+                    $tmpdata[$journalRow['ownerID2']] += $journalRow['amount'];
+                    $taxes['global'] += $journalRow['amount'];
+                    $tmpuser[$journalRow['ownerID2']] = $journalRow['ownerName2'];
+                }
+                arsort($tmpdata);
+                foreach($tmpdata as $key => $value) {
+                    array_push($taxes['entries'], array("ownerID" => $key, "ownerName" => $tmpuser[$key], "valuestr" => number_format($tmpdata[$key], 2, ',', '.'), "value" => $tmpdata[$key]));
+                }
             }
 
             $taxes['globalstr'] = number_format($taxes["global"], 2, ',', '.');
