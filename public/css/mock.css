@@ -1264,3 +1264,26 @@
     .unread {
         text-shadow: 0px 6px 5px rgba(10,10,10,.4)
     }
+
+    body.shepherd-active #container .shepherd-target {
+        z-index: 10000;
+    }
+
+    body.shepherd-active #container:after {
+        content: " ";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0,0,0,.5);
+        z-index: 5;
+    }
+
+    .shepherd-element.shepherd-theme-arrows {
+        z-index: 9999;
+    }
+
+    .shepherd-element.shepherd-theme-arrows .shepherd-content {
+        border-radius: 0 !important;
+    }

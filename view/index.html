@@ -5,10 +5,53 @@
         <meta name="mobile-web-app-capable" content="yes">
         <title>Alliance - Services</title>
         <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
-        <link rel="stylesheet" type="text/css" href="./css/mock.css">
-        <link rel="stylesheet" type="text/css" href="./css/iframe.css">
-        <link rel="stylesheet" type="text/css" href="./css/mobile.css">
-        <link rel="stylesheet" type="text/css" href="./css/large.css">
+        <link rel="stylesheet" type="text/css" href="/css/mock.css">
+        <link rel="stylesheet" type="text/css" href="/css/iframe.css">
+        <link rel="stylesheet" type="text/css" href="/css/mobile.css">
+        <link rel="stylesheet" type="text/css" href="/css/large.css">
+        <link rel="stylesheet" type="text/css" href="/css/shepherd-theme-arrows.css">
+        <link rel="stylesheet" type="text/css" href="/css/shepherd-theme-arrows-plain-buttons.css">
+        <link rel="stylesheet" type="text/css" href="/css/shepherd-theme-dark.css">
+        <link rel="stylesheet" type="text/css" href="/css/shepherd-theme-default.css">
+        <link rel="stylesheet" type="text/css" href="/css/shepherd-theme-square.css">
+        <link rel="stylesheet" type="text/css" href="/css/shepherd-theme-square-dark.css">
+        <style type="text/css">
+            .pace {
+                -webkit-pointer-events: none;
+                pointer-events: none;
+
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                user-select: none;
+            }
+
+            .pace-inactive {
+                display: none;
+            }
+
+            .pace .pace-progress {
+                background: #478eb5;
+                position: fixed;
+                z-index: 2000;
+                top: 0;
+                right: 100%;
+                width: 100%;
+                height: 2px;
+            }
+        </style>
+        <script>
+            paceOptions = {
+                restartOnPushState: true,
+                restartOnRequestAfter: true,
+                ajax: {
+                    trackMethods: ['GET'],
+                    ignoreURLs: ['/json/']
+                }
+            }
+        </script>
+        <script type="text/javascript" src="/js/pace.min.js"></script>
+        <script type="text/javascript" src="/js/tether.min.js"></script>
+        <script type="text/javascript" src="/js/shepherd.min.js"></script>
         <script type="text/javascript" src="/js/md5.min.js"></script>
         <script type="text/javascript" src="/js/index.js"></script>
     </head>

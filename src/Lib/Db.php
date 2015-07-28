@@ -61,7 +61,7 @@ class Db
 
         if(!$this->persistence) $this->cache->persistence = false;
 
-        $dsn = 'mysql:dbname=' . $app->baseConfig->getConfig('name', 'database') . ';host=' . $app->baseConfig->getConfig('host', 'database');
+        $dsn = 'mysql:dbname=' . $app->baseConfig->getConfig('name', 'database') . ';host=' . $app->baseConfig->getConfig('host', 'database') . ";charset=utf8";
         try
         {
             $this->pdo = new PDO($dsn, $app->baseConfig->getConfig('username', 'database'), $app->baseConfig->getConfig('password', 'database'), array(
