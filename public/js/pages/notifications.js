@@ -2,7 +2,8 @@ notificationsJS();
 function notificationsJS () {
 	ajax("/json/notifications/", function (r) {
 		console.log(r);
-		var list = $("#notificationsList");
+		var notList = $("#notificationsList");
+		var tasList = $("#tasksList");
 		var tmpl = $("#notificationTemplate").innerHTML;
 
 		for(var i = 0; i < r.length; i++) {
@@ -18,7 +19,11 @@ function notificationsJS () {
 				bod += '<p>' + r[i].message + '</p>';
 			}
 			bod += '</label>';
-			list.appendChild(createElement(tmpl.format([r[i].id, r[i].typeID, bod, r[i].readState ? '' : 'unread'])));
+			if(r[i].requested > r[i].created) {
+				tasList.insertBefore(createElement(tmpl.format([r[i].id, r[i].typeID, bod, r[i].readState ? '' : 'unread'])), tasList.firstChild);
+			} else {
+				notList.appendChild(createElement(tmpl.format([r[i].id, r[i].typeID, bod, r[i].readState ? '' : 'unread'])));
+			}
 		}
 
 		fadeOn($("#notificationsConti"), 1);
