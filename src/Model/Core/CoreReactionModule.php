@@ -153,7 +153,7 @@ class CoreReactionModule {
 
                                 $outputMats = $ingredientQuantity * $ingredientMultiplier;
 
-                                $this->output->addValueToOutput($outputMats);
+                                $this->addValueToOutput($outputMats);
 
                             }
 
@@ -233,7 +233,10 @@ class CoreReactionModule {
     }
 
     public function addValueToOutput ($value) {
-        $this->output->addInputValue($value);
+        if($this->output && $this->output->getTypeId() == 404) {
+            $this->output->addInputValue($value);
+            $this->output->addValueToOutput($value);
+        }
     }
 
     public function getRecQuantity () {

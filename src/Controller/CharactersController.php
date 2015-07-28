@@ -45,11 +45,16 @@ class CharactersController
     public function switchCharacter ($characterID) {
         $resp = array("state" => "error");
         if(isset($_SESSION["loggedIn"])) {
+            $myChar = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
             $char = $this->app->CoreManager->getCharacter($characterID);
-            if($char->getCUser()->isAdmin() || $char->getCUser()->getId() == $this->app->CoreManager->getCharacter($_SESSION['characterID'])->getCUser()->getId()) {
-                $this->app->CoreManager->createCharacter($char->getCharId());
-                $_SESSION["characterName"] = $char->getCharName();
-                $_SESSION["characterID"] = $char->getCharId();
+            if($myChar->getCUser()->isAdmin() || $char->getUser() == $myChar->getUser()) {
+                $newChar = $this->app->CoreManager->createCharacter($char->getCharId());
+                if($newChar->getUser() == null) {
+                    $user = $this->app->CoreManager->createUser();
+                    $newChar->setUser($user->getId());
+                }
+                $_SESSION["characterName"] = $newChar->getCharName();
+                $_SESSION["characterID"] = $newChar->getCharId();
                 $resp['state'] = "success";
             }
         }

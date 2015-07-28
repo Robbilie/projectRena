@@ -51,15 +51,15 @@ $app->get('/json/corporation/:corporationID/container/:containerID/', function($
     (new \ProjectRena\Controller\JSONController($app))->getCorporationContents($corporationID, $containerID);
 });
 
-$app->get('/json/corporation/:corporationID/wallet/', function($corporationID) use ($app){
+$app->get('/json/finances/taxes/', function() use ($app){
     (new \ProjectRena\Controller\JSONController($app))->getCorporationRattingTax(null, null);
 });
 
-$app->get('/json/corporation/:corporationID/wallet/:from/', function($corporationID, $from) use ($app){
+$app->get('/json/finances/taxes/:from/', function($from) use ($app){
     (new \ProjectRena\Controller\JSONController($app))->getCorporationRattingTax($from, null);
 });
 
-$app->get('/json/corporation/:corporationID/wallet/:from/:till/', function($corporationID, $from, $till) use ($app){
+$app->get('/json/finances/taxes/:from/:till/', function($from, $till) use ($app){
     (new \ProjectRena\Controller\JSONController($app))->getCorporationRattingTax($from, $till);
 });
 
@@ -372,10 +372,6 @@ $app->get('/corporation/', function() use ($app){
     $app->render("/pages/corporation.html");
 });
 
-$app->get('/corporation/wallet/', function() use ($app){
-    $app->render("/pages/rattingtax.html");
-});
-
 $app->get('/structures/', function() use ($app){
     $app->render("/pages/structures.html");
 });
@@ -386,6 +382,10 @@ $app->get('/structures/:structure/', function($structure) use ($app){
 
 $app->get('/corporation/:corporationID/container/:containerID/', function($corporationID, $containerID) use ($app){
     $app->render("/pages/contents.html");
+});
+
+$app->get('/finances/taxes/', function() use ($app){
+    $app->render("/pages/finances.html");
 });
 
 $app->get('/assets/', function() use ($app){

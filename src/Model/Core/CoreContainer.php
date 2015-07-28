@@ -67,7 +67,8 @@ class CoreContainer extends CoreItem {
 			"x"					=> (int)$this->x,
 			"y"					=> (int)$this->y,
 			"z"					=> (int)$this->z,
-			"fill"				=> (float)$this->getFill()
+			"fill"				=> (float)$this->getFill(),
+			"cargomod"			=> (float)$this->cargomod
 		);
 	}
 
