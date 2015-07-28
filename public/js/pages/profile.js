@@ -1,11 +1,11 @@
 profileJS();
 function profileJS () {
 	ajax("/json/character/" + location.hash.split("/")[2] + "/", function (r) {
-		$("#characterImg").src = "https://image.eveonline.com/Character/" + r.characterID + "_128.jpg";
+		$("#characterImg").src = "https://imageserver.eveonline.com/Character/" + r.characterID + "_128.jpg";
 		$("#characterImg").alt = r.characterName;
-		$("#corporationImg").src = "https://image.eveonline.com/Corporation/" + r.corporationID + "_64.png";
+		$("#corporationImg").src = "https://imageserver.eveonline.com/Corporation/" + r.corporationID + "_64.png";
 		$("#corporationImg").alt = r.corporationName;
-		$("#allianceImg").src = "https://image.eveonline.com/Alliance/" + r.allianceID + "_64.png";
+		$("#allianceImg").src = "https://imageserver.eveonline.com/Alliance/" + r.allianceID + "_64.png";
 		$("#allianceImg").alt = r.allianceName;
 
 		$("#characterName").innerHTML = r.characterName;

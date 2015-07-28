@@ -117,7 +117,7 @@ function checkStatus (cb, poll) {
 }
 
 function setLoggedinCard (charid, charname) {
-    $("#charImg").src = "https://image.eveonline.com/Character/" + charid + "_64.jpg";
+    $("#charImg").src = "https://imageserver.eveonline.com/Character/" + charid + "_64.jpg";
     $("#charImg").alt = charname;
     $("#charName").innerHTML = charname;
     setCharList();
@@ -133,7 +133,7 @@ function setCharList () {
         for (var i = r.length - 1; i >= 0; i--) {
             if(r[i].characterID == coreStatus.charid) continue;
             el.innerHTML += '<div class="hover row">' +
-                '<img src="https://image.eveonline.com/Character/' + r[i].characterID + '_32.jpg" alt="' + r[i].characterName + '"/>' +
+                '<img src="https://imageserver.eveonline.com/Character/' + r[i].characterID + '_32.jpg" alt="' + r[i].characterName + '"/>' +
                 '<span onclick="switchCharacter(' + r[i].characterID + ');">' + r[i].characterName + '</span>' +
             '</div>';
         }

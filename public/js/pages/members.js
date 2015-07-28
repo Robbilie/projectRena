@@ -36,8 +36,8 @@ function listCorpMembers (id, cb) {
 			el.innerHTML = "";
 			for(var i = 0; i < s.length; i++) {
 				if(s[i].verified) showCoverage = true;
-				if(s[i].verified && s[i].verified == true) cntVerified++;
-				el.appendChild(createElement(tmpl.format([s[i].characterID, s[i].characterName, s[i].verified && s[i].verified == true ? '<span class="fr">[verified]</span>' : ''])));
+				if(s[i].verified && s[i].verified === true) cntVerified++;
+				el.appendChild(createElement(tmpl.format([s[i].characterID, s[i].characterName, s[i].verified && s[i].verified === true ? '<span class="fr">[verified]</span>' : ''])));
 			}
 			if(showCoverage)
 				$("#memberTitle").innerHTML += '<span class="fr">[coverage_' + parseInt((cntVerified / s.length) * 100) + '%]</span>';
@@ -50,7 +50,7 @@ function listCorpMembers (id, cb) {
 function membersallianceJS (cb) {
 	if(location.hash.split("/")[3] === "") {
 		ajax("/json/character/" + coreStatus.charid + "/", function (r) {
-			if(r.allianceID != 0)
+			if(r.allianceID !== 0)
 				listAlliMembers(r.allianceID, cb);
 			else
 				cb();
@@ -71,8 +71,8 @@ function listAlliMembers (id, cb) {
 			el.innerHTML = "";
 			for(var i = 0; i < s.length; i++) {
 				if(s[i].verified) showCoverage = true;
-				if(s[i].verified && s[i].verified == true) cntVerified++;
-				el.appendChild(createElement(tmpl.format([s[i].characterID, s[i].characterName, s[i].verified && s[i].verified == true ? '<span class="fr">[verified]</span>' : ''])));
+				if(s[i].verified && s[i].verified === true) cntVerified++;
+				el.appendChild(createElement(tmpl.format([s[i].characterID, s[i].characterName, s[i].verified && s[i].verified === true ? '<span class="fr">[verified]</span>' : ''])));
 			}
 			if(showCoverage)
 				$("#memberTitle").innerHTML += '<span class="fr">[coverage_' + parseInt((cntVerified / s.length) * 100) + '%]</span>';

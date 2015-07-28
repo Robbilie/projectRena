@@ -16,7 +16,7 @@ $config['site'] = array(
 // CCP
 $config['ccp'] = array(
 	'apiServer'   => 'https://api.eveonline.com/',
-	'imageServer' => 'https://image.eveonline.com/',
+	'imageServer' => 'https://imageserver.eveonline.com/',
 );
 
 // Database
