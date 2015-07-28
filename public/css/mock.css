@@ -1286,6 +1286,7 @@
 
     .shepherd-element.shepherd-theme-arrows .shepherd-content {
         border-radius: 0 !important;
+        color: #606060 !important;
     }
 
     .shepherd-element.shepherd-theme-arrows.shepherd-element-attached-top.shepherd-element-attached-center .shepherd-content {
@@ -1295,4 +1296,8 @@
 
     .shepherd-element.shepherd-theme-arrows .shepherd-content footer .shepherd-buttons li .shepherd-button {
         background-color: #478eb5 !important;
+    }
+
+    .shepherd-element.shepherd-theme-arrows .shepherd-content footer .shepherd-buttons li .shepherd-button {
+        border-radius: 0 !important;
     }

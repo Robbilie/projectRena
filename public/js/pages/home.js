@@ -3,8 +3,10 @@ function homeJS () {
 	fadeOn($("#homeConti"), 1);
 }
 
+var tour;
+
 function startTour () {
-	var tour = new Shepherd.Tour({
+	tour = new Shepherd.Tour({
 		defaults: {
 			classes: 'shepherd-theme-arrows',
 			scrollTo: true,
@@ -24,6 +26,6 @@ function startTour () {
 			}
 		]
 	});
-	
+
 	tour.start();
 }
