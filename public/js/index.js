@@ -120,19 +120,23 @@ function setLoggedinCard (charid, charname) {
     $("#charImg").src = "https://image.eveonline.com/Character/" + charid + "_64.jpg";
     $("#charImg").alt = charname;
     $("#charName").innerHTML = charname;
-    ajax("/json/characters/", function (r) {
+    setCharList();
+    ajax("/json/notifications/unread/", function (r) {
+      $("#unreadcounta").innerHTML = r.unread;
+    }, "json");
+}
+
+function setCharList () {
+     ajax("/json/characters/", function (r) {
         var el = $("#charlist");
         el.innerHTML = '';
         for (var i = r.length - 1; i >= 0; i--) {
-            if(r[i].characterID == charid) continue;
+            if(r[i].characterID == coreStatus.charid) continue;
             el.innerHTML += '<div class="hover row">' +
                 '<img src="https://image.eveonline.com/Character/' + r[i].characterID + '_32.jpg" alt="' + r[i].characterName + '"/>' +
                 '<span onclick="switchCharacter(' + r[i].characterID + ');">' + r[i].characterName + '</span>' +
             '</div>';
         }
-    }, "json");
-    ajax("/json/notifications/unread/", function (r) {
-      $("#unreadcounta").innerHTML = r.unread;
     }, "json");
 }
 

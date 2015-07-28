@@ -15,6 +15,12 @@ function charactersheetJS () {
 
 		fadeOn($("#charactersheetConti"), 1);
 	}, "json");
+	loadCharacters();
+	loadGroups();
+	loadOptions();
+}
+
+function loadCharacters () {
 	ajax("/json/characters/", function (r) {
 		var el = $("#characterList");
 		el.innerHTML = '';
@@ -27,13 +33,15 @@ function charactersheetJS () {
 				(r[i].characterID != coreStatus.charid ? '<span class="fr hover" onclick="deleteCharacter(' + r[i].characterID + ');">&times;</span>' : '') +
 			'</div>'));
 	}, "json");
+}
+
+function loadGroups () {
 	ajax("/json/character/" + coreStatus.charid + "/groups/", function (r) {
 		var el = $("#groupList");
 		el.innerHTML = '';
 		for (var i = r.length - 1; i >= 0; i--)
 			el.appendChild(createElement('<div> + ' + r[i].name + '</div>'));
 	}, "json");
-	loadOptions();
 }
 
 function loadOptions () {
@@ -81,8 +89,10 @@ function loadOptions () {
 
 function deleteCharacter (charid) {
 	ajax("/json/character/delete/" + charid + "/", function (r) {
-		if(r.state == "success")
-			hashChange();
+		if(r.state == "success") {
+			loadCharacters();
+			setCharList();
+		}
 	}, "json");
 }
 
