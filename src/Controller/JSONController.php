@@ -236,7 +236,8 @@ class JSONController
         if(isset($_SESSION["loggedIn"])) {
             $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
             $corp = $this->app->CoreManager->getCorporation($corporationID);
-            $members = $corp->getFullMemberList(null, $char->hasPermission("readCoverageAPI", "corporation"));
+            if($corp)
+                $members = $corp->getFullMemberList(null, $corp->getId() == $char->getCorpId() && $char->hasPermission("readCoverageAPI", "corporation"));
         }
         $this->app->response->headers->set('Content-Type', 'application/json');
         $this->app->response->body(json_encode($members));
@@ -261,7 +262,7 @@ class JSONController
             if($alliance) {
                 $corporations = $alliance->getCorpList();
                 foreach ($corporations as $corporation)
-                    $members = array_merge($members, $corporation->getFullMemberList(null, $char->hasPermission("readCoverageAPI", "alliance")));
+                    $members = array_merge($members, $corporation->getFullMemberList(null, $alliance->getId() == $char->getAlliId() && $char->hasPermission("readCoverageAPI", "alliance")));
             }
         }
         $this->app->response->headers->set('Content-Type', 'application/json');

@@ -50,13 +50,15 @@ function listCorpMembers (id, cb) {
 function membersallianceJS (cb) {
 	if(location.hash.split("/")[3] === "") {
 		ajax("/json/character/" + coreStatus.charid + "/", function (r) {
-			if(r.allianceID !== 0)
+			if(r.allianceID !== 0) {
 				listAlliMembers(r.allianceID, cb);
-			else
+			} else {
+				$("#memberTitle").innerHTML = "You are not in an Alliance";
 				cb();
+			}
 		}, "json");
 	} else {
-		listAlliCorps(location.hash.split("/")[3], cb);
+		listAlliMembers(location.hash.split("/")[3], cb);
 	}
 }
 
