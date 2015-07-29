@@ -76,7 +76,7 @@
         $pos = $app->CoreManager->getControltower($notification['body']['towerID']);
         $notification['body']['towerName'] = $pos->getName();
         $notification['body']['solarSystemName'] = $pos->getLocation()->getName();
-        $notification['body']['leftHours'] = ($notification['requested'] - $notification['created']) / 3600;
+        $notification['body']['leftHours'] = (int)(($notification['requested'] - time()) / 3600);
     }
 
     function WarSurrenderOffer (&$notification) {
@@ -130,7 +130,7 @@
         $reaction = $app->CoreManager->getContainer($notification['body']['reactionID']);
         $notification['body']['reactionName'] = $reaction->getName();
 
-        $notification['body']['progressMsg'] = $notification['body']["state"] == "running" ? (($notification['body']["value"] >= 0 ? "full" : "empty")." in ".(($notification['requested'] - $notification['created']) / 3600)." hours") : "";
+        $notification['body']['progressMsg'] = $notification['body']["state"] == "running" ? (($notification['body']["value"] >= 0 ? "full" : "empty")." in ".((int)(($notification['requested'] - time()) / 3600))." hours") : "";
     }
 
     function ReactionInactiveMsg (&$notification) {

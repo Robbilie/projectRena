@@ -135,6 +135,7 @@ class CharactersController
                         )
                     );
                     $resp['state'] = "success";
+                    file_get_contents("http://localhost:9699/setbasets3/".urlencode($vals[0])."/");
                     break;
 
                 default:

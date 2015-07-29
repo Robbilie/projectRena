@@ -58,6 +58,8 @@ class CoreReactionModule {
 		$this->db = $this->app->Db;
 		$this->config = $this->app->baseConfig;
 
+        if(count($params) == 0) return;
+
         $this->container = $params['container'];
         $this->tower = $params['tower'];
 

@@ -117,7 +117,7 @@ class FetcherController
                         ":creatorID"    => $notificationRow['senderID'],
                         ":recipientID"  => in_array($notificationRow['typeID'], $corpNotificationTypes) ? $recipient->getCorpId() : $recipient->getCharId(),
                         ":locationID"   => 0,
-                        ":body"         => json_encode(yaml_parse($notificationRow['body'])),
+                        ":body"         => json_encode($notificationRow['body'] != "" ? yaml_parse($notificationRow['body']) : array()),
                         ":created"      => $notificationRow['sentDate'],
                         ":requested"    => $notificationRow['sentDate']
                     )

@@ -21,7 +21,8 @@ function notificationsJS () {
 			}
 			bod += '</label>';
 			if(r[i].requested > r[i].created) {
-				tasList.insertBefore(createElement(tmpl.format([r[i].id, r[i].typeID, bod, r[i].readState ? '' : 'unread'])), tasList.firstChild);
+				if(r[i].state == 0)
+					tasList.insertBefore(createElement(tmpl.format([r[i].id, r[i].typeID, bod, r[i].readState ? '' : 'unread'])), tasList.firstChild);
 			} else {
 				notList.appendChild(createElement(tmpl.format([r[i].id, r[i].typeID, bod, r[i].readState ? '' : 'unread'])));
 			}

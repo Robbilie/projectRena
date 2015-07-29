@@ -1253,11 +1253,11 @@
     	display: none;
     }
 
-    #notificationsList div:nth-child(odd) {
+    #notificationsList div:nth-child(odd), #tasksList div:nth-child(odd) {
         background-color: rgba(0,0,0,.1);
     }
 
-    #notificationsList div:nth-child(odd):hover {
+    #notificationsList div:nth-child(odd):hover, #tasksList div:nth-child(odd):hover {
         background-color: rgba(0,0,0,.2);
     }
 
