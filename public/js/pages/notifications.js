@@ -7,24 +7,21 @@ function notificationsJS () {
 		var tmpl = $("#notificationTemplate").innerHTML;
 
 		for(var i = 0; i < r.length; i++) {
-			var bod = "";
-			if(r[i].requested == r[i].created)
-				bod += '<span class="fr">' + (new Date(r[i].created * 1000).toLocaleString()) + '</span>';
-			bod += '<input type="checkbox" id="notificationToggle' + r[i].id + '" onchange="markRead(' + r[i].id + ');" class="details"/>';
-			bod += '<label for="notificationToggle' + r[i].id + '">';
-			if(r[i].subject == "!!Unable to read notification") {
-				bod += '<h4 class="mtn mbn">ID: ' + r[i].id + ' , TYPE: ' + r[i].typeID + '</h4>';
-				bod += '<p>' + JSON.stringify(r[i]) + '</p>';
-			} else {
-				bod += '<h4 class="mtn mbn">' + r[i].subject + '</h4>';
-				bod += '<p>' + r[i].message + '</p>';
-			}
-			bod += '</label>';
+			var tmpel = createElement(tmpl.format(
+				[
+					r[i].id, 
+					r[i].typeID, 
+					r[i].requested == r[i].created ? '<span class="fr">' + (new Date(r[i].created * 1000).toLocaleString()) + '</span>' : "", 
+					r[i].readState ? '' : 'unread', 
+					r[i].subject == "!!Unable to read notification" ? 'ID: ' + r[i].id + ' , TYPE: ' + r[i].typeID : r[i].subject, 
+					r[i].subject == "!!Unable to read notification" ? JSON.stringify(r[i]) : r[i].message
+				]
+			));
 			if(r[i].requested > r[i].created) {
 				if(r[i].state == 0)
-					tasList.insertBefore(createElement(tmpl.format([r[i].id, r[i].typeID, bod, r[i].readState ? '' : 'unread'])), tasList.firstChild);
+					tasList.insertBefore(tmpel, tasList.firstChild);
 			} else {
-				notList.appendChild(createElement(tmpl.format([r[i].id, r[i].typeID, bod, r[i].readState ? '' : 'unread'])));
+				notList.appendChild(tmpel);
 			}
 		}
 

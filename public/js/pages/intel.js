@@ -111,7 +111,7 @@ function checkSystemStatus () {
             var el = $("#intelMemberlist");
             el.innerHTML = "";
             for(var j = 0; j < systemStatus.members.length; j++)
-                el.appendChild(createElement(tmpl.format([systemStatus.members[j].id, systemStatus.members[j].name + (systemStatus.members[j].count ? " [" + systemStatus.members[j].count + "]" : ""), systemStatus.members[j].standing + "Standing"])));
+                el.appendChild(createElement(tmpl.format([systemStatus.members[j].id, systemStatus.members[j].name + (systemStatus.members[j].count ? " [" + systemStatus.members[j].count + "]" : ""), systemStatus.members[j].standing + "Standing", (new Date(systemStatus.members[j].timestamp * 1000).toLocaleString())])));
         }
 
         setTimeout(checkSystemStatus, 100);

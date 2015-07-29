@@ -12972,7 +12972,7 @@
         "label": "bodyReactionInactiveMsg",
         "messageID": 1337007,
         "message": [
-            "{reactionName} at {towerName} is inactive",
+            "{reactionName} at <a href=\"#!/structures/controltower/{towerID}/\">{towerName}</a> is inactive",
             null,
             {
                 "{reactionName}": {
@@ -12998,6 +12998,18 @@
 
                     ],
                     "variableName": "towerName"
+                },
+                "{towerID}": {
+                    "conditionalValues": [
+
+                    ],
+                    "variableType": 10,
+                    "propertyName": null,
+                    "args": 0,
+                    "kwargs": [
+
+                    ],
+                    "variableName": "towerID"
                 }
             }
         ]

@@ -14,10 +14,14 @@ function profileJS () {
 
 		fadeOn($("#profileConti"), 1);
 	}, "json");
-	ajax("/json/character/" + coreStatus.charid + "/groups/", function (r) {
+	ajax("/json/character/" + location.hash.split("/")[2] + "/groups/", function (r) {
 		var el = $("#groupList");
 		el.innerHTML = '';
 		for (var i = r.length - 1; i >= 0; i--)
 			el.appendChild(createElement('<div> + ' + r[i].name + '</div>'));
+		if(r.length == 0)
+			fadeOn(el.parentNode, 0);
+		else
+			fadeOn(el.parentNode, 1);
 	}, "json");
 }

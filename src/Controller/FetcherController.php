@@ -159,6 +159,7 @@ class FetcherController
                 $hDif /= 3600;
                 $hDif = floor($hDif);
                 if($hours != floor(($lastNotif->getRequested() - $lastNotif->getCreated()) / 3600)) {
+                	$this->app->CoreManager->createLog("fueloutdated", array("towerID" => $pos->getId(), "oh" => floor(($lastNotif->getRequested() - $lastNotif->getCreated()) / 3600), "nh" => $hours));
                     $isOutdated = true;
                     if($lastNotif->getState() != 2)
                         $this->app->CoreManager->deleteNotification($lastNotif->getId());

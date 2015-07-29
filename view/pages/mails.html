@@ -19,9 +19,9 @@
 			<input class="details" type="checkbox" onchange="refreshDom();" id="{messageID}"/>
 			<label for="{messageID}">
 				<h5>[<a href="/mail/{messageID}/">l</a>] {sentDate}</h5>
-				<h5>{senderName}</h5>
-				<h3><span>[<a href="/mail/{messageID}/">l</a>] {sentDate}</span> [{type}] {name} : {title}</h3>
-				<div><p class="inset">{message}</p></div>
+				<h5>{name}</h5>
+				<h3><span>[<a href="/mail/{messageID}/">l</a>] {sentDate}</span> [{type}] {senderName} : {title}</h3>
+				<div><p>{message}</p></div>
 			</label>
 		</div>
 	</script>

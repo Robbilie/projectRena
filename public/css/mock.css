@@ -595,6 +595,10 @@
         margin-top: 5px !important;
     }
 
+    .smb {
+        margin-bottom: 5px !important;
+    }
+
     .lpb {
         padding-bottom: 20px;
     }
@@ -636,6 +640,10 @@
         float: right;
     }
 
+    .fl {
+        float: left;
+    }
+
     .card {
         -webkit-box-shadow: 0px 0 2px 1px #d4d5d6;
         box-shadow: 0px 0 2px 1px #d4d5d6;
@@ -667,7 +675,7 @@
         padding: 0.9em 1em;
     }
 
-    #characterList span, .hover.row > span, .hover.row > a, .hover.row > label, .optionslist span {
+    #characterList span, .hover.row > span, .hover.row > a, .hover.row > h4 a, .hover.row > label, .optionslist span {
         line-height: 32px;
         vertical-align: top;
         padding: 0px 10px;
@@ -1243,7 +1251,7 @@
     }
 
     .details[type=checkbox] + label > div > p {
-    	background: gray;
+    	background: #A0A0A0;
     	padding: 5px;
     	margin: 0px;
     	margin-bottom: 5px;
@@ -1300,4 +1308,25 @@
 
     .shepherd-element.shepherd-theme-arrows .shepherd-content footer .shepherd-buttons li .shepherd-button {
         border-radius: 0 !important;
+    }
+
+    .hover .tshover {
+        opacity: 0;
+    }
+
+    .hover:hover .tshover {
+        opacity: 1;
+    }
+
+    .stForm {
+        padding: 10px;
+        overflow: hidden;
+    }
+
+    input[type=text].wa {
+        width: auto;
+    }
+
+    #intelMemberlist .hover.row > label {
+        padding: 0;
     }

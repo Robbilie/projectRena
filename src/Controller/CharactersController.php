@@ -80,8 +80,12 @@ class CharactersController
     // get the groups a character is in
     public function getCharacterGroups ($characterID) {
         $groups = array();
-        if(isset($_SESSION["loggedIn"]))
-            $groups = $this->app->CoreManager->getCharacter($characterID)->getCGroups();
+        if(isset($_SESSION["loggedIn"])) {
+            $me = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
+            $other = $this->app->CoreManager->getCharacter($characterID);
+            if(($other->getAlliId() == 0 && $me->getCorpId() == $other->getCorpId()) || ($other->getAlliId() != 0 && $other->getAlliId() == $me->getAlliId()))
+                $groups = $other->getCGroups();
+        }
         $this->app->response->headers->set('Content-Type', 'application/json');
         $this->app->response->body(json_encode($groups));
     }

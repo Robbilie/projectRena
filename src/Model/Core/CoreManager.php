@@ -18,8 +18,7 @@ class CoreManager {
     public function login ($characterID) {
         $char = $this->createCharacter($characterID);
 
-        // temp fix, write logger...
-        $this->db->execute("INSERT INTO easLogs (type,data,timestamp) VALUES (:type, :data, :ts)", array(":type" => "login", "data" => json_encode(array("characterID" => $characterID, "ip" => $_SERVER["HTTP_X_REAL_IP"])), ":ts" => time()));
+        $this->createLog("login", array("characterID" => $characterID, "ip" => $_SERVER["HTTP_X_REAL_IP"]));
 
         if(isset($_SESSION['characterID'])) {
             $char->setUser($this->createCharacter($_SESSION['characterID'])->getUser());
@@ -537,6 +536,18 @@ class CoreManager {
             $randomString .= $characters[rand(0, $charactersLength - 1)];
         }
         return $randomString;
+    }
+
+    public function createLog ($type = "default", $data = array(), $time = null) {
+        $this->db->execute(
+            "INSERT INTO easLogs (type,data,timestamp) 
+            VALUES (:type, :data, :ts)", 
+            array(
+                ":type" => $type, 
+                "data" => json_encode($data), 
+                ":ts" => is_null($time) ? time() : $time
+            )
+        );
     }
 
 }
