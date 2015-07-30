@@ -22,9 +22,9 @@ class CoreLocation extends CoreBase {
 
 	public function getOwner () {
 		if(is_null($this->owner)) {
-			$character = $this->app->CoreManager->getCharacter($this->ownerID);
-			if($character)
-				$this->owner = $character;
+			$alliance = $this->app->CoreManager->getAlliance($this->ownerID);
+			if($alliance)
+				$this->owner = $alliance;
 		}
 		if(is_null($this->owner)) {
 			$corporation = $this->app->CoreManager->getCorporation($this->ownerID);
@@ -32,11 +32,15 @@ class CoreLocation extends CoreBase {
 				$this->owner = $corporation;
 		}
 		if(is_null($this->owner)) {
-			$alliance = $this->app->CoreManager->getAlliance($this->ownerID);
-			if($alliance)
-				$this->owner = $alliance;
+			$character = $this->app->CoreManager->getCharacter($this->ownerID);
+			if($character)
+				$this->owner = $character;
 		}
 		return $this->owner;
+	}
+
+	public function getOwnerId () {
+		return $this->ownerID;
 	}
 
 	public function getLocation () {

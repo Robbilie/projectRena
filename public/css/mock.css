@@ -62,7 +62,7 @@
         color: #606060;
     }
 
-    [onclick] {
+    [onclick], .click {
         cursor: pointer;
     }
 
@@ -1329,4 +1329,8 @@
 
     #intelMemberlist .hover.row > label {
         padding: 0;
+    }
+
+    .fsl {
+        font-size: large;
     }

@@ -63,7 +63,7 @@ class CoreItem extends CoreBase {
 			}
 		}
 		if(is_null($this->location)) {
-			$locationRow = $this->db->queryRow("SELECT mapSolarSystems.solarSystemID as id,mapSolarSystems.solarSystemName as name,ntSovereignty.corporation as ownerID FROM mapSolarSystems INNER JOIN ntSovereignty ON mapSolarSystems.solarSystemID = ntSovereignty.solarSystem WHERE solarSystemID = :solarSystemID", array(":solarSystemID" => $this->locationID));
+			$locationRow = $this->db->queryRow("SELECT mapSolarSystems.solarSystemID as id,mapSolarSystems.solarSystemName as name,ntSovereignty.alliance as ownerID FROM mapSolarSystems LEFT JOIN ntSovereignty ON mapSolarSystems.solarSystemID = ntSovereignty.solarSystem WHERE mapSolarSystems.solarSystemID = :solarSystemID", array(":solarSystemID" => $this->locationID));
 			if($locationRow) {
 				$changed = true;
 				$this->location = new CoreLocation($this->app, array("id" => $locationRow['id'], "name" => $locationRow['name'], "ownerID" => $locationRow['ownerID']));

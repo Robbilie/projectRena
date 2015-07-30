@@ -145,7 +145,7 @@ class FetcherController
             $content = $pos->getContent();
             foreach ($content as $item) {
     			if($item->getType()->getGroupId() == 1136) {
-                    $hasSov = $pos->getLocation()->getOwner() && $pos->getLocation()->getOwner()->getId() == $pos->getOwner()->getCAlliance()->getId();
+                    $hasSov = $pos->getLocation()->getOwner() && $pos->getOwner()->getCAlliance() && $pos->getLocation()->getOwner()->getId() == $pos->getOwner()->getCAlliance()->getId();
                     $fuelConsume = ceil(($hasSov ? .75 : 1) * $fuelResourceCnt);
                     $hours = (int)($item->getQuantity() / $fuelConsume);
                     $fuelTS = $item->getTimestamp();
@@ -158,8 +158,8 @@ class FetcherController
                 $hDif = $lastNotif->getRequested() - $fuelTS;
                 $hDif /= 3600;
                 $hDif = floor($hDif);
-                if($hours != floor(($lastNotif->getRequested() - $lastNotif->getCreated()) / 3600)) {
-                	$this->app->CoreManager->createLog("fueloutdated", array("towerID" => $pos->getId(), "oh" => floor(($lastNotif->getRequested() - $lastNotif->getCreated()) / 3600), "nh" => $hours));
+                if($hours != $hDif) {
+                	$this->app->CoreManager->createLog("fueloutdated", array("towerID" => $pos->getId(), "oh" => $hDif, "nh" => $hours));
                     $isOutdated = true;
                     if($lastNotif->getState() != 2)
                         $this->app->CoreManager->deleteNotification($lastNotif->getId());

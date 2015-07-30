@@ -82,12 +82,12 @@ class NotificationsController
             while(strpos($imp, ",,") !== FALSE)
                 $imp = str_replace(",,", ",", $imp);
 
-            $imp .= ",";
+            //$imp .= ",";
             if($imp[0] == ",")
                 $imp = substr($imp, 1);
             if($imp[strlen($imp) - 1] == ",")
                 $imp = substr($imp, 0, strlen($imp) - 1);
-            if(count($vals) > 0)
+            if(count($vals) > 0 && $imp != "")
                 $this->db->execute("INSERT INTO easNotificationReaders (notificationID, readerID) VALUES $imp");
             $resp['state'] = "success";
         }
@@ -103,6 +103,21 @@ class NotificationsController
             if(!is_null($notification)) {
                 if(!$notification->isRead())
                     $this->db->execute("INSERT INTO easNotificationReaders (notificationID, readerID) VALUES (:notificationID, :readerID)", array(":notificationID" => $notificationID, ":readerID" => $char->getCharId()));
+                $resp['state'] = "success";
+            }
+        }
+        $this->app->response->headers->set('Content-Type', 'application/json');
+        $this->app->response->body(json_encode($resp));
+    }
+
+    public function markAsUnread ($notificationID) {
+        $resp = array("state" => "error");
+        if(isset($_SESSION["loggedIn"])) {
+            $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
+            $notification = $char->getCNotification($notificationID);
+            if(!is_null($notification)) {
+                if($notification->isRead())
+                    $this->db->execute("DELETE FROM easNotificationReaders WHERE notificationID = :notificationID AND readerID = :readerID", array(":notificationID" => $notificationID, ":readerID" => $char->getCharId()));
                 $resp['state'] = "success";
             }
         }

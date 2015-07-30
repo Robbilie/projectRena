@@ -135,6 +135,10 @@ $app->get('/json/intel/region/:regionID/', function($regionID) use ($app){
     (new \ProjectRena\Controller\IntelController($app))->getRegionIntel($regionID);
 });
 
+$app->get('/json/intel/character/:characterID/info/:info/', function($characterID, $info) use ($app){
+    (new \ProjectRena\Controller\IntelController($app))->setCharacterInfo($characterID, $info);
+});
+
 
 /*
  * Fleets
@@ -273,6 +277,10 @@ $app->get('/json/notification/:notificationID/', function($notificationID) use (
 
 $app->get('/json/notification/:notificationID/read/', function($notificationID) use ($app){
     (new \ProjectRena\Controller\NotificationsController($app))->markAsRead($notificationID);
+});
+
+$app->get('/json/notification/:notificationID/unread/', function($notificationID) use ($app){
+    (new \ProjectRena\Controller\NotificationsController($app))->markAsUnread($notificationID);
 });
 
 

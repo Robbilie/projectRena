@@ -22,9 +22,9 @@
                     <img src="https://imageserver.eveonline.com/Character/{0}_32.jpg" alt="{1}"/>
                     <a href="#!/profile/{0}/" onclick="click(this);">{1}</a>
                 </h4>
-                <div class="stForm">
-                    <input type="text" placeholder="Ship Type" class="mtn wa fl">
-                    <button class="btn">Submit</button>
+                <div class="stForm {5}" id="intelInfoForm{0}">
+                    <input id="intelInfo{0}" type="text" placeholder="Ship Type" class="mtn wa fl" value="{4}"/>
+                    <button class="btn" onclick="setInfo({0});">Submit</button>
                 </div>
             </label>
         </div>

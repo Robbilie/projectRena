@@ -30,6 +30,7 @@ function notificationsJS () {
 	ajax("/json/notifications/types/", function (r) {
 		var conti = $("#notificationsConti");
 		var settings = $("#notificationForm");
+		settings.appendChild(createElement('<div><h4 class="click mtn mbn" onclick="markAllRead();">Mark All as Read</h4></div>'));
 		var css = "";
 		for(var i = 0; i < r.length; i++) {
 			var tid = 'notificationType' + r[i].typeID;
@@ -48,5 +49,12 @@ function markRead (notificationID) {
 			$('#notification' + notificationID).className = $('#notification' + notificationID).className.replace("unread", "");
 			console.log(notificationID + " marked as read");
 		}
+	}, "json");
+}
+
+function markAllRead () {
+	ajax("/json/notifications/read/", function (r) {
+		if(r.state == "success")
+			hashChange();
 	}, "json");
 }

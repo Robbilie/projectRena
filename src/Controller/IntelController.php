@@ -13,6 +13,8 @@ class IntelController
     protected $db;
     protected $config;
 
+    protected $maxIntelAge = 0;
+
     /**
      * @param RenaApp $app
      */
@@ -21,6 +23,8 @@ class IntelController
         $this->app = $app;
         $this->db = $this->app->Db;
         $this->config = $this->app->baseConfig;
+
+        //$this->maxIntelAge = time() - (60*60*24);
     }
 
     public function getSystemIntel ($psystemID = null) {
@@ -178,14 +182,20 @@ class IntelController
 
             // get members
             $members = $this->db->query(
-                "SELECT characterID as id,characterName as name,corporationID,allianceID,submitterID,timestamp FROM easTracker WHERE
+                "SELECT characterID as id,characterName as name,corporationID,allianceID,submitterID,timestamp, 
+                    (SELECT info 
+                    FROM easTrackerInfo 
+                    WHERE easTrackerInfo.characterID = easTracker.characterID AND timestamp > :ts ORDER BY timestamp DESC LIMIT 0,1
+                    ) as info
+                FROM easTracker
+                WHERE
                     easTracker.locationID = :locationID AND
                     easTracker.timestamp =
                         (SELECT timestamp FROM easTracker as t WHERE
                             t.characterID = easTracker.characterID ORDER BY t.timestamp DESC LIMIT 1) AND easTracker.timestamp > :ts ORDER BY easTracker.characterName ASC",// LIMIT 100",
                 array(
                     ":locationID" => $systemID,
-                    ":ts" => /*time() - (60*60*24)*/ 0 // 0 if all should be intelled
+                    ":ts" => $this->maxIntelAge
                 )
             );
 
@@ -208,6 +218,7 @@ class IntelController
                         $intel['hostilecount']++;
                     } else {
                         $member['standing'] = "positive";
+                        $member['info'] = null;
                     }
                     array_push($newmembers, $member);
                 }
@@ -492,7 +503,7 @@ class IntelController
                                 t.characterID = easTracker.characterID ORDER BY t.timestamp DESC LIMIT 1) AND easTracker.timestamp > :ts ORDER BY easTracker.characterName ASC",// LIMIT 100",
                     array(
                         ":locationID" => $systemRow['id'],
-                        ":ts" => /*time() - (60*60*24)*/ 0 // 0 if all should be intelled
+                        ":ts" => $this->maxIntelAge
                     )
                 );
                 foreach ($members as &$member) {
@@ -513,6 +524,32 @@ class IntelController
         } while(0);
 
         return $intel;
+    }
+
+    public function setCharacterInfo ($characterID, $info) {
+        $resp = array("state" => "error");
+        if(isset($_SESSION["loggedIn"])) {
+            
+            do {
+                
+                $character = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
+
+                if(!$character->hasPermission("writeIntel")) break;
+
+                $this->db->execute("INSERT INTO easTrackerInfo (characterID, info, timestamp) VALUES (:characterID, :info, :ts)",
+                    array(
+                        ":characterID"  => $characterID,
+                        ":info"         => $info,
+                        ":ts"           => time()
+                    )
+                );
+            
+                $resp['state'] = "success";
+
+            } while (0);
+        }
+        $this->app->response->headers->set('Content-Type', 'application/json');
+        $this->app->response->body(json_encode($resp));
     }
     
 }
