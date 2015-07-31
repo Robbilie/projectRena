@@ -950,6 +950,12 @@
         right: 0px;
     }
 
+    #trustRequester {
+        position: absolute;
+        bottom: 0px;
+        left: 0px;
+    }
+
     #intelTracker:before {
         content: " ";
         position: absolute;
