@@ -107,19 +107,24 @@ class JSONController
     }
 
     // get content of a container owned by a corporation
-    public function getCorporationContents ($corporationID, $containerID) {
+    public function getCorporationContents ($corporationID, $locationID) {
         $resp = array("name" => "", "list" => array());
         if(isset($_SESSION["loggedIn"])) {
             $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
             $corp = $this->app->CoreManager->getCorporation($corporationID);
-            $item = $this->app->CoreManager->getItem($containerID);
-            if($item)
+            $item = $this->app->CoreManager->getItem($locationID);
+            if(!is_null($item)) {
                 $resp['name'] = $item->getName();
+            } else {
+                $location = $this->app->CoreManager->getLocation($locationID, true);
+                if($location)
+                    $resp['name'] = $location->getName();
+            }
             if(
                 ($corp->getId() == $char->getCorpId() && $char->hasPermission("readAssets", "corporation")) ||
                 ($char->getAlliId() != 0 && $corp->getAlliance() == $char->getAlliId() && $char->hasPermission("readAssets", "alliance"))
             ) {
-                $resp['list'] = $corp->getItems(function ($i) use ($containerID) { return $i->getLocationId() == $containerID; });
+                $resp['list'] = $corp->getItems(function ($i) use ($locationID) { return $i->getLocationId() == $locationID; });
             }
         }
         $this->app->response->headers->set('Content-Type', 'application/json');

@@ -372,7 +372,7 @@ class CoreCharacter extends CoreBase {
 
 	public function jsonSerialize() {
 		$ret = array(
-			"id"				=> $this->getId(),
+			"id"				=> $this->getDBId(),
 			//"user"			=> $this->getUser(),
 			"characterID"		=> $this->getCharId(),
 			"characterName"		=> $this->getCharName(),
@@ -389,7 +389,7 @@ class CoreCharacter extends CoreBase {
 
 	// default
 
-	public function getId () {
+	public function getDBId () {
 		return (int)$this->id;
 	}
 
@@ -397,8 +397,16 @@ class CoreCharacter extends CoreBase {
 		return (int)$this->user;
 	}
 
+	public function getId () {
+		return (int)$this->characterID;
+	}
+
 	public function getCharId () {
 		return (int)$this->characterID;
+	}
+
+	public function getName () {
+		return $this->characterName;
 	}
 
 	public function getCharName () {

@@ -158,7 +158,7 @@ class FetcherController
                 $hDif = $lastNotif->getRequested() - $fuelTS;
                 $hDif /= 3600;
                 $hDif = floor($hDif);
-                if($hours != $hDif) {
+                if(!in_array(abs($hours - $hDif), [0,1])) {
                 	$this->app->CoreManager->createLog("fueloutdated", array("towerID" => $pos->getId(), "oh" => $hDif, "nh" => $hours));
                     $isOutdated = true;
                     if($lastNotif->getState() != 2)
@@ -168,7 +168,7 @@ class FetcherController
 
             $createTask = (is_null($lastNotif) || $isOutdated) ? true : false;
 
-            echo "<div> - ".$createTask." | ".$pos->getId()." | ".floor((time() + ($hours * 3600)) / 3600)." | ".(!is_null($lastNotif) ? floor($lastNotif->getRequested() / 3600) : "new")." - </div>";
+            echo "<div> - ".$createTask." | ".$pos->getId()." | ".floor(($fuelTS + ($hours * 3600)) / 3600)." | ".(!is_null($lastNotif) ? floor($lastNotif->getRequested() / 3600) : "new")." - </div>";
 
             if($createTask) {
                 $this->db->execute(

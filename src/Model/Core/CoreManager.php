@@ -82,16 +82,13 @@ class CoreManager {
         $this->db->execute("DELETE FROM easNotifications WHERE id = :id", array(":id" => $notificationID));
     }
 
-    protected $groups = array();
+    protected $groupsByID = array();
+    protected $groupsByName = array();
     public function getGroup ($grp) {
-        foreach ($this->groups as $group) {
-            if(is_int($grp)) {
-                if($group->getId() == $grp)
-                    return $group;
-            } else if(is_string($grp)) {
-                if($group->getName() == $grp)
-                    return $group;
-            }
+        if(is_int($grp) && isset($this->groupsByID[$grp])) {
+            return $this->groupsByID[$grp];
+        } else if(is_string($grp) && isset($this->groupsByName[$grp])) {
+            return $this->groupsByName[$grp];
         }
         $groupRow = array();
         if(is_int($grp)) {
@@ -101,7 +98,8 @@ class CoreManager {
         }
         if($groupRow) {
             $group = new CoreGroup($this->app, $groupRow);
-            array_push($this->groups, $group);
+            $this->groupsByID[$group->getId()] = $group;
+            $this->groupsByName[$group->getName()] = $group;
             return $group;
         }
         return null;
@@ -131,15 +129,19 @@ class CoreManager {
         return $groups;
     }
 
-    protected $permissions = array();
+    protected $permissionsByID = array();
+    protected $permissionsByName = array();
     public function getPermission ($perm, $scope = null) {
-        foreach ($this->permissions as $permission) {
-            if(is_int($perm)) {
-                if($permission->getId() == $perm)
-                    return $permission;
-            } else if(is_string($perm)) {
-                if($permission->getName() == $perm && (is_null($scope) || $permission->getScope() == $scope))
-                    return $permission;
+        if(is_int($perm) && isset($this->permissionsByID[$perm])) {
+            return $this->permissionsByID[$perm];
+        } else if(is_string($perm) && isset($this->permissionsByName[$perm])) {
+            $perms = $this->permissionsByName[$perm];
+            if(is_null($scope) && count($perms) > 0) {
+                return $perms[0];
+            } else if(!is_null($scope) && count($perms) > 0) {
+                foreach ($perms as $tmpperm)
+                    if($tmpperm->getScope() == $scope)
+                        return $tmpperm;
             }
         }
         $permissionRow = array();
@@ -155,6 +157,9 @@ class CoreManager {
         if($permissionRow) {
             $permission = new CorePermission($this->app, $permissionRow);
             array_push($this->permissions, $permission);
+            $this->permissionsByID[$permission->getId()] = $permission;
+            if(!isset($this->permissionsByName[$permission->getName()])) $this->permissionsByName[$permission->getName()] = array();
+            $this->permissionsByName[$permission->getName()] = $permission;
             return $permission;
         }
         return null;
@@ -170,13 +175,12 @@ class CoreManager {
 
     protected $users = array();
     public function getUser ($userID) {
-        foreach ($this->users as $user)
-            if($user->getId() == $userID)
-                return $user;
+        if(isset($this->users[$userID]))
+            return $this->user[$userID];
         $userRow = $this->db->queryRow("SELECT * FROM easUsers WHERE id = :userID", array(":userID" => $userID));
         if($userRow) {
             $user = new CoreUser($this->app, $userRow);
-            array_push($this->users, $user);
+            $this->users[$userID] = $user;
             return $user;
         }
         return null;
@@ -197,23 +201,22 @@ class CoreManager {
 
     protected $chars = array();
     public function getCharacter ($characterID) {
-        foreach ($this->chars as $char)
-            if($char->getId() == $characterID)
-                return $char;
+        if(isset($this->chars[$characterID]))
+            return $this->chars[$characterID];
         $charRow = $this->db->queryRow("SELECT * FROM easCharacters WHERE characterID = :characterID", array(":characterID" => $characterID));
         if($charRow) {
             $char = new CoreCharacter($this->app, $charRow);
-            array_push($this->chars, $char);
+            $this->chars[$characterID] = $char;
             return $char;
         } else {
             $ntCharRow = $this->db->queryRow("SELECT ntCharacter.id as characterID, ntCharacter.name as characterName, ntCharacter.corporation as corporationID, ntCorporation.name as corporationName, ntCorporation.alliance as allianceID, ntAlliance.name as allianceName FROM ntCharacter LEFT JOIN ntCorporation ON ntCharacter.corporation = ntCorporation.id LEFT JOIN ntAlliance ON ntCorporation.alliance = ntAlliance.id WHERE ntCharacter.id = :characterID", array(":characterID" => $characterID));
             if($ntCharRow) {
                 $char = new CoreCharacter($this->app, $ntCharRow);
-                array_push($this->chars, $char);
+                $this->chars[$characterID] = $char;
                 return $char;
             } else {
                 $char = new CoreCharacter($this->app, $this->app->EVEEVECharacterAffiliation->getData(array($characterID))['result']['characters'][0]);
-                array_push($this->chars, $char);
+                $this->chars[$characterID] = $char;
                 return $char;
             }
         }
@@ -242,13 +245,12 @@ class CoreManager {
 
     protected $fleets = array();
     public function getFleet ($fleetID) {
-        foreach ($this->fleets as $fleet)
-            if($fleet->getId() == $fleetID)
-                return $fleet;
+        if(isset($this->fleets[$fleetID]))
+            return $this->fleets[$fleetID];
         $fleetRow = $this->db->queryRow("SELECT * FROM easFleets WHERE id = :fleetID", array(":fleetID" => $fleetID));
         if($fleetRow) {
             $fleet = new CoreFleet($this->app, $fleetRow);
-            array_push($this->fleets, $fleet);
+            $this->fleets[$fleet->getId()] = $fleet;
             return $fleet;
         }
         return null;
@@ -326,13 +328,12 @@ class CoreManager {
 
     protected $corps = array();
     public function getCorporation ($corporationID) {
-        foreach ($this->corps as $corp)
-            if($corp->getId() == $corporationID)
-                return $corp;
+        if(isset($this->corps[$corporationID]))
+            return $this->corps[$corporationID];
         $corporationRow = $this->db->queryRow("SELECT * FROM ntCorporation WHERE id = :corporationID", array(":corporationID" => $corporationID));
         if($corporationRow) {
             $corp = new CoreCorporation($this->app, $corporationRow);
-            array_push($this->corps, $corp);
+            $this->corps[$corporationID] = $corp;
             return $corp;
         } else {
             $corpApi = $this->app->EVECorporationCorporationSheet->getData(null, null, $corporationID)['result'];
@@ -346,7 +347,7 @@ class CoreManager {
                     "npc" => null
                 )
             );
-            array_push($this->corps, $corp);
+            $this->corps[$corporationID] = $corp;
             return $corp;
         }
         return null;
@@ -354,13 +355,12 @@ class CoreManager {
 
     protected $allis = array();
     public function getAlliance ($allianceID) {
-        foreach ($this->allis as $alli)
-            if($alli->getId() == $allianceID)
-                return $alli;
+        if(isset($this->allis[$allianceID]))
+            return $this->allis[$allianceID];
         $allianceRow = $this->db->queryRow("SELECT * FROM ntAlliance WHERE id = :allianceID", array(":allianceID" => $allianceID));
         if($allianceRow) {
             $alli = new CoreAlliance($this->app, $allianceRow);
-            array_push($this->allis, $alli);
+            $this->allis[$allianceID] = $alli;
             return $alli;
         }
         return null;
@@ -368,13 +368,12 @@ class CoreManager {
 
     protected $items = array();
     public function getItem ($itemID) {
-        foreach ($this->items as $item)
-            if($item->getId() == $itemID)
-                return $item;
+        if(isset($this->items[$itemID]))
+            return $this->items[$itemID];
         $itemRow = $this->db->queryRow("SELECT ntItem.ownerID,ntItem.itemID,ntItem.typeID,ntItem.locationID,ntItem.quantity,ntItem.flag,ntLocation.name,ntItem.lastUpdateTimestamp FROM ntItem LEFT JOIN ntLocation ON ntItem.itemID = ntLocation.itemID WHERE ntItem.itemID = :itemID", array(":itemID" => $itemID));
         if($itemRow) {
             $item = new CoreItem($this->app, $itemRow);
-            array_push($this->items, $item);
+            $this->items[$itemID] = $item;
             return $item;
         }
         return null;
@@ -385,7 +384,7 @@ class CoreManager {
         $itemRows = $this->db->query("SELECT ntItem.ownerID,ntItem.itemID,ntItem.typeID,ntItem.locationID,ntItem.quantity,ntItem.flag,ntLocation.name,ntItem.lastUpdateTimestamp FROM ntItem LEFT JOIN ntLocation ON ntItem.itemID = ntLocation.itemID WHERE ntItem.locationID = :locationID", array(":locationID" => $locationID));
         foreach ($itemRows as $itemRow) {
             $item = new CoreItem($this->app, $itemRow);
-            array_push($this->items, $item);
+            $this->items[$item->getId()] = $item;
             array_push($items, $item);
         }
         return $items;
@@ -393,13 +392,12 @@ class CoreManager {
 
     protected $itemtypes = array();
     public function getItemType ($itemTypeID) {
-        foreach ($this->itemtypes as $itemtype)
-            if($itemtype->getId() == $itemTypeID)
-                return $itemtype;
+        if(isset($this->itemtypes[$itemTypeID]))
+            return $this->itemtypes[$itemTypeID];
         $itemTypeRow = $this->db->queryRow("SELECT * FROM invTypes WHERE typeID = :typeID", array(":typeID" => $itemTypeID));
         if($itemTypeRow) {
             $itemtype = new CoreItemType($this->app, $itemTypeRow);
-            array_push($this->itemtypes, $itemtype);
+            $this->itemtypes[$itemTypeID] = $itemtype;
             return $itemtype;
         }
         return null;
@@ -407,14 +405,13 @@ class CoreManager {
 
     protected $locations = array();
     public function getLocation ($locationID, $invName = false) {
-        foreach ($this->locations as $location)
-            if($location->getId() == $locationID)
-                return $location;
+        if(isset($this->locations[$locationID]))
+            return $this->locations[$locationID];
         if($invName) {
             $invnameLocRow = $this->db->queryRow("SELECT itemName as name, itemID as id FROM invNames WHERE itemID = :itemID", array(":itemID" => $locationID));
             if($invnameLocRow) {
                 $invnameLoc = new CoreLocation($this->app, $invnameLocRow);
-                array_push($this->locations, $invnameLoc);
+                $this->locations[$locationID] = $invnameLoc;
                 return $invnameLoc;
             }
         }
@@ -422,32 +419,30 @@ class CoreManager {
     }
 
     public function addLocation ($newlocation) {
-        foreach ($this->locations as $location)
-            if($location->getId() == $newlocation->getId())
-                return;
-        array_push($this->locations, $newlocation);
+        if(isset($this->locations[$newlocation->getId()])) return;
+        $this->locations[$newlocation->getId()] = $newlocation;
     }
 
     protected $containers = array();
     public function getContainer ($containerID) {
-        foreach ($this->containers as $container)
-            if($container->getId() == $containerID)
-                return $container;
+        if(isset($this->containers[$containerID]))
+            return $this->containers[$containerID];
         $containerRow = $this->db->queryRow("SELECT ntItem.ownerID,ntItem.itemID,ntItem.typeID,ntItem.locationID,ntItem.quantity,ntItem.flag,ntLocation.name,ntLocation.x,ntLocation.y,ntLocation.z,ntItem.lastUpdateTimestamp FROM ntItem,ntLocation WHERE ntItem.itemID = :itemID AND ntLocation.itemID = ntItem.itemID", array(":itemID" => $containerID));
-        if($containerRow)
-            return new CoreContainer($this->app, $containerRow);
+        if($containerRow) {
+            $conti = new CoreContainer($this->app, $containerRow);
+            $this->containers[$containerID] = $conti;
+        }
         return null;
     }
 
     protected $controltowers = array();
     public function getControltower ($towerID) {
-        foreach ($this->controltowers as $controltower)
-            if($controltower->getId() == $towerID)
-                return $controltower;
+        if(isset($this->controltowers[$towerID]))
+            return $this->controltowers[$towerID];
         $controltowerRow = $this->db->queryRow("SELECT ntItem.ownerID,ntItem.itemID,ntItem.typeID,ntItem.locationID,ntItem.quantity,ntItem.flag,ntLocation.name,ntLocation.x,ntLocation.y,ntLocation.z,ntItemStarbase.state,ntItemStarbase.moonID,ntItem.lastUpdateTimestamp FROM ntItem,ntLocation,ntItemStarbase WHERE ntItem.itemID = :itemID AND ntLocation.itemID = ntItem.itemID AND ntItemStarbase.itemID = ntItem.itemID", array(":itemID" => $towerID));
         if($controltowerRow) {
             $controlTower = new CoreControltower($this->app, $controltowerRow);
-            array_push($this->controltowers, $controlTower);
+            $this->controltowers[$towerID] = $controlTower;
             return $controlTower;
         }
         return null;
@@ -455,13 +450,12 @@ class CoreManager {
 
     protected $timers = array();
     public function getTimer ($timerID) {
-        foreach ($this->timers as $timer)
-            if($timer->getId() == $timerID)
-            return $timer;
+        if(isset($this->timers[$timerID]))
+            return $this->timers[$timerID];
         $timerRow = $this->db->queryRow("SELECT * FROM easTimers WHERE id = :timerID", array(":timerID" => $timerID));
         if($timerRow) {
             $ctimer = new CoreTimer($this->app, $timerRow);
-            array_push($this->timers, $ctimer);
+            $this->timers[$timerID] = $ctimer;
             return $ctimer;
         }
         return null;

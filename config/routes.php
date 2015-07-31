@@ -47,8 +47,8 @@ $app->get('/json/permissions/:scope/', function($scope) use ($app){
     (new \ProjectRena\Controller\JSONController($app))->getPermissionsByScope($scope);
 });
 
-$app->get('/json/corporation/:corporationID/container/:containerID/', function($corporationID, $containerID) use ($app){
-    (new \ProjectRena\Controller\JSONController($app))->getCorporationContents($corporationID, $containerID);
+$app->get('/json/corporation/:corporationID/location/:locationID/', function($corporationID, $locationID) use ($app){
+    (new \ProjectRena\Controller\JSONController($app))->getCorporationContents($corporationID, $locationID);
 });
 
 $app->get('/json/finances/taxes/', function() use ($app){
@@ -388,7 +388,7 @@ $app->get('/structures/:structure/', function($structure) use ($app){
     $app->render("/pages/structures.html");
 });
 
-$app->get('/corporation/:corporationID/container/:containerID/', function($corporationID, $containerID) use ($app){
+$app->get('/corporation/:corporationID/location/:locationID/', function($corporationID, $locationID) use ($app){
     $app->render("/pages/contents.html");
 });
 
