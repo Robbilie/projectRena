@@ -156,7 +156,6 @@ class CoreManager {
         }
         if($permissionRow) {
             $permission = new CorePermission($this->app, $permissionRow);
-            array_push($this->permissions, $permission);
             $this->permissionsByID[$permission->getId()] = $permission;
             if(!isset($this->permissionsByName[$permission->getName()])) $this->permissionsByName[$permission->getName()] = array();
             $this->permissionsByName[$permission->getName()] = $permission;
@@ -193,7 +192,7 @@ class CoreManager {
         $userRow = $this->db->queryRow("SELECT * FROM easUsers WHERE authtoken IS NOT NULL AND authtoken = :authtoken", array(":authtoken" => $token));
         if($userRow) {
             $user = new CoreUser($this->app, $userRow);
-            array_push($this->users, $user);
+            $this->users[$user->getId()] = $user;
             return $user;
         }
         return null;
@@ -228,7 +227,7 @@ class CoreManager {
         $charRows = $this->db->query("SELECT * FROM easCharacters");
         foreach ($charRows as $charRow) {
             $char = new CoreCharacter($this->app, $charRow);
-            array_push($this->chars, $char);
+            $this->chars[$char->getCharId()] = $char;
             array_push($chars, $char);
         }
         return $chars;
@@ -263,7 +262,7 @@ class CoreManager {
         $fleetRow = $this->db->queryRow("SELECT * FROM easFleets WHERE hash = :hash", array(":hash" => $hash));
         if($fleetRow) {
             $fleet = new CoreFleet($this->app, $fleetRow);
-            array_push($this->fleets, $fleet);
+            $this->fleets[$fleet->getId()] = $fleet;
             return $fleet;
         }
         return null;
@@ -431,6 +430,7 @@ class CoreManager {
         if($containerRow) {
             $conti = new CoreContainer($this->app, $containerRow);
             $this->containers[$containerID] = $conti;
+            return $conti;
         }
         return null;
     }
