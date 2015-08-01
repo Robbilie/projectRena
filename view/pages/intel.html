@@ -13,7 +13,7 @@
             <iframe id="regionFrame" src=""></iframe>
         </div>
     </div>
-    <script type="text/template" id="charTemplate">
+    <script type="text/template" id="characterTemplate">
         <div class="hover row {2}">
             <span class="fr tshover timestamp">{3}</span>
             <input type="checkbox" id="characterToggle{0}" class="details"/>
@@ -29,8 +29,11 @@
             </label>
         </div>
     </script>
-    <script type="text/template" id="alliTemplate">
+    <script type="text/template" id="allianceTemplate">
         <div class="hover row {2}"><img src="https://imageserver.eveonline.com/Alliance/{0}_32.png" alt="{1}"/><a href="#!/alliance/{0}/" onclick="click(this);">{1}</a></div>
+    </script>
+    <script type="text/template" id="corporationTemplate">
+        <div class="hover row {2}"><img src="https://imageserver.eveonline.com/Corporation/{0}_32.png" alt="{1}"/><a href="#!/corporation/{0}/" onclick="click(this);">{1}</a></div>
     </script>
     <script type="text/template" id="warningTemplate">
         <div class="hover row"><a href="#!/intel/system/{0}/" onclick="click(this);">{1} [{2}]</a></div>

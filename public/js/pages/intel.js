@@ -107,13 +107,13 @@ function checkSystemStatus () {
                 if(systemStatus.neighbours[i].hostilecount > 0)
                     warns.appendChild(createElement(wtpl.format([systemStatus.neighbours[i].systemID, systemStatus.neighbours[i].systemName, systemStatus.neighbours[i].hostilecount])));
 
-            var tmpl = $("#" + (systemStatus.membertype == "characters" ? "char" : "alli") + "Template").innerHTML;
+            //var tmpl = $("#" + (systemStatus.membertype == "characters" ? "char" : "alli") + "Template").innerHTML;
             var el = $("#intelMemberlist");
             el.innerHTML = "";
             for(var j = 0; j < systemStatus.members.length; j++)
                 el.appendChild(
                     createElement(
-                        tmpl.format(
+                        $("#" + systemStatus.members[j].type + "Template").innerHTML.format(
                             [systemStatus.members[j].id, 
                             systemStatus.members[j].name + (systemStatus.members[j].count ? " [" + systemStatus.members[j].count + "]" : ""), 
                             systemStatus.members[j].standing + "Standing", 

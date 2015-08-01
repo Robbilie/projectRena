@@ -51,14 +51,15 @@ class IntelController
 
             if(isset($_GET['hash']) && $_GET['hash'] != "") {
                 $timeout = 15000000;
-                $interval = 500000;
+                $interval = 1000000;
                 while($timeout > 0) {
 
 
-                    //if(!isset($_SESSION))
-                        session_start();
+                    @session_start();
                     $charid = $_SESSION['characterID'];
                     session_write_close();
+                    
+                    $begintime = time()+microtime();
 
                     $intel = $this->getSystemIntelArray($systemID, $charid);
 
@@ -101,6 +102,10 @@ class IntelController
                         $intel['state'] = 4;
                         $intel['status'] = "Warning";
                     }
+
+                    $endtime = time()+microtime();
+
+                    //$intel['calctime'] = ($endtime - $begintime);
 
                     if(md5(json_encode($intel)) == $_GET['hash']) {
                         usleep($interval);
@@ -221,47 +226,101 @@ class IntelController
                         $member['standing'] = "positive";
                         $member['info'] = null;
                     }
+                    $member['type'] = "character";
                     if($member['standing'] == "negative" || $char->hasPermission("bjhjhlajkhlajksdhflkjasdhflFuckingOpsec"))
                         array_push($newmembers, $member);
                 }
                 $members = $newmembers;
             } else {
-                $intel['membertype'] = "alliances";
+
+
+
+
+
+                $intel['membertype'] = "noncharacters";
+
                 $alliances = array();
+                $corporations = array();
+
                 foreach ($members as $member) {
                     
                     if(!$entit->hasStandingsTowards($this->app->CoreManager->getCharacter($member['submitterID'])) && !$char->hasPermission("bjhjhlajkhlajksdhflkjasdhflFuckingOpsec")) continue;
 
-                    if(is_null($alliances[$member['allianceID']]))
-                        $alliances[$member['allianceID']] = array();
-                    array_push($alliances[$member['allianceID']], $member);
-                }
-                $alliancesSorted = array();
-                foreach ($alliances as $key => $alliance) {
-                    if(!$entit->hasStandingsTowards($this->app->CoreManager->getAlliance($key)->getExecCorp()->getCEOChar())) {
-                        array_push($alliancesSorted,
-                            array(
-                                "id" => $key,
-                                "name" => $this->app->CoreManager->getAlliance($key)->getName(),
-                                "count" => count($alliance),
-                                "standing" => "negative"
-                            )
-                        );
-                        $intel['hostilecount'] += count($alliance);
+
+                    if($member['allianceID'] != 0) {
+                        if(!isset($alliances[$member['allianceID']]))
+                            $alliances[$member['allianceID']] = array();
+                        array_push($alliances[$member['allianceID']], $member);
                     } else {
-                        if($char->hasPermission("bjhjhlajkhlajksdhflkjasdhflFuckingOpsec"))
-                            array_push($alliancesSorted,
-                                array(
-                                    "id" => $key,
-                                    "name" => $this->app->CoreManager->getAlliance($key)->getName(),
-                                    "count" => count($alliance),
-                                    "standing" => "positive"
-                                )
-                            );
+                        if(!isset($corporations[$member['corporationID']]))
+                            $corporations[$member['corporationID']] = array();
+                        array_push($corporations[$member['corporationID']], $member);
                     }
 
                 }
-                $members = $alliancesSorted;
+
+
+                $noncharacters = array();
+
+                foreach ($corporations as $corpID => $corp) {
+                    if(!$entit->hasStandingsTowards($this->app->CoreManager->getCorporation($corpID)->getCEOChar())) {
+                        array_push($noncharacters, 
+                            array(
+                                "type"      => "corporation",
+                                "id"        => $corpID,
+                                "name"      => $this->app->CoreManager->getCorporation($corpID)->getName(),
+                                "count"     => count($corp),
+                                "standing"  => "negative"
+                            )
+                        );
+                        $intel['hostilecount'] += count($corp);
+                    } else {
+                        if($char->hasPermission("bjhjhlajkhlajksdhflkjasdhflFuckingOpsec"))
+                            array_push($noncharacters,
+                                array(
+                                    "type"      => "corporation",
+                                    "id"        => $corpID,
+                                    "name"      => $this->app->CoreManager->getCorporation($corpID)->getName(),
+                                    "count"     => count($corp),
+                                    "standing"  => "positive"
+                                )
+                            );
+                    }
+                }
+
+                foreach ($alliances as $alliID => $alli) {
+                    if(!$entit->hasStandingsTowards($this->app->CoreManager->getAlliance($alliID)->getExecCorp()->getCEOChar())) {
+                        array_push($noncharacters, 
+                            array(
+                                "type"      => "alliance",
+                                "id"        => $alliID,
+                                "name"      => $this->app->CoreManager->getAlliance($alliID)->getName(),
+                                "count"     => count($alli),
+                                "standing"  => "negative"
+                            )
+                        );
+                        $intel['hostilecount'] += count($alli);
+                    } else {
+                        if($char->hasPermission("bjhjhlajkhlajksdhflkjasdhflFuckingOpsec"))
+                            array_push($noncharacters,
+                                array(
+                                    "type"      => "alliance",
+                                    "id"        => $alliID,
+                                    "name"      => $this->app->CoreManager->getAlliance($alliID)->getName(),
+                                    "count"     => count($alli),
+                                    "standing"  => "positive"
+                                )
+                            );
+                    }
+                }
+
+                usort($noncharacters, function ($a, $b) { return strnatcasecmp($a['name'], $b['name']); });
+
+                $members = $noncharacters;
+
+
+
+
             }
 
             $intel['members'] = $members;
@@ -424,8 +483,7 @@ class IntelController
                 $interval = 500000;
                 while($timeout > 0) {
 
-                    //if(!isset($_SESSION))
-                        session_start();
+                    @session_start();
                     $charid = $_SESSION['characterID'];
                     session_write_close();
 
