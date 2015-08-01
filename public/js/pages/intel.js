@@ -116,10 +116,10 @@ function checkSystemStatus () {
                         $("#" + systemStatus.members[j].type + "Template").innerHTML.format(
                             [systemStatus.members[j].id, 
                             systemStatus.members[j].name + (systemStatus.members[j].count ? " [" + systemStatus.members[j].count + "]" : ""), 
-                            systemStatus.members[j].standing + "Standing", 
+                            (systemStatus.members[j].standing <= 0 ? "negative" : "positive") + "Standing", 
                             (new Date(systemStatus.members[j].timestamp * 1000).toLocaleString()), 
                             systemStatus.members[j].info ? systemStatus.members[j].info : "", 
-                            systemStatus.members[j].standing == "positive" ? "hide" : ""
+                            systemStatus.members[j].standing > 0 ? "hide" : ""
                             ]
                         )
                     )

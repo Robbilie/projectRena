@@ -3,6 +3,7 @@
 namespace ProjectRena\Controller;
 
 use ProjectRena\RenaApp;
+use ProjectRena\Model\Core\CoreCharacter;
 
 class IntelController
 {
@@ -204,122 +205,76 @@ class IntelController
                 )
             );
 
-            $entit = null;
-
-            if($char->getAlliId() != 0) {
-                $entit = $char->getCAlliance();
-            } else {
-                $entit = $char->getCCorporation();
-            }
-
             if(count($members) <= 50) {
+
                 $intel['membertype'] = "characters";
+
                 $newmembers = array();
-                foreach ($members as &$member) {
-
-                    if(!$entit->hasStandingsTowards($this->app->CoreManager->getCharacter($member['submitterID'])) && !$char->hasPermission("bjhjhlajkhlajksdhflkjasdhflFuckingOpsec")) continue;
-
-                    if(!$entit->hasStandingsTowards($this->app->CoreManager->getCharacter($member['id']))) {
-                        $member['standing'] = "negative";
-                        $intel['hostilecount']++;
-                    } else {
-                        $member['standing'] = "positive";
-                        $member['info'] = null;
-                    }
-                    $member['type'] = "character";
-                    if($member['standing'] == "negative" || $char->hasPermission("bjhjhlajkhlajksdhflkjasdhflFuckingOpsec"))
-                        array_push($newmembers, $member);
-                }
-                $members = $newmembers;
-            } else {
-
-
-
-
-
-                $intel['membertype'] = "noncharacters";
-
-                $alliances = array();
-                $corporations = array();
 
                 foreach ($members as $member) {
                     
-                    if(!$entit->hasStandingsTowards($this->app->CoreManager->getCharacter($member['submitterID'])) && !$char->hasPermission("bjhjhlajkhlajksdhflkjasdhflFuckingOpsec")) continue;
+                    if($this->app->CoreManager->getCharacter($member['submitterID'])->derivedStanding($char) <= 0 && !$char->hasPermission("bjhjhlajkhlajksdhflkjasdhflFuckingOpsec")) continue;
 
+                    $standing = $char->derivedStanding(new CoreCharacter($this->app, array("characterID" => $member['id'], "corporationID" => $member['corporationID'], "allianceID" => $member['allianceID'])));
 
-                    if($member['allianceID'] != 0) {
-                        if(!isset($alliances[$member['allianceID']]))
-                            $alliances[$member['allianceID']] = array();
-                        array_push($alliances[$member['allianceID']], $member);
-                    } else {
-                        if(!isset($corporations[$member['corporationID']]))
-                            $corporations[$member['corporationID']] = array();
-                        array_push($corporations[$member['corporationID']], $member);
+                    if($standing <= 0 || $char->hasPermission("bjhjhlajkhlajksdhflkjasdhflFuckingOpsec")) {
+                        $newmembers[$member['id']] = array(
+                            "type"      => "character",
+                            "id"        => $member['id'],
+                            "name"      => $this->app->CoreManager->getCharacter($member['id'])->getName(),
+                            "standing"  => $standing
+                        );
                     }
-
                 }
 
+                usort($newmembers, function ($a, $b) { return strnatcasecmp($a['name'], $b['name']); });
+
+                $intel['hostilecount'] = count($newmembers);
+
+                $members = $newmembers;
+            } else {
+
+                $intel['membertype'] = "noncharacters";
 
                 $noncharacters = array();
 
-                foreach ($corporations as $corpID => $corp) {
-                    if(!$entit->hasStandingsTowards($this->app->CoreManager->getCorporation($corpID)->getCEOChar())) {
-                        array_push($noncharacters, 
-                            array(
-                                "type"      => "corporation",
-                                "id"        => $corpID,
-                                "name"      => $this->app->CoreManager->getCorporation($corpID)->getName(),
-                                "count"     => count($corp),
-                                "standing"  => "negative"
-                            )
-                        );
-                        $intel['hostilecount'] += count($corp);
-                    } else {
-                        if($char->hasPermission("bjhjhlajkhlajksdhflkjasdhflFuckingOpsec"))
-                            array_push($noncharacters,
-                                array(
+                foreach ($members as $member) {
+                    
+                    if($this->app->CoreManager->getCharacter($member['submitterID'])->derivedStanding($char) <= 0 && !$char->hasPermission("bjhjhlajkhlajksdhflkjasdhflFuckingOpsec")) continue;
+
+                    $standing = $char->derivedStanding(new CoreCharacter($this->app, array("characterID" => $member['id'], "corporationID" => $member['corporationID'], "allianceID" => $member['allianceID'])));
+
+                    if($standing <= 0 || $char->hasPermission("bjhjhlajkhlajksdhflkjasdhflFuckingOpsec")) {
+                        if($member['allianceID'] != 0) {
+                            if(!isset($noncharacters[$member['allianceID']]))
+                                $noncharacters[$member['allianceID']] = array(
+                                    "type"      => "alliance",
+                                    "id"        => $member['allianceID'],
+                                    "name"      => $this->app->CoreManager->getAlliance($member['allianceID'])->getName(),
+                                    "count"     => 0,
+                                    "standing"  => $standing
+                                );
+                            $noncharacters[$member['allianceID']]['count']++;
+                        } else {
+                            if(!isset($noncharacters[$member['corporationID']]))
+                                $noncharacters[$member['corporationID']] = array(
                                     "type"      => "corporation",
-                                    "id"        => $corpID,
-                                    "name"      => $this->app->CoreManager->getCorporation($corpID)->getName(),
-                                    "count"     => count($corp),
-                                    "standing"  => "positive"
-                                )
-                            );
+                                    "id"        => $member['corporationID'],
+                                    "name"      => $this->app->CoreManager->getCorporation($member['corporationID'])->getName(),
+                                    "count"     => 0,
+                                    "standing"  => $standing
+                                );
+                            $noncharacters[$member['corporationID']]['count']++;
+                        }
                     }
                 }
 
-                foreach ($alliances as $alliID => $alli) {
-                    if(!$entit->hasStandingsTowards($this->app->CoreManager->getAlliance($alliID)->getExecCorp()->getCEOChar())) {
-                        array_push($noncharacters, 
-                            array(
-                                "type"      => "alliance",
-                                "id"        => $alliID,
-                                "name"      => $this->app->CoreManager->getAlliance($alliID)->getName(),
-                                "count"     => count($alli),
-                                "standing"  => "negative"
-                            )
-                        );
-                        $intel['hostilecount'] += count($alli);
-                    } else {
-                        if($char->hasPermission("bjhjhlajkhlajksdhflkjasdhflFuckingOpsec"))
-                            array_push($noncharacters,
-                                array(
-                                    "type"      => "alliance",
-                                    "id"        => $alliID,
-                                    "name"      => $this->app->CoreManager->getAlliance($alliID)->getName(),
-                                    "count"     => count($alli),
-                                    "standing"  => "positive"
-                                )
-                            );
-                    }
-                }
 
                 usort($noncharacters, function ($a, $b) { return strnatcasecmp($a['name'], $b['name']); });
 
+                array_map(function ($a) use (&$intel) { if($a['standing'] <= 0) $intel['hostilecount'] += $a['count']; }, $noncharacters);
+
                 $members = $noncharacters;
-
-
-
 
             }
 
@@ -487,8 +442,13 @@ class IntelController
                     $charid = $_SESSION['characterID'];
                     session_write_close();
 
+                    $begintime = time()+microtime();
+
                     $intel = $this->getRegionIntelArray($regionID, $charid);
 
+                    $endtime = time()+microtime();
+
+                    //$intel['calctime'] = ($endtime - $begintime);
 
                     if(md5(json_encode($intel)) == $_GET['hash']) {
                         usleep($interval);
@@ -546,17 +506,12 @@ class IntelController
                     )
                 );
                 foreach ($members as &$member) {
-                    $entit = null;
 
-                    if($char->getAlliId() != 0) {
-                        $entit = $char->getCAlliance();
-                    } else {
-                        $entit = $char->getCCorporation();
-                    }
+                    if($this->app->CoreManager->getCharacter($member['submitterID'])->derivedStanding($char) <= 0 && !$char->hasPermission("bjhjhlajkhlajksdhflkjasdhflFuckingOpsec")) continue;
 
-                    if(!$entit->hasStandingsTowards($this->app->CoreManager->getCharacter($member['submitterID'])) && !$char->hasPermission("bjhjhlajkhlajksdhflkjasdhflFuckingOpsec")) continue;
+                    $standing = $char->derivedStanding(new CoreCharacter($this->app, array("characterID" => $member['id'], "corporationID" => $member['corporationID'], "allianceID" => $member['allianceID'])));
 
-                    if(!$entit->hasStandingsTowards($this->app->CoreManager->getCharacter($member['id'])))
+                    if($standing <= 0)
                         $sys['hostilecount']++;
                 }
                 array_push($intel, $sys);

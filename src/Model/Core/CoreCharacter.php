@@ -3,7 +3,7 @@ namespace ProjectRena\Model\Core;
 
 use ProjectRena\RenaApp;
 
-class CoreCharacter extends CoreBase {
+class CoreCharacter extends CoreEntity {
 
 	protected $id;
 	protected $user;
@@ -126,7 +126,7 @@ class CoreCharacter extends CoreBase {
 	}
 
 	public function hasPermission ($perm, $scope = null) {
-		if($this->getCUser()->isAdmin()) return true;
+		if($this->getCUser() && $this->getCUser()->isAdmin()) return true;
 		if(is_int($perm)) {
 			return in_array($perm, $this->getPermissions());
 		} else if(is_string($perm)) {
@@ -385,6 +385,26 @@ class CoreCharacter extends CoreBase {
 		if(!is_null($this->verified))
 			$ret['verified'] = $this->getVerified();
 		return $ret;
+	}
+
+	public function getStandings () {
+		if(is_null($this->standings)) {
+			$standingRows = $this->db->query("SELECT * FROM ntContactList WHERE ownerID IN (:characterID, :corporationID, :allianceID) AND standing <> 0.0", 
+                array(
+                    ":characterID"    => $this->getCharId(), 
+                    ":corporationID"    => $this->getCorpId(),
+                    ":allianceID"       => $this->getAlliId()
+                )
+            );
+            foreach ($standingRows as $standingRow) {
+                if(isset($this->standings[$standingRow['contactID']])) {
+                    $this->standings[$standingRow['contactID']] = max($this->standings[$standingRow['contactID']], $standingRow['standing']);
+                } else {
+                    $this->standings[$standingRow['contactID']] = $standingRow['standing'];
+                }
+            }
+		}
+		return $this->standings;
 	}
 
 	// default

@@ -3,7 +3,7 @@ namespace ProjectRena\Model\Core;
 
 use ProjectRena\RenaApp;
 
-class CoreCorporation extends CoreBase {
+class CoreCorporation extends CoreEntity {
 
 	protected $id;
 	protected $shortName;
@@ -129,32 +129,23 @@ class CoreCorporation extends CoreBase {
 		return $this->controltower;
 	}
 
-	public function hasStandingsTowards ($character) {
-		if(is_null($character)) return false;
-		$r = $this->db->queryRow(
-			"SELECT 1 as i  
-			FROM ntContactList 
-			WHERE
-				ownerID = :ownerID AND
-				(
-					contactID = :characterID OR
-					contactID = :corporationID OR
-					contactID = :allianceID
-				) AND
-				standing > 0
-			LIMIT 0, 1",
-			array(
-				":ownerID" => $this->getId(),
-				":characterID" => $character->getCharId(),
-				":corporationID" => $character->getCorpId(),
-				":allianceID" => $character->getAlliId()
-			)
-		);
-		if(!$r && $this->getId() != $character->getCorpId()) {
-				return false;
-		} else {
-				return true;
+	public function getStandings () {
+		if(is_null($this->standings)) {
+			$standingRows = $this->db->query("SELECT * FROM ntContactList WHERE ownerID IN (:corporationID, :allianceID) AND standing <> 0.0", 
+                array(
+                    ":corporationID"    => $this->getId(), 
+                    ":allianceID"       => $this->getAlliance()
+                )
+            );
+            foreach ($standingRows as $standingRow) {
+                if(isset($this->standings[$standingRow['contactID']])) {
+                    $this->standings[$standingRow['contactID']] = max($this->standings[$standingRow['contactID']], $standingRow['standing']);
+                } else {
+                    $this->standings[$standingRow['contactID']] = $standingRow['standing'];
+                }
+            }
 		}
+		return $this->standings;
 	}
 
 	// default
