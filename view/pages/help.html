@@ -3,10 +3,46 @@
 	<ul>
 		<li><a href="/#help_introduction">Intoduction</a></li>
 		<li><a href="/#help_home">Home</a></li>
-		<li><a href="/#help_profile">Profile</a></li>
-		<li><a href="/#help_t3">Topic 3</a></li>
-		<li><a href="/#help_t4">Topic 4</a></li>
-		<li><a href="/#help_t5">Topic 5</a></li>
+		<li>
+			<a href="/#help_profile">Profile</a>
+			<ul>
+				<li><a href="/#help_profile_activecharacter">Active Character</a></li>
+				<li><a href="/#help_profile_allcharacters">All Characters / Add Character</a></li>
+				<li><a href="/#help_profile_services">Services</a></li>
+			</ul>
+		</li>
+		<li>
+			<a href="/#help_notifications">Notifications</a>
+			<ul>
+				<li><a href="/#help_notifications_tasks">Tasks</a></li>
+				<li><a href="/#help_notifications_notifications">Notifications</a></li>
+			</ul>
+		</li>
+		<li>
+			<a href="/#help_mails">Mails</a>
+			<ul>
+				<li><a href="/#help_mails_all">All</a></li>
+				<li><a href="/#help_mails_personal">Personal</a></li>
+				<li><a href="/#help_mails_corporation">Corporation</a></li>
+				<li><a href="/#help_mails_alliance">Alliance</a></li>
+			</ul>
+		</li>
+		<li>
+			<a href="/#help_intel">Intel</a>
+			<ul>
+				<li><a href="/#help_intel_system">System</a></li>
+				<li><a href="/#help_intel_region">Region</a></li>
+				<li><a href="/#help_intel_settings">Settings</a></li>
+			</ul>
+		</li>
+		<li><a href="/#help_timerboard">Timerboard</a></li>
+		<li><a href="/#help_fleets">Fleets</a></li>
+		<li><a href="/#help_financesandtrade">Finances & Trade</a></li>
+		<li><a href="/#help_structures">Structures</a></li>
+		<li><a href="/#help_fittingandsrp">Fitting & SRP</a></li>
+		<li><a href="/#help_members">Members</a></li>
+		<li><a href="/#help_groups">Groups</a></li>
+		<li><a href="/#help_settings">Settings</a></li>
 	</ul>
 	<div id="help_introduction">
 		<h2>Introduction</h2>
@@ -37,14 +73,14 @@
 			The Profile page lists basic information about your currently logged in character.
 			<br>
 			<br>
-			<span class="blue fsl">ACTIVE CHARACTER</span>
+			<span id="help_profile_activecharacter" class="blue fsl">ACTIVE CHARACTER</span>
 			<br>
 			At the top you will find your characters portrait, a corporation and eventually an alliance logo aswell as the appropriate names right next to it.
 			<br>
 			Next to it (or below, depending on your screen width) there is a list of the groups you are currently member of. This incudes your corporation and alliance group but also the ones you have been assigned by a CEO/Director.
 			<br>
 			<br>
-			<span class="blue fsl">ALL CHARACTERS / ADD CHARACTER</span>
+			<span id="help_profile_allcharacters" class="blue fsl">ALL CHARACTERS / ADD CHARACTER</span>
 			<br>
 			The character list shows you which characters are connected to your alliance service user. Each character, displayed with alliance, corporation logo and character portrait and character name, has a floating &times; right next to it (excluding the currently active character).
 			<br>
@@ -57,7 +93,7 @@
 			Clicking a characters name from the already mentioned list will make this character the currently active one, you will switch to this character.
 			<br>
 			<br>
-			<span class="blue fsl">SERVICES</span>
+			<span id="help_profile_services" class="blue fsl">SERVICES</span>
 			<br>
 			The services section includes various modifications (mainly passwords), the abbility to add and remove jabber, mumble and teamspeak accounts.
 			<br>
@@ -66,35 +102,136 @@
 			Adding works with the textfield, removing works like the characterlist, pressing the &times;.
 		</p>
 	</div>
-	<div id="help_t3">
-		<h4>Topic 3</h4>
+	<div id="help_notifications">
+		<h2>Notifications</h2>
 		<p class="paddedp">
-			Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum cursus mauris turpis. Donec lacinia, enim at tristique posuere, purus nisi pellentesque eros, ac efficitur lectus lacus a massa. Aliquam tempor porttitor quam, nec imperdiet risus. Vestibulum consectetur nibh malesuada vulputate auctor. In magna velit, laoreet vel semper eget, ullamcorper et nibh. Curabitur sed odio eros. Nunc nec laoreet nibh. Aliquam semper ut neque ac mollis.
-
-			In vitae vehicula urna. Quisque ac fermentum dolor, in rutrum est. Phasellus ut sollicitudin tortor. Vestibulum sagittis vestibulum dui sit amet pretium. Suspendisse rutrum, erat et molestie egestas, ex enim ornare sem, eu scelerisque mauris diam nec lacus. Etiam lacinia quam massa, non lobortis enim tempor sit amet. Donec cursus, massa id volutpat vehicula, felis eros faucibus ex, a consequat ante dolor non leo.
-
-			In hac habitasse platea dictumst. Proin placerat maximus eros quis fermentum. Phasellus aliquam nulla aliquam, malesuada ante id, ullamcorper est. Proin egestas nulla eu orci ullamcorper, eget facilisis dolor lacinia. Cras elit urna, egestas vel ullamcorper non, porttitor vitae augue. Aenean consectetur ultricies eros, mattis dignissim sem porttitor eu. In cursus nibh in iaculis eleifend. Fusce ultricies metus a mi lobortis faucibus. Sed malesuada finibus turpis, id sodales arcu laoreet volutpat. Sed accumsan eget erat a ultricies. Praesent quis felis convallis, ullamcorper arcu ac, eleifend tortor.
+			The page is mainly split up into two sections, Tasks & Notifications, which can be expanded on click. Additionally you can tweak some settings in the menu at the lower left.
+			<br>
+			This allows you to 'Mark All as Read' and toggle each notification/task type on or off.
+			<br>
+			<br>
+			<span id="help_notifications_tasks" class="blue fsl">Tasks</span>
+			<br>
+			Tasks are some kind of special notifications. The main difference is that you usually can interact with them, complete, fail and progress them and the time left is shown instead of a timestamp.
+			<br>
+			Additionally, the sort order is different. The Task that has to be completed next shows on top while tasks that have more time left show lower in the list.
+			<br>
+			<br>
+			<span id="help_notifications_notifications" class="blue fsl">Notifications</span>
+			<br>
+			Notifications are the same as you know them from in the game. Eventually there are more different types.
+			<br>
+			Newest Notfications are at the top, older ones at the bottom.
+			<br>
+			Notifications have a timestamp at the top to show when they were received/created.
 		</p>
 	</div>
-	<div id="help_t4">
-		<h4>Topic 4</h4>
+	<div id="help_mails">
+		<h2>Mails</h2>
 		<p class="paddedp">
-			Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum cursus mauris turpis. Donec lacinia, enim at tristique posuere, purus nisi pellentesque eros, ac efficitur lectus lacus a massa. Aliquam tempor porttitor quam, nec imperdiet risus. Vestibulum consectetur nibh malesuada vulputate auctor. In magna velit, laoreet vel semper eget, ullamcorper et nibh. Curabitur sed odio eros. Nunc nec laoreet nibh. Aliquam semper ut neque ac mollis.
-
-			In vitae vehicula urna. Quisque ac fermentum dolor, in rutrum est. Phasellus ut sollicitudin tortor. Vestibulum sagittis vestibulum dui sit amet pretium. Suspendisse rutrum, erat et molestie egestas, ex enim ornare sem, eu scelerisque mauris diam nec lacus. Etiam lacinia quam massa, non lobortis enim tempor sit amet. Donec cursus, massa id volutpat vehicula, felis eros faucibus ex, a consequat ante dolor non leo.
-
-			In hac habitasse platea dictumst. Proin placerat maximus eros quis fermentum. Phasellus aliquam nulla aliquam, malesuada ante id, ullamcorper est. Proin egestas nulla eu orci ullamcorper, eget facilisis dolor lacinia. Cras elit urna, egestas vel ullamcorper non, porttitor vitae augue. Aenean consectetur ultricies eros, mattis dignissim sem porttitor eu. In cursus nibh in iaculis eleifend. Fusce ultricies metus a mi lobortis faucibus. Sed malesuada finibus turpis, id sodales arcu laoreet volutpat. Sed accumsan eget erat a ultricies. Praesent quis felis convallis, ullamcorper arcu ac, eleifend tortor.
+			On this page you will find the mails received by you, your corp or your alliance. Mails are opened/expanded by clicking on them. The following sidebar items define what is shown.
+			<br>
+			<br>
+			<span id="help_mails_all" class="blue fsl">All</span>
+			<br>
+			This tab shows you all mails together, including personal, corporation and alliance mails.
+			<br>
+			<br>
+			<span id="help_mails_personal" class="blue fsl">Personal</span>
+			<br>
+			Here you will find the mails personally adressed to the currently logged in character.
+			<br>
+			<br>
+			<span id="help_mails_corporation" class="blue fsl">Corporation</span>
+			<br>
+			Mails sent to your corporation will appear in this tab.
+			<br>
+			<br>
+			<span id="help_mails_alliance" class="blue fsl">Alliance</span>
+			<br>
+			Mails sent to your alliance will appear in this tab.
 		</p>
 	</div>
-	<div id="help_t5">
-		<h4>Topic 5</h4>
+	<div id="help_intel">
+		<h2>Intel</h2>
 		<p class="paddedp">
-			Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum cursus mauris turpis. Donec lacinia, enim at tristique posuere, purus nisi pellentesque eros, ac efficitur lectus lacus a massa. Aliquam tempor porttitor quam, nec imperdiet risus. Vestibulum consectetur nibh malesuada vulputate auctor. In magna velit, laoreet vel semper eget, ullamcorper et nibh. Curabitur sed odio eros. Nunc nec laoreet nibh. Aliquam semper ut neque ac mollis.
-
-			In vitae vehicula urna. Quisque ac fermentum dolor, in rutrum est. Phasellus ut sollicitudin tortor. Vestibulum sagittis vestibulum dui sit amet pretium. Suspendisse rutrum, erat et molestie egestas, ex enim ornare sem, eu scelerisque mauris diam nec lacus. Etiam lacinia quam massa, non lobortis enim tempor sit amet. Donec cursus, massa id volutpat vehicula, felis eros faucibus ex, a consequat ante dolor non leo.
-
-			In hac habitasse platea dictumst. Proin placerat maximus eros quis fermentum. Phasellus aliquam nulla aliquam, malesuada ante id, ullamcorper est. Proin egestas nulla eu orci ullamcorper, eget facilisis dolor lacinia. Cras elit urna, egestas vel ullamcorper non, porttitor vitae augue. Aenean consectetur ultricies eros, mattis dignissim sem porttitor eu. In cursus nibh in iaculis eleifend. Fusce ultricies metus a mi lobortis faucibus. Sed malesuada finibus turpis, id sodales arcu laoreet volutpat. Sed accumsan eget erat a ultricies. Praesent quis felis convallis, ullamcorper arcu ac, eleifend tortor.
+			The Intel Tool is an essential part of the alliance services. It interactively shows you in realtime information about a certain system or a region, what neutral characters are located where.
+			<br>
+			Intel data is generated by users pasting the member list of the local into the text area in the settings and it magically feeds the tool.
+			<br>
+			There are two views, the system and the region view. Settings can be tweaked in the lower left.
+			<br>
+			<br>
+			<span id="help_intel_system" class="blue fsl">System</span>
+			<br>
+			The System View shows you the state of the intel tool at the top. There are different states, offline means either it was unable to initialize (reload) or you dont have the required permissions to read Intel.
+			<br>
+			Under the status the system name and region name are displayed.
+			<br>
+			If there are neutrals in the surrounding systems, a list of how many and where is displayed below.
+			<br>
+			The main content is filled with a list of neutral characters or a list of alliances/corporations if the character numer exceeds a certain limit.
+			<br>
+			Clicking on a neutral character will bring up a textfield to enter additional data like the ship type or visibility. Remember that the last set info will be shown to everyone, submitted by pressing the button next to the text field.
+			<br>
+			When a neutral is 2 systems out, the page will turn yellow saying "Wake up", a neutral one system away will make it turn orange, "Attention" and a neutral in the same system will make it turn red, "Warning".
+			<br>
+			<br>
+			<span id="help_intel_region" class="blue fsl">Region</span>
+			<br>
+			The Region view shows you a map that you are probably familar with.
+			<br>
+			A map passed to the tool from Dotlan's Evemaps is displayed with blank nodes and only system names.
+			<br>
+			When neutrals are registered in a system on this map the system glows up in orange. Clicking on a system will switch to the system view for that system.
+			<br>
+			<br>
+			<span id="help_intel_settings" class="blue fsl">Settings</span>
+			<br>
+			The settings in the lower left corner are essential for the use of the tool. They not only offer you configuration but are also where you paste the local member list.
+			<br>
+			To track your character in the Ingame Browser (IGB) you need to grant trust to the website, you do this by pressing the lower left button in the settings popup. Intel should immediatly work, refreshing the page isnt a bad idea though.
+			<br>
+			You can either choose to track your character (use in game) or to watch a special system/paste data for a different system than the current one.
+			<br>
+			By default you track the character, this is synchronized between the IGB open window and any other open instances of the intel tool. If you choose to not track the character an additional field for the system you want to paste data for appears.
+			<br>
+			When typing the system name, it will offer you auto complete suggestions, once a system name is choosen the view will switch to that system.
+			<br>
+			When you copy the member list from the game to the text field a popup is triggered on the successfull parsing of the data you entered.
 		</p>
+	</div>
+	<div id="help_timerboard">
+		<h2>Timerboard</h2>
+		<p class="paddedp"></p>
+	</div>
+	<div id="help_fleets">
+		<h2>Fleets</h2>
+		<p class="paddedp"></p>
+	</div>
+	<div id="help_financesandtrade">
+		<h2>Finances & Trade</h2>
+		<p class="paddedp"></p>
+	</div>
+	<div id="help_structures">
+		<h2>Structures</h2>
+		<p class="paddedp"></p>
+	</div>
+	<div id="help_fittingsandsrp">
+		<h2>Fittings & SRP</h2>
+		<p class="paddedp"></p>
+	</div>
+	<div id="help_members">
+		<h2>Members</h2>
+		<p class="paddedp"></p>
+	</div>
+	<div id="help_groups">
+		<h2>Groups</h2>
+		<p class="paddedp"></p>
+	</div>
+	<div id="help_settings">
+		<h2>Settings</h2>
+		<p class="paddedp"></p>
 	</div>
 </div>
 <label id="maxBtn" for="checkMaxed">+</label>

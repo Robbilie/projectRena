@@ -212,7 +212,8 @@ class IntelController
                 $newmembers = array();
                 foreach ($members as &$member) {
 
-                    if(!$entit->hasStandingsTowards($this->app->CoreManager->getCharacter($member['submitterID']))) continue;
+                    if(!$entit->hasStandingsTowards($this->app->CoreManager->getCharacter($member['submitterID'])) && !$char->hasPermission("bjhjhlajkhlajksdhflkjasdhflFuckingOpsec")) continue;
+
                     if(!$entit->hasStandingsTowards($this->app->CoreManager->getCharacter($member['id']))) {
                         $member['standing'] = "negative";
                         $intel['hostilecount']++;
@@ -220,7 +221,8 @@ class IntelController
                         $member['standing'] = "positive";
                         $member['info'] = null;
                     }
-                    array_push($newmembers, $member);
+                    if($member['standing'] == "negative" || $char->hasPermission("bjhjhlajkhlajksdhflkjasdhflFuckingOpsec"))
+                        array_push($newmembers, $member);
                 }
                 $members = $newmembers;
             } else {
@@ -228,7 +230,8 @@ class IntelController
                 $alliances = array();
                 foreach ($members as $member) {
                     
-                    if(!$entit->hasStandingsTowards($this->app->CoreManager->getCharacter($member['submitterID']))) continue;
+                    if(!$entit->hasStandingsTowards($this->app->CoreManager->getCharacter($member['submitterID'])) && !$char->hasPermission("bjhjhlajkhlajksdhflkjasdhflFuckingOpsec")) continue;
+
                     if(is_null($alliances[$member['allianceID']]))
                         $alliances[$member['allianceID']] = array();
                     array_push($alliances[$member['allianceID']], $member);
@@ -246,14 +249,15 @@ class IntelController
                         );
                         $intel['hostilecount'] += count($alliance);
                     } else {
-                        array_push($alliancesSorted,
-                            array(
-                                "id" => $key,
-                                "name" => $this->app->CoreManager->getAlliance($key)->getName(),
-                                "count" => count($alliance),
-                                "standing" => "positive"
-                            )
-                        );
+                        if($char->hasPermission("bjhjhlajkhlajksdhflkjasdhflFuckingOpsec"))
+                            array_push($alliancesSorted,
+                                array(
+                                    "id" => $key,
+                                    "name" => $this->app->CoreManager->getAlliance($key)->getName(),
+                                    "count" => count($alliance),
+                                    "standing" => "positive"
+                                )
+                            );
                     }
 
                 }
@@ -447,30 +451,6 @@ class IntelController
         $this->app->response->body(json_encode($intel));
     }
 
-    function getRegionIntelArrayOld ($pregionID = null, $characterID) {
-        $regionID = $pregionID;
-
-        $intel = array();
-
-        // set system id
-        if(is_null($regionID) && isset($_SERVER['HTTP_EVE_TRUSTED']) && $_SERVER['HTTP_EVE_TRUSTED'] == "Yes")
-            $regionID = (int)$_SERVER['HTTP_EVE_REGIONID'];
-        if(is_null($regionID))
-            $regionID = $this->app->mapSolarSystems->getAllByID($this->app->CoreManager->getCharacterLocation($characterID))['regionID'];
-        if(is_null($regionID) || $regionID == 0)
-            $regionID = 10000029;
-
-        $char = $this->app->CoreManager->getCharacter($characterID);
-
-        $systemRows = $this->db->query("SELECT solarSystemID as id FROM mapSolarSystems WHERE regionID = :regionID", array(":regionID" => $regionID));
-        foreach ($systemRows as $systemRow) {
-            $tmparr = $this->getSystemIntelArray($systemRow['id'], $characterID);
-            array_push($intel, array("systemID" => $tmparr['systemID'], "hostilecount" => $tmparr['hostilecount']));
-        }
-
-        return $intel;
-    }
-
     function getRegionIntelArray ($pregionID = null, $characterID) {
         $regionID = $pregionID;
 
@@ -496,7 +476,8 @@ class IntelController
                 $sys = array("systemID" => $systemRow['id'], "hostilecount" => 0);
                 // get members
                 $members = $this->db->query(
-                    "SELECT characterID as id,characterName as name,corporationID,allianceID FROM easTracker WHERE
+                    "SELECT characterID as id,characterName as name,corporationID,allianceID,submitterID,timestamp
+                    FROM easTracker WHERE
                         easTracker.locationID = :locationID AND
                         easTracker.timestamp =
                             (SELECT timestamp FROM easTracker as t WHERE
@@ -514,6 +495,8 @@ class IntelController
                     } else {
                         $entit = $char->getCCorporation();
                     }
+
+                    if(!$entit->hasStandingsTowards($this->app->CoreManager->getCharacter($member['submitterID'])) && !$char->hasPermission("bjhjhlajkhlajksdhflkjasdhflFuckingOpsec")) continue;
 
                     if(!$entit->hasStandingsTowards($this->app->CoreManager->getCharacter($member['id'])))
                         $sys['hostilecount']++;
@@ -536,8 +519,9 @@ class IntelController
 
                 if(!$character->hasPermission("writeIntel")) break;
 
-                $this->db->execute("INSERT INTO easTrackerInfo (characterID, info, timestamp) VALUES (:characterID, :info, :ts)",
+                $this->db->execute("INSERT INTO easTrackerInfo (submitterID, characterID, info, timestamp) VALUES (:submitterID, :characterID, :info, :ts)",
                     array(
+                        ":submitterID"  => $character->getCharId(),
                         ":characterID"  => $characterID,
                         ":info"         => $info,
                         ":ts"           => time()

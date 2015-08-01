@@ -158,7 +158,7 @@ class CoreManager {
             $permission = new CorePermission($this->app, $permissionRow);
             $this->permissionsByID[$permission->getId()] = $permission;
             if(!isset($this->permissionsByName[$permission->getName()])) $this->permissionsByName[$permission->getName()] = array();
-            $this->permissionsByName[$permission->getName()] = $permission;
+            $this->permissionsByName[$permission->getName()][] = $permission;
             return $permission;
         }
         return null;
