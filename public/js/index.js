@@ -57,14 +57,13 @@ function hashChange (elem) {
                     $("#content").innerHTML = r;
                     // js exec magic
                     if($("#content script").length > 0) {
-                        console.log("script");
-
                         var scriptelem = document.createElement("script");
                         scriptelem.src = $("#content script")[$("#content script").length - 1].src;
+                        console.log(scriptelem.src);
                         scriptelem.text = $("#content script")[$("#content script").length - 1].text;
 
                         $("#content").appendChild(scriptelem);
-                        $("#content").removeChild(scriptelem);
+                        setTimeout(function () { $("#content").removeChild(scriptelem); }, 10);
                     } else {
                         console.log("no script");
                         if($(".contentConti")[0])

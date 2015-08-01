@@ -222,7 +222,8 @@ class IntelController
                             "type"      => "character",
                             "id"        => $member['id'],
                             "name"      => $this->app->CoreManager->getCharacter($member['id'])->getName(),
-                            "standing"  => $standing
+                            "standing"  => $standing,
+                            "timestamp" => $member['timestamp']
                         );
                     }
                 }
