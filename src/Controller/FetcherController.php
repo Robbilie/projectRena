@@ -122,7 +122,7 @@ class FetcherController
                         ":requested"    => $notificationRow['sentDate']
                     );
         }
-        $this->app->CoreManager->prepareMultiInsert("INSERT INTO easNotifications (eveID, state, typeID, creatorID, recipientID, locationID, body, created, requested)", $notifs);
+        $this->db->multiInsert("INSERT INTO easNotifications (eveID, state, typeID, creatorID, recipientID, locationID, body, created, requested)", $notifs);
 
         echo " + - ".count($notificationRows)." Notifications converted<br>";
     }

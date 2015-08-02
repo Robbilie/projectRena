@@ -78,7 +78,7 @@ class NotificationsController
             $notifications = $char->getNotifications();
 
             $vals = array_map(function ($a) use ($charID) { return is_null($a['readState']) ? array(":notificationID" => $a['id'], ":readerID" => $charID) : null; } , $notifications);
-            $this->app->CoreManager->prepareMultiInsert("INSERT INTO easNotificationReaders (notificationID, readerID)", $vals);
+            $this->db->multiInsert("INSERT INTO easNotificationReaders (notificationID, readerID)", $vals);
 
             $resp['state'] = "success";
         }

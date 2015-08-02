@@ -406,7 +406,7 @@ class IntelController
                                 ":allianceID" => $charDat[$d]['allianceID']
                             ); 
                     }, $dif);
-                $this->app->CoreManager->prepageMultiInsert("INSERT INTO easTracker (locationID, submitterID, characterID, characterName, corporationID, allianceID, timestamp)", $dif);
+                $this->db->multiInsert("INSERT INTO easTracker (locationID, submitterID, characterID, characterName, corporationID, allianceID, timestamp)", $dif);
 
                 $newids = array_map(
                     function ($id) use ($systemID, $charid, $affsSorted) { 
@@ -419,7 +419,7 @@ class IntelController
                                 ":allianceID" => $affsSorted[$id]['allianceID']
                             );
                     }, $idsFromAPISorted);
-                $this->app->CoreManager->prepageMultiInsert("INSERT INTO easTracker (locationID, submitterID, characterID, characterName, corporationID, allianceID, timestamp)", $newids);
+                $this->db->multiInsert("INSERT INTO easTracker (locationID, submitterID, characterID, characterName, corporationID, allianceID, timestamp)", $newids);
 
                 $response = array("state" => "success", "msg" => "");
 
