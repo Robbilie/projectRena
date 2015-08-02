@@ -59,11 +59,10 @@ function hashChange (elem) {
                     if($("#content script").length > 0) {
                         var scriptelem = document.createElement("script");
                         scriptelem.src = $("#content script")[$("#content script").length - 1].src;
-                        console.log(scriptelem.src);
                         scriptelem.text = $("#content script")[$("#content script").length - 1].text;
 
                         $("#content").appendChild(scriptelem);
-                        setTimeout(function () { $("#content").removeChild(scriptelem); }, 10);
+                        setTimeout(function () { $("#content").removeChild(scriptelem); }, 1000);
                     } else {
                         console.log("no script");
                         if($(".contentConti")[0])

@@ -217,6 +217,9 @@ class IntelController
 
                     $standing = $char->derivedStanding(new CoreCharacter($this->app, array("characterID" => $member['id'], "corporationID" => $member['corporationID'], "allianceID" => $member['allianceID'])));
 
+                    if(($char->getAlliId() != 0 && $char->getAlliId() == $member['allianceID']) || !$char->getCCorporation()->isNPC() && $char->getCorpId() == $member['corporationID'])
+                        $standing = 20;
+
                     if($standing <= 0 || $char->hasPermission("bjhjhlajkhlajksdhflkjasdhflFuckingOpsec")) {
                         $newmembers[$member['id']] = array(
                             "type"      => "character",
@@ -225,12 +228,12 @@ class IntelController
                             "standing"  => $standing,
                             "timestamp" => $member['timestamp']
                         );
+                        if($standing <= 0)
+                            $intel['hostilecount']++;
                     }
                 }
 
                 usort($newmembers, function ($a, $b) { return strnatcasecmp($a['name'], $b['name']); });
-
-                $intel['hostilecount'] = count($newmembers);
 
                 $members = $newmembers;
             } else {
@@ -244,6 +247,9 @@ class IntelController
                     if($this->app->CoreManager->getCharacter($member['submitterID'])->derivedStanding($char) <= 0 && !$char->hasPermission("bjhjhlajkhlajksdhflkjasdhflFuckingOpsec")) continue;
 
                     $standing = $char->derivedStanding(new CoreCharacter($this->app, array("characterID" => $member['id'], "corporationID" => $member['corporationID'], "allianceID" => $member['allianceID'])));
+
+                    if(($char->getAlliId() != 0 && $char->getAlliId() == $member['allianceID']) || !$char->getCCorporation()->isNPC() && $char->getCorpId() == $member['corporationID'])
+                        $standing = 20;
 
                     if($standing <= 0 || $char->hasPermission("bjhjhlajkhlajksdhflkjasdhflFuckingOpsec")) {
                         if($member['allianceID'] != 0) {
@@ -327,6 +333,19 @@ class IntelController
                     $systemID = 30002489;
                 // local members
                 $local = str_replace("%20", " ", $this->app->request->post('local'));
+                while(strpos($local, ",,") !== FALSE)
+                    $local = str_replace(",,", ",", $local);
+                if($local[0] == ",")
+                    $local = substr($local, 1);
+                if($local[strlen($local) - 1] == ",")
+                    $local = substr($local, 0, strlen($local) - 1);
+
+                if($local == "") {
+                    $response['msg'] = "Empty Local";
+                    $response['state'] = "error";
+                    break;
+                }
+
                 $local = explode(",", $local);
 
                 $charid = $_SESSION['characterID'];
@@ -377,40 +396,51 @@ class IntelController
                 $dif = array_diff($charIDs, $idsFromAPISorted);
 
                 // move old chars to null system
-                foreach($dif as $d)
-                    $this->db->execute(
-                        "INSERT INTO easTracker
-                            (locationID, submitterID, characterID, characterName, corporationID, allianceID, timestamp)
-                        VALUES
-                            (:locationID, :submitterID, :characterID, :characterName, :corporationID, :allianceID, :ts)",
-                        array(
-                            ":locationID" => "null",
-                            ":submitterID" => $charid,
-                            ":characterID" => $charDat[$d]['characterID'],
-                            ":characterName" => $charDat[$d]['characterName'],
-                            ":corporationID" => $charDat[$d]['corporationID'],
-                            ":allianceID" => $charDat[$d]['allianceID'],
-                            ":ts" => time()
-                        )
-                    );
+                /*foreach($dif as $d)
+                    if($charDat[$d]['characterID'] != 0 && $charDat[$d]['characterName'] != "" && $charDat[$d]['corporationID'] != 0)
+                        $this->db->execute(
+                            "INSERT INTO easTracker
+                                (locationID, submitterID, characterID, characterName, corporationID, allianceID, timestamp)
+                            VALUES
+                                (:locationID, :submitterID, :characterID, :characterName, :corporationID, :allianceID, UNIX_TIMESTAMP(NOW()))",
+                            array(
+                                ":locationID" => "null",
+                                ":submitterID" => $charid,
+                                ":characterID" => $charDat[$d]['characterID'],
+                                ":characterName" => $charDat[$d]['characterName'],
+                                ":corporationID" => $charDat[$d]['corporationID'],
+                                ":allianceID" => $charDat[$d]['allianceID']
+                            )
+                        );
+                */
+
+                $dif = array_map(function ($d) use ($charDat, $charid) { return '(null,'.$charid.','.$charDat[$d]['characterID'].',"'.$charDat[$d]['characterName'].'",'.$charDat[$d]['corporationID'].','.$charDat[$d]['allianceID'].', UNIX_TIMESTAMP(NOW()))'; }, $dif);
+                $imp = implode(",", $dif);
+                $this->db->execute("INSERT INTO easTracker (locationID, submitterID, characterID, characterName, corporationID, allianceID, timestamp) VALUES $imp");
 
                 // mover new chars into the system
-                foreach($idsFromAPISorted as $id) {
-                    $this->db->execute(
-                        "INSERT INTO easTracker
-                            (locationID, submitterID, characterID, characterName, corporationID, allianceID, timestamp)
-                        VALUES
-                            (:locationID, :submitterID, :characterID, :characterName, :corporationID, :allianceID, UNIX_TIMESTAMP(NOW()))",
-                        array(
-                            ":locationID" => $systemID,
-                            ":submitterID" => $charid,
-                            ":characterID" => $affsSorted[$id]['characterID'],
-                            ":characterName" => $affsSorted[$id]['characterName'],
-                            ":corporationID" => $affsSorted[$id]['corporationID'],
-                            ":allianceID" => $affsSorted[$id]['allianceID']
-                        )
-                    );
-                }
+                /*foreach($idsFromAPISorted as $id)
+                    if($affsSorted[$id]['characterID'] != 0 && $affsSorted[$id]['characterName'] != "" && $affsSorted[$id]['corporationID'] != 0)
+                        $this->db->execute(
+                            "INSERT INTO easTracker
+                                (locationID, submitterID, characterID, characterName, corporationID, allianceID, timestamp)
+                            VALUES
+                                (:locationID, :submitterID, :characterID, :characterName, :corporationID, :allianceID, UNIX_TIMESTAMP(NOW()))",
+                            array(
+                                ":locationID" => $systemID,
+                                ":submitterID" => $charid,
+                                ":characterID" => $affsSorted[$id]['characterID'],
+                                ":characterName" => $affsSorted[$id]['characterName'],
+                                ":corporationID" => $affsSorted[$id]['corporationID'],
+                                ":allianceID" => $affsSorted[$id]['allianceID']
+                            )
+                        );
+                */
+                
+                $newids = array_map(function ($id) use ($systemID, $charid, $affsSorted) {return '('.$systemID.','.$charid.','.$affsSorted[$id]['characterID'].',"'.$affsSorted[$id]['characterName'].'",'.$affsSorted[$id]['corporationID'].','.$affsSorted[$id]['allianceID'].', UNIX_TIMESTAMP(NOW()))'; }, $idsFromAPISorted);
+                $newimp = implode(",", $newids);
+                $this->db->execute("INSERT INTO easTracker (locationID, submitterID, characterID, characterName, corporationID, allianceID, timestamp) VALUES $newimp");
+                
 
                 $response = array("state" => "success", "msg" => "");
 

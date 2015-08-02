@@ -148,6 +148,10 @@ class CoreCorporation extends CoreEntity {
 		return $this->standings;
 	}
 
+	public function isNPC () {
+		return $this->getId() <= 1000259;
+	}
+
 	// default
 
 	public function getId () {

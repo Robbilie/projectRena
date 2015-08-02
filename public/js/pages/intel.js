@@ -165,7 +165,7 @@ function paste (e) {
     if(submitting) return false;
     submitting = true;
     var dat = e.clipboardData.getData('text/plain');
-    dat = dat.split("\n");
+    dat = dat.split("\r").join("").split("\n");
     submitIntel(dat);
 }
 
