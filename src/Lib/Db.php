@@ -271,6 +271,44 @@ class Db
     }
 
     /**
+     * @param string $query
+     * @param array $parameters
+     * @param bool $returnID
+     *
+     * @return bool|int|string
+     *
+     * @throws Exception
+     *
+     **
+     * Takes an insert query up to the "VALUES" string and an array with the rows to be inserted
+     * The rows should be associative arrays much like when doing other db queries
+     *
+     * Generates a long query to insert all the rows in a single execute
+     */
+    public function multiInsert($query, $parameters = array(), $returnID = false)
+    {
+        $queryIndexes = array();
+        $queryValues = array();
+
+        foreach ($parameters as $rowID => $valueRow) {
+            if(!is_array($valueRow)) continue;
+
+            $tmpQuery = array();
+            foreach ($valueRow as $fieldID => $fieldValue) {
+                $queryValues[$fieldID.$rowID] = $fieldValue;
+                $tmpQuery[] = $fieldID.$rowID;
+            }
+            $queryIndexes[] = '('.implode(",", $tmpQuery).')';
+        }
+
+        if(count($queryValues) > 0) {
+            return $this->db->execute($query.' VALUES '.implode(",", $queryIndexes), $queryValues, $returnID);
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * @return int
      */
     public function getQueryCount()
