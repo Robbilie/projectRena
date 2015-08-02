@@ -222,15 +222,38 @@ class CoreManager {
         return null;
     }
 
-    public function getAllCharacters () {
-        $chars = array();
-        $charRows = $this->db->query("SELECT * FROM easCharacters");
-        foreach ($charRows as $charRow) {
-            $char = new CoreCharacter($this->app, $charRow);
-            $this->chars[$char->getCharId()] = $char;
-            array_push($chars, $char);
+    public function getCharacters ($ids) {
+        $reqChars = array();
+        $retChars = array();
+        foreach ($ids as $id) {
+            if(isset($this->chars[$id])) {
+                $retChars[$id] = $this->chars[$id];
+            } else {
+                $reqChars[] = $id;
+            }
         }
-        return $chars;
+        $dbChars = array();
+        $charRows = $this->db->query("SELECT ntCharacter.id as characterID, ntCharacter.name as characterName, ntCharacter.corporation as corporationID, ntCorporation.name as corporationName, ntCorporation.alliance as allianceID, ntAlliance.name as allianceName, NULL as user FROM ntCharacter LEFT JOIN ntCorporation ON ntCharacter.corporation = ntCorporation.id LEFT JOIN ntAlliance ON ntCorporation.alliance = ntAlliance.id WHERE ntCharacter.id IN (:ids)", array(":ids" => implode(",", $reqChars)));
+        foreach ($charRows as $charRow) {
+            $dbChars[] = $charRow['characterID'];
+            $char = new CoreCharacter($this->app, $charRow);
+            $this->chars[$charRow['characterID']] = $char;
+            $retChars[$charRow['characterID']] = $char;
+        }
+        $leftChars = array_diff($reqChars, $dbChars);
+        foreach ($leftChars as $leftChar) {
+            $char = new CoreCharacter($this->app, $this->app->EVEEVECharacterAffiliation->getData(array($leftChar))['result']['characters'][0]);
+            $this->chars[$leftChar] = $char;
+            $retChars[$leftChar] = $char;
+        }
+        return $retChars;
+    }
+
+    public function getAllCharacters () {
+        $charRows = $this->db->query("SELECT * FROM easCharacters");
+        foreach ($charRows as $charRow)
+            $this->chars[$char->getCharId()] = new CoreCharacter($this->app, $charRow);
+        return $this->chars;
     }
 
     public function getFleetParticipant ($fleetparticipant) {
