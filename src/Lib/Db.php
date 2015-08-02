@@ -284,6 +284,9 @@ class Db
      * The rows should be associative arrays much like when doing other db queries
      *
      * Generates a long query to insert all the rows in a single execute
+     *
+     * query = "INSERT INTO table (columnaes)"
+     * parameters = array(array(":key" => value), array(":key" => value))
      */
     public function multiInsert($query, $parameters = array(), $returnID = false)
     {
@@ -302,7 +305,7 @@ class Db
         }
 
         if(count($queryValues) > 0) {
-            return $this->db->execute($query.' VALUES '.implode(",", $queryIndexes), $queryValues, $returnID);
+            return $this->execute($query.' VALUES '.implode(",", $queryIndexes), $queryValues, $returnID);
         } else {
             return false;
         }
