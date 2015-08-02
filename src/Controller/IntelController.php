@@ -395,52 +395,31 @@ class IntelController
                 // get those not in system anymore
                 $dif = array_diff($charIDs, $idsFromAPISorted);
 
-                // move old chars to null system
-                /*foreach($dif as $d)
-                    if($charDat[$d]['characterID'] != 0 && $charDat[$d]['characterName'] != "" && $charDat[$d]['corporationID'] != 0)
-                        $this->db->execute(
-                            "INSERT INTO easTracker
-                                (locationID, submitterID, characterID, characterName, corporationID, allianceID, timestamp)
-                            VALUES
-                                (:locationID, :submitterID, :characterID, :characterName, :corporationID, :allianceID, UNIX_TIMESTAMP(NOW()))",
-                            array(
+                $dif = array_map(
+                    function ($d) use ($charDat, $charid) { 
+                        return array(
                                 ":locationID" => "null",
                                 ":submitterID" => $charid,
                                 ":characterID" => $charDat[$d]['characterID'],
                                 ":characterName" => $charDat[$d]['characterName'],
                                 ":corporationID" => $charDat[$d]['corporationID'],
                                 ":allianceID" => $charDat[$d]['allianceID']
-                            )
-                        );
-                */
+                            ); 
+                    }, $dif);
+                $this->app->CoreManager->prepageMultiInsert("INSERT INTO easTracker (locationID, submitterID, characterID, characterName, corporationID, allianceID, timestamp)", $dif);
 
-                $dif = array_map(function ($d) use ($charDat, $charid) { return '(null,'.$charid.','.$charDat[$d]['characterID'].',"'.$charDat[$d]['characterName'].'",'.$charDat[$d]['corporationID'].','.$charDat[$d]['allianceID'].', UNIX_TIMESTAMP(NOW()))'; }, $dif);
-                $imp = implode(",", $dif);
-                $this->db->execute("INSERT INTO easTracker (locationID, submitterID, characterID, characterName, corporationID, allianceID, timestamp) VALUES $imp");
-
-                // mover new chars into the system
-                /*foreach($idsFromAPISorted as $id)
-                    if($affsSorted[$id]['characterID'] != 0 && $affsSorted[$id]['characterName'] != "" && $affsSorted[$id]['corporationID'] != 0)
-                        $this->db->execute(
-                            "INSERT INTO easTracker
-                                (locationID, submitterID, characterID, characterName, corporationID, allianceID, timestamp)
-                            VALUES
-                                (:locationID, :submitterID, :characterID, :characterName, :corporationID, :allianceID, UNIX_TIMESTAMP(NOW()))",
-                            array(
+                $newids = array_map(
+                    function ($id) use ($systemID, $charid, $affsSorted) { 
+                        return array(
                                 ":locationID" => $systemID,
                                 ":submitterID" => $charid,
                                 ":characterID" => $affsSorted[$id]['characterID'],
                                 ":characterName" => $affsSorted[$id]['characterName'],
                                 ":corporationID" => $affsSorted[$id]['corporationID'],
                                 ":allianceID" => $affsSorted[$id]['allianceID']
-                            )
-                        );
-                */
-                
-                $newids = array_map(function ($id) use ($systemID, $charid, $affsSorted) {return '('.$systemID.','.$charid.','.$affsSorted[$id]['characterID'].',"'.$affsSorted[$id]['characterName'].'",'.$affsSorted[$id]['corporationID'].','.$affsSorted[$id]['allianceID'].', UNIX_TIMESTAMP(NOW()))'; }, $idsFromAPISorted);
-                $newimp = implode(",", $newids);
-                $this->db->execute("INSERT INTO easTracker (locationID, submitterID, characterID, characterName, corporationID, allianceID, timestamp) VALUES $newimp");
-                
+                            );
+                    }, $idsFromAPISorted);
+                $this->app->CoreManager->prepageMultiInsert("INSERT INTO easTracker (locationID, submitterID, characterID, characterName, corporationID, allianceID, timestamp)", $newids);
 
                 $response = array("state" => "success", "msg" => "");
 

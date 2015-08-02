@@ -32,8 +32,7 @@ class JSONController
             $interval = 500000;
             while($timeout > 0) {
 
-                //if(!isset($_SESSION))
-                    session_start();
+                @session_start();
                 $status = $this->getStatusArray();
                 session_write_close();
 

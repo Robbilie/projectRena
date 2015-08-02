@@ -544,4 +544,23 @@ class CoreManager {
         );
     }
 
+    public function prepareMultiInsert ($query, $values) {
+        $queryIndexes = array();
+        $queryValues = array();
+
+        foreach ($values as $rowID => $valueRow) {
+            if(!is_array($valueRow)) continue;
+
+            $tmpQuery = array();
+            foreach ($valueRow as $fieldID => $fieldValue) {
+                $queryValues[$fieldID.$rowID] = $fieldValue;
+                $tmpQuery[] = $fieldID.$rowID;
+            }
+            $queryIndexes[] = '('.implode(",", $tmpQuery).')';
+        }
+
+        if(count($queryValues) > 0)
+            $this->db->execute($query.' VALUES '.implode(",", $queryIndexes), $queryValues);
+    }
+
 }

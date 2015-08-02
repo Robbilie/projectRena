@@ -77,18 +77,9 @@ class NotificationsController
             $charID = $char->getCharId();
             $notifications = $char->getNotifications();
 
-            $vals = array_map(function ($a) use ($charID) { return is_null($a['readState']) ? '('.$a['id'].','.$charID.')' : null; } , $notifications);
-            $imp = implode(",", $vals);
-            while(strpos($imp, ",,") !== FALSE)
-                $imp = str_replace(",,", ",", $imp);
+            $vals = array_map(function ($a) use ($charID) { return is_null($a['readState']) ? array(":notificationID" => $a['id'], ":readerID" => $charID) : null; } , $notifications);
+            $this->app->CoreManager->prepareMultiInsert("INSERT INTO easNotificationReaders (notificationID, readerID)", $vals);
 
-            //$imp .= ",";
-            if($imp[0] == ",")
-                $imp = substr($imp, 1);
-            if($imp[strlen($imp) - 1] == ",")
-                $imp = substr($imp, 0, strlen($imp) - 1);
-            if(count($vals) > 0 && $imp != "")
-                $this->db->execute("INSERT INTO easNotificationReaders (notificationID, readerID) VALUES $imp");
             $resp['state'] = "success";
         }
         $this->app->response->headers->set('Content-Type', 'application/json');

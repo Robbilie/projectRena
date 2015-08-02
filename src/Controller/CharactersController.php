@@ -68,7 +68,7 @@ class CharactersController
         if(isset($_SESSION["loggedIn"])) {
             $char = $this->app->CoreManager->getCharacter($characterID);
             $inChar = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
-            if($char->getUser() && $char->getCUser()->getId() == $inChar->getCUser()->getId() && $char->getId() != $inChar->getId()) {
+            if($char->getUser() != 0 && $char->getUser() == $inChar->getUser() && $char->getCharId() != $inChar->getCharId()) {
               $char->setUser(null);
               $resp['state'] = "success";
             }
@@ -90,6 +90,7 @@ class CharactersController
         $this->app->response->body(json_encode($groups));
     }
 
+    // get options for a character
     public function getCharacterOptions ($characterID) {
         $options = array();
         if(isset($_SESSION["loggedIn"])) {
@@ -103,6 +104,7 @@ class CharactersController
         $this->app->response->body(json_encode($options));
     }
 
+    // set option key/value pair for character
     public function setCharacterOption ($characterID, $key, $value) {
         $resp = array("msg" => "", "state" => "error");
         if(isset($_SESSION["loggedIn"])) {
@@ -150,6 +152,7 @@ class CharactersController
         $this->app->response->body(json_encode($resp));
     }
 
+    // add a new option key/value pair for a character
     public function addCharacterOption ($characterID, $key, $value) {
         $resp = array("msg" => "", "state" => "error");
         if(isset($_SESSION["loggedIn"])) {
@@ -176,6 +179,7 @@ class CharactersController
         $this->app->response->body(json_encode($resp));
     }
 
+    // delete an option key/value pair of a character
     public function delCharacterOption ($characterID, $key, $value) {
         $resp = array("msg" => "", "state" => "error");
         if(isset($_SESSION["loggedIn"])) {

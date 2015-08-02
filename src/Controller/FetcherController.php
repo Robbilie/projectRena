@@ -105,12 +105,12 @@ class FetcherController
             GROUP BY ntNotification.notificationID",
             array()
         );
+
+        $notifs = array();
         foreach ($notificationRows as $notificationRow) {
             $recipient = $this->app->CoreManager->getCharacter($notificationRow['recipientID']);
             if(in_array($notificationRow['typeID'], $corpNotificationTypes) || in_array($notificationRow['typeID'], $charNotifcationTypes))
-                $this->db->execute(
-                    "INSERT INTO easNotifications (eveID, state, typeID, creatorID, recipientID, locationID, body, created, requested) VALUES (:eveID, :state, :typeID, :creatorID, :recipientID, :locationID, :body, :created, :requested)",
-                    array(
+                $notifs[] = array(
                         ":eveID"        => $notificationRow['notificationID'],
                         ":state"        => 0,
                         ":typeID"       => $notificationRow['typeID'],
@@ -120,9 +120,10 @@ class FetcherController
                         ":body"         => json_encode($notificationRow['body'] != "" ? yaml_parse($notificationRow['body']) : array()),
                         ":created"      => $notificationRow['sentDate'],
                         ":requested"    => $notificationRow['sentDate']
-                    )
-                );
+                    );
         }
+        $this->app->CoreManager->prepareMultiInsert("INSERT INTO easNotifications (eveID, state, typeID, creatorID, recipientID, locationID, body, created, requested)", $notifs);
+
         echo " + - ".count($notificationRows)." Notifications converted<br>";
     }
 
