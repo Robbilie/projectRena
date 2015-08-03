@@ -48,6 +48,7 @@ function markRead (notificationID) {
 		if(r.state == "success") {
 			$('#notification' + notificationID).className = $('#notification' + notificationID).className.replace("unread", "");
 			console.log(notificationID + " marked as read");
+			setUnreadCnt();
 		}
 	}, "json");
 }

@@ -195,7 +195,7 @@ class IntelController
                     ) as info
                 FROM easTracker
                 WHERE
-                    easTracker.locationID = :locationID AND
+                    easTracker.locationID = :locationID AND easTracker.timestamp > :ts AND
                     easTracker.timestamp =
                         (SELECT timestamp FROM easTracker as t WHERE
                             t.characterID = easTracker.characterID ORDER BY t.timestamp DESC LIMIT 1) AND easTracker.timestamp > :ts ORDER BY easTracker.characterName ASC",// LIMIT 100",
@@ -515,7 +515,7 @@ class IntelController
                 $members = $this->db->query(
                     "SELECT characterID as id,characterName as name,corporationID,allianceID,submitterID,timestamp
                     FROM easTracker WHERE
-                        easTracker.locationID = :locationID AND
+                        easTracker.locationID = :locationID AND easTracker.timestamp > :ts AND
                         easTracker.timestamp =
                             (SELECT timestamp FROM easTracker as t WHERE
                                 t.characterID = easTracker.characterID ORDER BY t.timestamp DESC LIMIT 1) AND easTracker.timestamp > :ts ORDER BY easTracker.characterName ASC",// LIMIT 100",

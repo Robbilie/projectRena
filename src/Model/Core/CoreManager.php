@@ -214,7 +214,9 @@ class CoreManager {
                 $this->chars[$characterID] = $char;
                 return $char;
             } else {
-                $char = new CoreCharacter($this->app, $this->app->EVEEVECharacterAffiliation->getData(array($characterID))['result']['characters'][0]);
+                $aff = $this->app->EVEEVECharacterAffiliation->getData(array($characterID))['result']['characters'][0];
+                //$this->db->execute("INSERT INTO");
+                $char = new CoreCharacter($this->app, $aff);
                 $this->chars[$characterID] = $char;
                 return $char;
             }

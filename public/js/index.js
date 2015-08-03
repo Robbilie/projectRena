@@ -119,6 +119,10 @@ function setLoggedinCard (charid, charname) {
     $("#charImg").alt = charname;
     $("#charName").innerHTML = charname;
     setCharList();
+    setUnreadCnt();
+}
+
+function setUnreadCnt () {
     ajax("/json/notifications/unread/", function (r) {
       $("#unreadcounta").innerHTML = r.unread;
     }, "json");
