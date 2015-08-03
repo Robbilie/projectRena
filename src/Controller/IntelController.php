@@ -56,7 +56,7 @@ class IntelController
                 while($timeout > 0) {
 
 
-                    @session_start();
+                    session_start();
                     $charid = $_SESSION['characterID'];
                     session_write_close();
                     
@@ -320,6 +320,8 @@ class IntelController
 
             do {
                 
+                $begintime = time()+microtime();
+
                 $character = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
 
                 if(!$character->hasPermission("writeIntel")) break;
@@ -351,6 +353,8 @@ class IntelController
                 $charid = $_SESSION['characterID'];
                 session_write_close();
 
+                echo (time() + microtime() - $begintime)." init<br>"; // 0
+
 
                 // get ids from api
                 $chunkedLocal = array_chunk($local, 100);
@@ -359,67 +363,72 @@ class IntelController
                     $idsFromAPI = array_merge($idsFromAPI, $this->app->EVEEVECharacterID->getData($chunkedLocal[$i])['result']['characters']);
                 }
 
-                $idsFromAPISorted = array();
-                foreach ($idsFromAPI as $idFromAPI)
-                    array_push($idsFromAPISorted, $idFromAPI['characterID']);
+                $newcharids = array_map(function ($a) { return $a['characterID']; }, $idsFromAPI);
 
-                // get affiliations from api
-                $chunkedIdsFromAPI = array_chunk($idsFromAPISorted, 100);
-                $affs = array();
-                for($i = 0; $i < count($chunkedIdsFromAPI); $i++) {
-                    $affs = array_merge($affs, $this->app->EVEEVECharacterAffiliation->getData($chunkedIdsFromAPI[$i])['result']['characters']);
-                }
+                echo (time() + microtime() - $begintime)." got ids<br>"; // 1
 
-                $affsSorted = array();
-                foreach($affs as $aff)
-                    $affsSorted[$aff['characterID']] = $aff;
+                $charactersFromAPI = $this->app->CoreManager->getCharacters($newcharids);
+
+                echo (time() + microtime() - $begintime)." get characters<br>"; // 2
 
                 // get chars in system
-                $charRows = $this->db->query(
-                    "SELECT * FROM easTracker WHERE
+                /*$charRows = $this->db->query(
+                    "SELECT characterID FROM easTracker WHERE
                         easTracker.locationID = :locationID AND
                         easTracker.timestamp =
                             (SELECT timestamp FROM easTracker as t WHERE
                                 t.characterID = easTracker.characterID ORDER BY t.timestamp DESC LIMIT 1)",
                     array(":locationID" => $systemID)
+                );*/
+                $charRows = $this->db->query(
+                    "SELECT * FROM easTracker INNER JOIN (SELECT max(timestamp) as maxts,characterID FROM easTracker GROUP BY characterID) t ON easTracker.characterID = t.characterID AND easTracker.timestamp = t.maxts WHERE easTracker.locationID = :locationID",
+                    array(":locationID" => $systemID)
                 );
 
-                // get ids and data from in system
-                $charIDs = array();
-                $charDat = array();
-                foreach($charRows as $charRow) {
-                    array_push($charIDs, $charRow['characterID']);
-                    $charDat[$charRow['characterID']] = $charRow;
-                }
+                $systemcharids = array_map(function ($a) { return $a['characterID']; }, $charRows);
+
+                echo (time() + microtime() - $begintime)." get system rows and map to ids<br>"; // 3
+
+                $systemChars = $this->app->CoreManager->getCharacters($systemcharids);
+
+                echo (time() + microtime() - $begintime)." get system core chars<br>"; // 4
+
+                $ts = time();
 
                 // get those not in system anymore
-                $dif = array_diff($charIDs, $idsFromAPISorted);
+                $dif = array_diff($systemcharids, $newcharids);
 
                 $dif = array_map(
-                    function ($d) use ($charDat, $charid) { 
-                        return array(
-                                ":locationID" => "null",
-                                ":submitterID" => $charid,
-                                ":characterID" => $charDat[$d]['characterID'],
-                                ":characterName" => $charDat[$d]['characterName'],
-                                ":corporationID" => $charDat[$d]['corporationID'],
-                                ":allianceID" => $charDat[$d]['allianceID']
-                            ); 
+                    function ($d) use ($systemChars, $charid, $ts) { 
+                        return $systemChars[$d]->getCharId() != 0 ? array(
+                                ":locationID"       => "null",
+                                ":submitterID"      => $charid,
+                                ":characterID"      => $systemChars[$d]->getCharId(),
+                                ":characterName"    => $systemChars[$d]->getCharName(),
+                                ":corporationID"    => $systemChars[$d]->getCorpId(),
+                                ":allianceID"       => $systemChars[$d]->getAlliId(),
+                                ":ts"               => $ts
+                            ) : null; 
                     }, $dif);
                 $this->db->multiInsert("INSERT INTO easTracker (locationID, submitterID, characterID, characterName, corporationID, allianceID, timestamp)", $dif);
 
+                echo (time() + microtime() - $begintime)." insert moved<br>"; // 5
+
                 $newids = array_map(
-                    function ($id) use ($systemID, $charid, $affsSorted) { 
-                        return array(
-                                ":locationID" => $systemID,
-                                ":submitterID" => $charid,
-                                ":characterID" => $affsSorted[$id]['characterID'],
-                                ":characterName" => $affsSorted[$id]['characterName'],
-                                ":corporationID" => $affsSorted[$id]['corporationID'],
-                                ":allianceID" => $affsSorted[$id]['allianceID']
-                            );
-                    }, $idsFromAPISorted);
+                    function ($id) use ($systemID, $charid, $charactersFromAPI, $ts) { 
+                        return $charactersFromAPI[$id]->getCharId() != 0 ? array(
+                                ":locationID"       => $systemID,
+                                ":submitterID"      => $charid,
+                                ":characterID"      => $charactersFromAPI[$id]->getCharId(),
+                                ":characterName"    => $charactersFromAPI[$id]->getCharName(),
+                                ":corporationID"    => $charactersFromAPI[$id]->getCorpId(),
+                                ":allianceID"       => $charactersFromAPI[$id]->getAlliId(),
+                                ":ts"               => $ts
+                            ) : null;
+                    }, $newcharids);
                 $this->db->multiInsert("INSERT INTO easTracker (locationID, submitterID, characterID, characterName, corporationID, allianceID, timestamp)", $newids);
+
+                echo (time() + microtime() - $begintime)." insert new<br>"; // 6
 
                 $response = array("state" => "success", "msg" => "");
 

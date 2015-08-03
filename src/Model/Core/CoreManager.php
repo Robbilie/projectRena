@@ -208,7 +208,7 @@ class CoreManager {
             $this->chars[$characterID] = $char;
             return $char;
         } else {
-            $ntCharRow = $this->db->queryRow("SELECT ntCharacter.id as characterID, ntCharacter.name as characterName, ntCharacter.corporation as corporationID, ntCorporation.name as corporationName, ntCorporation.alliance as allianceID, ntAlliance.name as allianceName, NULL as user FROM ntCharacter LEFT JOIN ntCorporation ON ntCharacter.corporation = ntCorporation.id LEFT JOIN ntAlliance ON ntCorporation.alliance = ntAlliance.id WHERE ntCharacter.id = :characterID", array(":characterID" => $characterID));
+            $ntCharRow = $this->db->queryRow("SELECT ntCharacter.id as characterID, ntCharacter.name as characterName, ntCharacter.corporation as corporationID, ntCorporation.name as corporationName, ntCorporation.alliance as allianceID, ntAlliance.name as allianceName, NULL as user FROM ntCharacter LEFT JOIN ntCorporation ON ntCharacter.corporation = ntCorporation.id LEFT JOIN ntAlliance ON ntCorporation.alliance = ntAlliance.id WHERE ntCharacter.id = :characterID AND UNIX_TIMESTAMP(ntCharacter.lastUpdateTimestampCA) > UNIX_TIMESTAMP(NOW()) - 86400", array(":characterID" => $characterID));
             if($ntCharRow) {
                 $char = new CoreCharacter($this->app, $ntCharRow);
                 $this->chars[$characterID] = $char;
@@ -233,7 +233,7 @@ class CoreManager {
             }
         }
         $dbChars = array();
-        $charRows = $this->db->query("SELECT ntCharacter.id as characterID, ntCharacter.name as characterName, ntCharacter.corporation as corporationID, ntCorporation.name as corporationName, ntCorporation.alliance as allianceID, ntAlliance.name as allianceName, NULL as user FROM ntCharacter LEFT JOIN ntCorporation ON ntCharacter.corporation = ntCorporation.id LEFT JOIN ntAlliance ON ntCorporation.alliance = ntAlliance.id WHERE ntCharacter.id IN (:ids)", array(":ids" => implode(",", $reqChars)));
+        $charRows = $this->db->query("SELECT ntCharacter.id as characterID, ntCharacter.name as characterName, ntCharacter.corporation as corporationID, ntCorporation.name as corporationName, ntCorporation.alliance as allianceID, ntAlliance.name as allianceName, NULL as user FROM ntCharacter LEFT JOIN ntCorporation ON ntCharacter.corporation = ntCorporation.id LEFT JOIN ntAlliance ON ntCorporation.alliance = ntAlliance.id WHERE ntCharacter.id IN (:ids) AND UNIX_TIMESTAMP(ntCharacter.lastUpdateTimestampCA) > UNIX_TIMESTAMP(NOW()) - 86400", array(":ids" => implode(",", $reqChars)));
         foreach ($charRows as $charRow) {
             $dbChars[] = $charRow['characterID'];
             $char = new CoreCharacter($this->app, $charRow);
@@ -241,11 +241,18 @@ class CoreManager {
             $retChars[$charRow['characterID']] = $char;
         }
         $leftChars = array_diff($reqChars, $dbChars);
-        foreach ($leftChars as $leftChar) {
-            $char = new CoreCharacter($this->app, $this->app->EVEEVECharacterAffiliation->getData(array($leftChar))['result']['characters'][0]);
-            $this->chars[$leftChar] = $char;
-            $retChars[$leftChar] = $char;
+
+        $chunkedChars = array_chunk($leftChars, 100);
+
+        foreach ($chunkedChars as $chunkedCharList) {
+            $tmpChars = $this->app->EVEEVECharacterAffiliation->getData($chunkedCharList)['result']['characters'];
+            foreach ($tmpChars as $tmpChar) {
+                $char = new CoreCharacter($this->app, $tmpChar);
+                $this->chars[$char->getCharId()] = $char;
+                $retChars[$char->getCharId()] = $char;
+            }
         }
+
         return $retChars;
     }
 

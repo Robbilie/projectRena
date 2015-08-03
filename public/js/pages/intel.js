@@ -117,7 +117,7 @@ function checkSystemStatus () {
                             [systemStatus.members[j].id, 
                             systemStatus.members[j].name + (systemStatus.members[j].count ? " [" + systemStatus.members[j].count + "]" : ""), 
                             (systemStatus.members[j].standing <= 0 ? "negative" : "positive") + "Standing", 
-                            (new Date(systemStatus.members[j].timestamp * 1000).toLocaleString()), 
+                            (systemStatus.membertype == "characters" ? new Date(systemStatus.members[j].timestamp * 1000).toJSON().split(".")[0] : ""), 
                             systemStatus.members[j].info ? systemStatus.members[j].info : "", 
                             systemStatus.members[j].standing > 0 ? "hide" : ""
                             ]
@@ -173,7 +173,7 @@ function submitIntel (dat) {
     var req = new XMLHttpRequest();
     req.onreadystatechange = function () {
         if(req.readyState == 4 && req.status == 200) {
-            alert("Submitted");
+            humane.log("Intel submitted");
             submitting = false;
         }
     };
