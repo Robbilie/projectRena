@@ -287,8 +287,9 @@ class Db
      *
      * query = "INSERT INTO table (columnaes)"
      * parameters = array(array(":key" => value), array(":key" => value))
+     * suffix = optional sufix to the query
      */
-    public function multiInsert($query, $parameters = array(), $returnID = false)
+    public function multiInsert($query, $parameters = array(), $suffix = "", $returnID = false)
     {
         $queryIndexes = array();
         $queryValues = array();
@@ -305,7 +306,7 @@ class Db
         }
 
         if(count($queryValues) > 0) {
-            return $this->execute($query.' VALUES '.implode(",", $queryIndexes), $queryValues, $returnID);
+            return $this->execute($query.' VALUES '.implode(",", $queryIndexes)." ".$suffix, $queryValues, $returnID);
         } else {
             return false;
         }
