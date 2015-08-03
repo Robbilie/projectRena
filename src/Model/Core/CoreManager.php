@@ -214,9 +214,20 @@ class CoreManager {
                 $this->chars[$characterID] = $char;
                 return $char;
             } else {
-                $aff = $this->app->EVEEVECharacterAffiliation->getData(array($characterID))['result']['characters'][0];
-                //$this->db->execute("INSERT INTO");
-                $char = new CoreCharacter($this->app, $aff);
+                $affDat = $this->app->EVEEVECharacterAffiliation->getData([$characterID]);//['result']['characters'][0]; cachedUntil
+                $this->db->execute(
+                    "INSERT INTO ntCharacter (id, name, corporation, lastUpdateTimestampCA) 
+                    VALUES (:characterID, :characterName, :corporationID, :lastUpdateTimestampCA) 
+                    ON DUPLICATE KEY 
+                    UPDATE ntCharacter.corporation = VALUES(ntCharacter.corporation), ntCharacter.lastUpdateTimestampCA = VALUES(ntCharacter.lastUpdateTimestampCA)",
+                    array(
+                        ":characterID"              => $aff['result']['characters'][0]['characterID'],
+                        ":characterName"            => $aff['result']['characters'][0]['characterName'],
+                        ":corporationID"            => $aff['result']['characters'][0]['corporationID'],
+                        ":lastUpdateTimestampCA"    => $aff['cachedUntil']
+                    )
+                );
+                $char = new CoreCharacter($this->app, $aff['result']['characters'][0]);
                 $this->chars[$characterID] = $char;
                 return $char;
             }
@@ -246,14 +257,26 @@ class CoreManager {
 
         $chunkedChars = array_chunk($leftChars, 100);
 
+        $insertChars = [];
+
         foreach ($chunkedChars as $chunkedCharList) {
-            $tmpChars = $this->app->EVEEVECharacterAffiliation->getData($chunkedCharList)['result']['characters'];
+            $dat = $this->app->EVEEVECharacterAffiliation->getData($chunkedCharList);
+            $tmpChars = $dat['result']['characters'];
             foreach ($tmpChars as $tmpChar) {
                 $char = new CoreCharacter($this->app, $tmpChar);
                 $this->chars[$char->getCharId()] = $char;
                 $retChars[$char->getCharId()] = $char;
+                $insertChars[] = array(
+                        ":characterID"              => $tmpChar['characterID'],
+                        ":characterName"            => $tmpChar['characterName'],
+                        ":corporationID"            => $tmpChar['corporationID'],
+                        ":lastUpdateTimestampCA"    => $dat['cachedUntil']
+                    );
             }
         }
+
+        if(count($insertChars) > 0)
+            $this->db->multiInsert("INSERT INTO ntCharacter (id, name, corporation, lastUpdateTimestampCA)", $insertChars, "ON DUPLICATE KEY UPDATE ntCharacter.corporation = VALUES(ntCharacter.corporation), ntCharacter.lastUpdateTimestampCA = VALUES(ntCharacter.lastUpdateTimestampCA)");
 
         return $retChars;
     }
