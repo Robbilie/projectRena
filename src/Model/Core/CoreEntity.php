@@ -21,7 +21,7 @@ class CoreEntity extends CoreBase {
 	public function derivedStanding ($char) {
 		$standings = $this->getStandings();
 		$relationships = [];
-        if(isset($this->standings[$char->getCharId()])) $relationships[] = $this->standings[$char->getCharId()];
+        if(isset($this->standings[$char->getId()])) $relationships[] = $this->standings[$char->getId()];
         if(isset($this->standings[$char->getCorpId()])) $relationships[] = $this->standings[$char->getCorpId()];
         if($char->getAlliId() != 0 && isset($this->standings[$char->getAlliId()])) $relationships[] = $this->standings[$char->getAlliId()];
 
@@ -36,7 +36,7 @@ class CoreEntity extends CoreBase {
 				return "corporation";
 			case 'ProjectRena\Model\Core\CoreAlliance':
 				return "alliance";
-			
+
 			default:
 				return null;
 		}

@@ -84,9 +84,9 @@ class CoreManager {
                 if($affDat) {
                     $corp = $this->getCorporation($affDat['result']['characters'][0]['corporationID']);
                     $this->db->execute(
-                        "INSERT INTO ntCharacter (id, name, corporation, lastUpdateTimestampCA) 
-                        VALUES (:characterID, :characterName, :corporationID, :lastUpdateTimestampCA) 
-                        ON DUPLICATE KEY 
+                        "INSERT INTO ntCharacter (id, name, corporation, lastUpdateTimestampCA)
+                        VALUES (:characterID, :characterName, :corporationID, :lastUpdateTimestampCA)
+                        ON DUPLICATE KEY
                         UPDATE ntCharacter.corporation = VALUES(ntCharacter.corporation), ntCharacter.lastUpdateTimestampCA = VALUES(ntCharacter.lastUpdateTimestampCA)",
                         array(
                             ":characterID"              => $affDat['result']['characters'][0]['characterID'],
@@ -118,19 +118,19 @@ class CoreManager {
         if(count($reqChars) > 0) {
             $impIDs = implode(",", $reqChars);
             $charRows = $this->db->query(
-                "SELECT 
-                    ntCharacter.id as characterID, 
-                    ntCharacter.name as characterName, 
-                    ntCharacter.corporation as corporationID, 
-                    ntCorporation.name as corporationName, 
-                    ntCorporation.alliance as allianceID, 
-                    ntAlliance.name as allianceName, 
-                    NULL as user 
-                FROM ntCharacter 
-                LEFT JOIN ntCorporation 
-                ON ntCharacter.corporation = ntCorporation.id 
-                LEFT JOIN ntAlliance 
-                ON ntCorporation.alliance = ntAlliance.id 
+                "SELECT
+                    ntCharacter.id as characterID,
+                    ntCharacter.name as characterName,
+                    ntCharacter.corporation as corporationID,
+                    ntCorporation.name as corporationName,
+                    ntCorporation.alliance as allianceID,
+                    ntAlliance.name as allianceName,
+                    NULL as user
+                FROM ntCharacter
+                LEFT JOIN ntCorporation
+                ON ntCharacter.corporation = ntCorporation.id
+                LEFT JOIN ntAlliance
+                ON ntCorporation.alliance = ntAlliance.id
                 WHERE ntCharacter.id IN ($impIDs) AND UNIX_TIMESTAMP(ntCharacter.lastUpdateTimestampCA) > UNIX_TIMESTAMP(NOW()) - 86400"
             );
             foreach ($charRows as $charRow) {
@@ -152,8 +152,8 @@ class CoreManager {
             $tmpChars = $dat['result']['characters'];
             foreach ($tmpChars as $tmpChar) {
                 $char = new CoreCharacter($this->app, $tmpChar);
-                $this->chars[$char->getCharId()] = $char;
-                $retChars[$char->getCharId()] = $char;
+                $this->chars[$char->getId()] = $char;
+                $retChars[$char->getId()] = $char;
                 $insertChars[] = array(
                         ":characterID"              => $tmpChar['characterID'],
                         ":characterName"            => $tmpChar['characterName'],
@@ -196,9 +196,9 @@ class CoreManager {
                 $corpApi = $data['result'];
                 try {
                     $this->db->execute(
-                            "INSERT INTO ntCorporation (id, shortName, name, ceoCharacterID, alliance) 
-                            VALUES (:corporationID, :shortName, :corporationName, :ceoCharacterID, :alliance) 
-                            ON DUPLICATE KEY 
+                            "INSERT INTO ntCorporation (id, shortName, name, ceoCharacterID, alliance)
+                            VALUES (:corporationID, :shortName, :corporationName, :ceoCharacterID, :alliance)
+                            ON DUPLICATE KEY
                             UPDATE ntCorporation.ceoCharacterID = VALUES(ntCorporation.ceoCharacterID), ntCorporation.ceoCharacterID = VALUES(ntCorporation.ceoCharacterID)",
                             array(
                                 ":corporationID"    => $corpApi['corporationID'],
@@ -703,11 +703,11 @@ class CoreManager {
 
     public function createLog ($type = "default", $data = array(), $time = null) {
         $this->db->execute(
-            "INSERT INTO easLogs (type,data,timestamp) 
-            VALUES (:type, :data, :ts)", 
+            "INSERT INTO easLogs (type,data,timestamp)
+            VALUES (:type, :data, :ts)",
             array(
-                ":type" => $type, 
-                "data" => json_encode($data), 
+                ":type" => $type,
+                "data" => json_encode($data),
                 ":ts" => is_null($time) ? time() : $time
             )
         );

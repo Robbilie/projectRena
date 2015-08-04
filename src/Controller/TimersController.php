@@ -46,7 +46,7 @@ class TimersController
                     ) AND
                     standing > 0",
                     array(
-                        ":characterID" => $char->getCharId(),
+                        ":characterID" => $char->getId(),
                         ":corporationID" => $char->getCorpId(),
                         ":allianceID" => $char->getAlliId()
                     )

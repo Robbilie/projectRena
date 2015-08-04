@@ -1,7 +1,7 @@
 <?php
 
     namespace NotificationBuilder;
-    
+
     function FormatAllWarDeclared (&$notification) {
         ParamAllWarNotificationWithCost($notification);
         $heading = GetByLabel('Notifications/subjWarDeclare', $notification['body']);
@@ -88,7 +88,7 @@
         if(is_null($owner1entity))
             $owner1entity = $app->CoreManager->getCorporation($notification['body']['ownerID1']);
         $notification['body']['owner1'] = $owner1entity->getName();
-        
+
         $owner2entity = $app->CoreManager->getAlliance($notification['body']['ownerID2']);
         if(is_null($owner2entity))
             $owner2entity = $app->CoreManager->getCorporation($notification['body']['ownerID2']);
@@ -108,7 +108,7 @@
             $offeringEntity = $app->CoreManager->getCorporation($notification['body']['offeringID']);
         $notification['body']['offeringName'] = $offeringEntity->getName();
 
-        $notification['body']['charName'] = $app->CoreManager->getCharacter($notification['body']['charID'])->getCharName();
+        $notification['body']['charName'] = $app->CoreManager->getCharacter($notification['body']['charID'])->getName();
     }
 
     function ParamAllWarNotification (&$notification) {
@@ -250,7 +250,7 @@
     function BountyClaimMsg (&$notification) {
         global $app;
         $notification['body']['amount'] = number_format($notification['body']['amount'], 2, ",", ".")." ISK";
-        $notification['body']['charID'] = $app->CoreManager->getCharacter($notification['body']['charID'])->getCharName();
+        $notification['body']['charID'] = $app->CoreManager->getCharacter($notification['body']['charID'])->getName();
     }
 
     function ParamFmtSovDamagedNotification (&$notification) {
@@ -261,7 +261,7 @@
         $notification['body']['solarSystemID'] = $app->CoreManager->getLocation($notification['body']['solarSystemID'], true)->getName();
 
         if(!is_null($notification['body']['aggressorID']))
-            $notification['body']['aggressor'] = $app->CoreManager->getCharacter($notification['body']['aggressorID'])->getCharName();
+            $notification['body']['aggressor'] = $app->CoreManager->getCharacter($notification['body']['aggressorID'])->getName();
         else
             $notification['body']['aggressor'] = GetByLabel('UI/Common/Unknown');
 
@@ -280,7 +280,7 @@
         global $app;
         $notification['body']['solarSystemID'] = $app->CoreManager->getLocation($notification['body']['solarSystemID'], true)->getName();
         $notification['body']['stationID'] = $app->Db->queryField("SELECT stationName FROM ntOutpost WHERE stationID = :stationID", "stationName", array(":stationID" => $notification['body']['stationID']));
-        
+
         $notification['body']['shieldDamage'] = (int)($notification['body']['shieldValue'] * 100);
         $notification['body']['armorDamage'] = (int)($notification['body']['armorValue'] * 100);
         $notification['body']['hullDamage'] = (int)($notification['body']['hullValue'] * 100);
@@ -289,7 +289,7 @@
         $notification['body']['aggressorAlliance'] = GetByLabel('UI/Common/Unknown');
 
         if(!is_null($notification['body']['aggressorID']))
-            $notification['body']['aggressor'] = $app->CoreManager->getCharacter($notification['body']['aggressorID'])->getCharName();
+            $notification['body']['aggressor'] = $app->CoreManager->getCharacter($notification['body']['aggressorID'])->getName();
 
         if(!is_null($notification['body']['aggressorCorpID']))
             $notification['body']['aggressorCorp'] = $app->CoreManager->getCorporation($notification['body']['aggressorCorpID'])->getName();
@@ -324,7 +324,7 @@
         if(!is_null($notification['body']['aggressorID'])) {
             $char = $app->CoreManager->getCharacter($notification['body']['aggressorID']);
             if(!is_null($char)) {
-                $notification['body']['aggressorID'] = $char->getCharName();
+                $notification['body']['aggressorID'] = $char->getName();
                 $notification['body']['agressorCorp'] = $app->CoreManager->getCorporation($notification['body']['aggressorCorpID'])->getName();
                 $notification['body']['agressorAlliance'] = '-';
                 if(!is_null($notification['body']['aggressorAllianceID']))
@@ -351,19 +351,19 @@
     function ContactAdd (&$notification) {
         global $app;
         $notification['body']['messageText'] = $notification['body']['message'] ? $notification['body']['message'] : '';
-        $notification['body']['notification_senderID'] = $app->CoreManager->getCharacter($notification['creatorID'])->getCharName();
+        $notification['body']['notification_senderID'] = $app->CoreManager->getCharacter($notification['creatorID'])->getName();
     }
 
     function CorpAppNewMsg (&$notification) {
         global $app;
-        $notification['body']['charID'] = $app->CoreManager->getCharacter($notification['body']['charID'])->getCharName();
+        $notification['body']['charID'] = $app->CoreManager->getCharacter($notification['body']['charID'])->getName();
     }
 
     function CorpNewCEOMsg (&$notification) {
         global $app;
-        $notification['body']['oldCeoID'] = $app->CoreManager->getCharacter($notification['body']['oldCeoID'])->getCharName();
-        $notification['body']['newCeoID'] = $app->CoreManager->getCharacter($notification['body']['newCeoID'])->getCharName();
-        $notification['body']['charID'] = $app->CoreManager->getCharacter($notification['body']['charID'])->getCharName();
+        $notification['body']['oldCeoID'] = $app->CoreManager->getCharacter($notification['body']['oldCeoID'])->getName();
+        $notification['body']['newCeoID'] = $app->CoreManager->getCharacter($notification['body']['newCeoID'])->getName();
+        $notification['body']['charID'] = $app->CoreManager->getCharacter($notification['body']['charID'])->getName();
         $notification['body']['corporationName'] = $app->CoreManager->getCorporation($notification['body']['corpID'])->getName();
     }
 

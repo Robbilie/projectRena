@@ -58,11 +58,11 @@ class GroupsController
               array_push($groups['cancreate'], "alliance");
             $groups['groups'] = $char->getGroups();
             // corp group if ceo and corp scoped groups
-            if($char->getCCorporation()->getCeoCharacterId() == $char->getCharId()) {
+            if($char->getCCorporation()->getCeoCharacterId() == $char->getId()) {
                 $groups['owned'] = array_merge($groups['owned'], $this->app->CoreManager->getGroupsByOwnerAndScope($char->getCorpId(), "corporation"));
             }
             // alliance group if alli ceo and alliance scoped groups
-            if(!is_null($char->getCCorporation()->getCAlliance()) && $char->getCCorporation()->getCAlliance()->getExecCorp()->getCeoCharacterId() == $char->getCharId()) {
+            if(!is_null($char->getCCorporation()->getCAlliance()) && $char->getCCorporation()->getCAlliance()->getExecCorp()->getCeoCharacterId() == $char->getId()) {
                 $groups['owned'] = array_merge($groups['owned'], $this->app->CoreManager->getGroupsByOwnerAndScope($char->getAlliId(), "alliance"));
             }
             // admin scoped groups if user admin
@@ -144,7 +144,7 @@ class GroupsController
                     ($group->getScope() == "corporation" && $group->getOwner() == $char->getCorpId()) ||
                     ($group->getScope() == "alliance" && $group->getOwner() == $char->getAlliId())
                 ) {
-                    $this->db->execute("INSERT INTO easGroupApplications (characterID, groupID) VALUES (:characterID, :groupID)", array(":characterID" => $char->getCharId(), ":groupID" => $groupID));
+                    $this->db->execute("INSERT INTO easGroupApplications (characterID, groupID) VALUES (:characterID, :groupID)", array(":characterID" => $char->getId(), ":groupID" => $groupID));
                     $resp['state'] = "success";
                 } else {
                     $resp['msg'] = "You are not permitted to do this.";
@@ -274,7 +274,7 @@ class GroupsController
                 )
             ) {
                 if(in_array($group->getId(), $otherchar->getGroups())) {
-                    $group->removeCharacter($otherchar->getCharId());
+                    $group->removeCharacter($otherchar->getId());
                     $resp['state'] = "success";
                 } else {
                     $resp['msg'] = "Character not in Group.";
@@ -302,7 +302,7 @@ class GroupsController
                     $group->getScope() == "alliance" && $char->hasPermission("writeMembersGroup", "alliance")
                 )
             ) {
-                $group->addCharacter($otherchar->getCharId());
+                $group->addCharacter($otherchar->getId());
                 $resp['state'] = "success";
             } else {
                 $resp['msg'] = "You are not permitted to do this.";

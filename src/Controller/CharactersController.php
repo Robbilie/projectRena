@@ -48,13 +48,13 @@ class CharactersController
             $myChar = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
             $char = $this->app->CoreManager->getCharacter($characterID);
             if($myChar->getCUser()->isAdmin() || $char->getUser() == $myChar->getUser()) {
-                $newChar = $this->app->CoreManager->createCharacter($char->getCharId());
+                $newChar = $this->app->CoreManager->createCharacter($char->getId());
                 if($newChar->getUser() == null) {
                     $user = $this->app->CoreManager->createUser();
                     $newChar->setUser($user->getId());
                 }
-                $_SESSION["characterName"] = $newChar->getCharName();
-                $_SESSION["characterID"] = $newChar->getCharId();
+                $_SESSION["characterName"] = $newChar->getName();
+                $_SESSION["characterID"] = $newChar->getId();
                 $resp['state'] = "success";
             }
         }
@@ -68,7 +68,7 @@ class CharactersController
         if(isset($_SESSION["loggedIn"])) {
             $char = $this->app->CoreManager->getCharacter($characterID);
             $inChar = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
-            if($char->getUser() != 0 && $char->getUser() == $inChar->getUser() && $char->getCharId() != $inChar->getCharId()) {
+            if($char->getUser() != 0 && $char->getUser() == $inChar->getUser() && $char->getId() != $inChar->getId()) {
               $char->setUser(null);
               $resp['state'] = "success";
             }
@@ -162,13 +162,13 @@ class CharactersController
                     $hasss = $value."|".$this->app->CoreManager->generateRandomString();
                     $char->addOption($key, $hasss);
                     $resp['state'] = "success";
-                    file_get_contents("http://localhost:9699/sendxmpp/".urlencode($value)."/".urlencode("https://core.eneticum.rep.pm/json/character/".$char->getCharId()."/option/jid/set/".$hasss."/")."/");
+                    file_get_contents("http://localhost:9699/sendxmpp/".urlencode($value)."/".urlencode("https://core.eneticum.rep.pm/json/character/".$char->getId()."/option/jid/set/".$hasss."/")."/");
                     break;
                 case 'xts3':
                     $hasss = str_replace(" ", "+", $value)."|".$this->app->CoreManager->generateRandomString();
                     $char->addOption($key, $hasss);
                     $resp['state'] = "success";
-                    file_get_contents("http://localhost:9699/sendts3/".str_replace(" ", "+", urlencode($value))."/".urlencode("https://core.eneticum.rep.pm/json/character/".$char->getCharId()."/option/ts3/set/".$hasss."/")."/");
+                    file_get_contents("http://localhost:9699/sendts3/".str_replace(" ", "+", urlencode($value))."/".urlencode("https://core.eneticum.rep.pm/json/character/".$char->getId()."/option/ts3/set/".$hasss."/")."/");
                     break;
 
                 default:
