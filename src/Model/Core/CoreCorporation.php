@@ -55,7 +55,7 @@ class CoreCorporation extends CoreEntity {
 			foreach ($memberRows as $memberRow) {
 				$character = new CoreCharacter($this->app, $memberRow);
 				if($showVerified)
-					$character->setVerified(count($this->db->queryRow("SELECT * FROM ntAPIKeyCharacter WHERE characterID = :characterID", array(":characterID" => $character->getCharId()))) > 0 ? true : false);
+					$character->setVerified(count($this->db->queryRow("SELECT * FROM ntAPIKeyCharacter WHERE characterID = :characterID", array(":characterID" => $character->getId()))) > 0 ? true : false);
 				array_push($fullMemberList, $character);
 			}
 			if(is_null($ck))
@@ -131,9 +131,9 @@ class CoreCorporation extends CoreEntity {
 
 	public function getStandings () {
 		if(is_null($this->standings)) {
-			$standingRows = $this->db->query("SELECT * FROM ntContactList WHERE ownerID IN (:corporationID, :allianceID) AND standing <> 0.0", 
+			$standingRows = $this->db->query("SELECT * FROM ntContactList WHERE ownerID IN (:corporationID, :allianceID) AND standing <> 0.0",
                 array(
-                    ":corporationID"    => $this->getId(), 
+                    ":corporationID"    => $this->getId(),
                     ":allianceID"       => $this->getAlliance()
                 )
             );
