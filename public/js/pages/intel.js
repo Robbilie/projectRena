@@ -1,5 +1,7 @@
 intelJS();
 function intelJS () {
+    systemStatus = {};
+    regionStatus = {};
     if(location.hash.split("/")[2] === "") {
         var t = $("#systemNav").children[0];
         location.hash = t.getAttribute("href");
@@ -67,6 +69,10 @@ function intelregionJS (cb) {
                 systems[s].setAttribute("xlink:href", "/#!/intel/system/" + systems[s].parentNode.id.replace("def", "") + "/");
             }
         }
+
+        svg.style.visibility = "hidden";
+        setTimeout(function () { svg.style.visibility = "visible"; }, 0);
+
         refreshDom();
         $("#intelRegion").className = "";
 

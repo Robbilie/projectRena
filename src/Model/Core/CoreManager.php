@@ -64,6 +64,246 @@ class CoreManager {
         return $char;
     }
 
+    protected $chars = array();
+    public function getCharacter ($characterID) {
+        if(isset($this->chars[$characterID]))
+            return $this->chars[$characterID];
+        $charRow = $this->db->queryRow("SELECT * FROM easCharacters WHERE characterID = :characterID", array(":characterID" => $characterID));
+        if($charRow) {
+            $char = new CoreCharacter($this->app, $charRow);
+            $this->chars[$characterID] = $char;
+            return $char;
+        } else {
+            $ntCharRow = $this->db->queryRow("SELECT ntCharacter.id as characterID, ntCharacter.name as characterName, ntCharacter.corporation as corporationID, ntCorporation.name as corporationName, ntCorporation.alliance as allianceID, ntAlliance.name as allianceName, NULL as user FROM ntCharacter LEFT JOIN ntCorporation ON ntCharacter.corporation = ntCorporation.id LEFT JOIN ntAlliance ON ntCorporation.alliance = ntAlliance.id WHERE ntCharacter.id = :characterID AND UNIX_TIMESTAMP(ntCharacter.lastUpdateTimestampCA) > UNIX_TIMESTAMP(NOW()) - 86400", array(":characterID" => $characterID));
+            if($ntCharRow) {
+                $char = new CoreCharacter($this->app, $ntCharRow);
+                $this->chars[$characterID] = $char;
+                return $char;
+            } else {
+                $affDat = $this->app->EVEEVECharacterAffiliation->getData([$characterID]);
+                $corp = $this->getCorporation($aff['result']['characters'][0]['corporationID']);
+                $this->db->execute(
+                    "INSERT INTO ntCharacter (id, name, corporation, lastUpdateTimestampCA) 
+                    VALUES (:characterID, :characterName, :corporationID, :lastUpdateTimestampCA) 
+                    ON DUPLICATE KEY 
+                    UPDATE ntCharacter.corporation = VALUES(ntCharacter.corporation), ntCharacter.lastUpdateTimestampCA = VALUES(ntCharacter.lastUpdateTimestampCA)",
+                    array(
+                        ":characterID"              => $aff['result']['characters'][0]['characterID'],
+                        ":characterName"            => $aff['result']['characters'][0]['characterName'],
+                        ":corporationID"            => $aff['result']['characters'][0]['corporationID'],
+                        ":lastUpdateTimestampCA"    => $aff['currentTime']
+                    )
+                );
+                $char = new CoreCharacter($this->app, $aff['result']['characters'][0]);
+                $this->chars[$characterID] = $char;
+                return $char;
+            }
+        }
+        return null;
+    }
+
+    public function getCharacters ($ids) {
+        $reqChars = array();
+        $retChars = array();
+        foreach ($ids as $id) {
+            if(isset($this->chars[$id])) {
+                $retChars[$id] = $this->chars[$id];
+            } else {
+                $reqChars[] = $id;
+            }
+        }
+        $dbChars = array();
+        if(count($reqChars) > 0) {
+            $impIDs = implode(",", $reqChars);
+            $charRows = $this->db->query(
+                "SELECT 
+                    ntCharacter.id as characterID, 
+                    ntCharacter.name as characterName, 
+                    ntCharacter.corporation as corporationID, 
+                    ntCorporation.name as corporationName, 
+                    ntCorporation.alliance as allianceID, 
+                    ntAlliance.name as allianceName, 
+                    NULL as user 
+                FROM ntCharacter 
+                LEFT JOIN ntCorporation 
+                ON ntCharacter.corporation = ntCorporation.id 
+                LEFT JOIN ntAlliance 
+                ON ntCorporation.alliance = ntAlliance.id 
+                WHERE ntCharacter.id IN ($impIDs) AND UNIX_TIMESTAMP(ntCharacter.lastUpdateTimestampCA) > UNIX_TIMESTAMP(NOW()) - 86400"
+            );
+            foreach ($charRows as $charRow) {
+                $dbChars[] = $charRow['characterID'];
+                $char = new CoreCharacter($this->app, $charRow);
+                $this->chars[$charRow['characterID']] = $char;
+                $retChars[$charRow['characterID']] = $char;
+            }
+        }
+        $leftChars = array_diff($reqChars, $dbChars);
+
+        $chunkedChars = array_chunk($leftChars, 250);
+
+        $insertChars = [];
+        $corpIDs = [];
+
+        foreach ($chunkedChars as $chunkedCharList) {
+            $dat = $this->app->EVEEVECharacterAffiliation->getData($chunkedCharList);
+            $tmpChars = $dat['result']['characters'];
+            foreach ($tmpChars as $tmpChar) {
+                $char = new CoreCharacter($this->app, $tmpChar);
+                $this->chars[$char->getCharId()] = $char;
+                $retChars[$char->getCharId()] = $char;
+                $insertChars[] = array(
+                        ":characterID"              => $tmpChar['characterID'],
+                        ":characterName"            => $tmpChar['characterName'],
+                        ":corporationID"            => $tmpChar['corporationID'],
+                        ":lastUpdateTimestampCA"    => $dat['currentTime']
+                    );
+                $corpIDs[] = $tmpChar['corporationID'];
+            }
+        }
+
+        $corps = $this->getCorporations($corpIDs);
+
+        if(count($insertChars) > 0)
+            $this->db->multiInsert("INSERT INTO ntCharacter (id, name, corporation, lastUpdateTimestampCA)", $insertChars, "ON DUPLICATE KEY UPDATE ntCharacter.corporation = VALUES(ntCharacter.corporation), ntCharacter.lastUpdateTimestampCA = VALUES(ntCharacter.lastUpdateTimestampCA)");
+
+        return $retChars;
+    }
+
+    public function getAllCharacters () {
+        $charRows = $this->db->query("SELECT characterID FROM easCharacters");
+        $ids = [];
+        foreach ($charRows as $charRow)
+            $ids[] = $charRow['characterID'];
+        $this->getCharacters($ids);
+        return $this->chars;
+    }
+
+    protected $corps = array();
+    public function getCorporation ($corporationID) {
+        if(isset($this->corps[$corporationID]))
+            return $this->corps[$corporationID];
+        $corporationRow = $this->db->queryRow("SELECT * FROM ntCorporation WHERE id = :corporationID", array(":corporationID" => $corporationID));
+        if($corporationRow) {
+            $corp = new CoreCorporation($this->app, $corporationRow);
+            $this->corps[$corporationID] = $corp;
+            return $corp;
+        } else {
+            $data = $corpApi = $this->app->EVECorporationCorporationSheet->getData(null, null, $corporationID);
+            $corpApi = $data['result'];
+            try {
+            $this->db->execute(
+                    "INSERT INTO ntCorporation (id, shortName, name, ceoCharacterID, alliance) 
+                    VALUES (:corporationID, :shortName, :corporationName, :ceoCharacterID, :alliance) 
+                    ON DUPLICATE KEY 
+                    UPDATE ntCorporation.ceoCharacterID = VALUES(ntCorporation.ceoCharacterID), ntCorporation.ceoCharacterID = VALUES(ntCorporation.ceoCharacterID)",
+                    array(
+                        ":corporationID"    => $corpApi['corporationID'],
+                        ":shortName"        => $corpApi['ticker'],
+                        ":corporationName"  => $corpApi['corporationName'],
+                        ":ceoCharacterID"   => $corpApi['ceoID'],
+                        ":alliance"         => $corpApi['allianceID'] != 0 ? $corpApi['allianceID'] : null
+                    )
+                );
+        } catch(Exception $e) {
+            return json_encode($corpApi['allianceID']);
+        }
+            $corp = new CoreCorporation($this->app,
+                array(
+                    "id"                => $corpApi['corporationID'],
+                    "shortName"         => $corpApi['ticker'],
+                    "name"              => $corpApi['corporationName'],
+                    "ceoCharacterID"    => $corpApi['ceoID'],
+                    "alliance"          => $corpApi['allianceID'],
+                    "npc"               => null
+                )
+            );
+            $this->corps[$corporationID] = $corp;
+            return $corp;
+        }
+        return null;
+    }
+
+    public function getCorporations ($ids) {
+        $reqCorps = array();
+        $retCorps = array();
+        foreach ($ids as $id) {
+            if(isset($this->corps[$id])) {
+                $retCorps[$id] = $this->corps[$id];
+            } else {
+                $reqCorps[] = $id;
+            }
+        }
+        $dbCorps = array();
+        if(count($reqCorps) > 0) {
+            $impIDs = implode(",", $reqCorps);
+            $corpRows = $this->db->query("SELECT * FROM ntCorporation WHERE ntCorporation.id IN ($impIDs)");
+            foreach ($corpRows as $corpRow) {
+                $dbCorps[] = $corpRow['id'];
+                $corp = new CoreCorporation($this->app,
+                    array(
+                        "id"                => $corpApi['corporationID'],
+                        "shortName"         => $corpApi['ticker'],
+                        "name"              => $corpApi['corporationName'],
+                        "ceoCharacterID"    => $corpApi['ceoID'],
+                        "alliance"          => $corpApi['allianceID'],
+                        "npc"               => null
+                    )
+                );
+                $this->corps[$corpRow['id']] = $corp;
+                $retCorps[$corpRow['id']] = $corp;
+            }
+        }
+        $leftCorps = array_diff($reqCorps, $dbCorps);
+
+        $insertCorps = [];
+        $alliIDs = [];
+
+        foreach ($leftCorps as $leftCorp) {
+            $data = $corpApi = $this->app->EVECorporationCorporationSheet->getData(null, null, $leftCorp);
+            $corpApi = $data['result'];
+            $corp = new CoreCorporation($this->app,
+                array(
+                    "id"                => $corpApi['corporationID'],
+                    "shortName"         => $corpApi['ticker'],
+                    "name"              => $corpApi['corporationName'],
+                    "ceoCharacterID"    => $corpApi['ceoID'],
+                    "alliance"          => $corpApi['allianceID'],
+                    "npc"               => null
+                )
+            );
+            $this->corps[$corp->getId()] = $corp;
+            $retCorps[$corp->getId()] = $corp;
+            $insertCorps[] = array(
+                    ":corporationID"    => $corpApi['corporationID'],
+                    ":shortName"        => $corpApi['ticker'],
+                    ":corporationName"  => $corpApi['corporationName'],
+                    ":ceoCharacterID"   => $corpApi['ceoID'],
+                    ":alliance"         => $corpApi['allianceID'] != 0 ? $corpApi['allianceID'] : null
+                );
+            if(!in_array($corpApi['alliance'], $alliIDs))
+                $alliIDs[] = $corpApi['alliance'];
+        }
+
+        if(count($insertCorps) > 0)
+            $this->db->multiInsert("INSERT INTO ntCorporation (id, shortName, name, ceoCharacterID, alliance)", $insertCorps, "ON DUPLICATE KEY UPDATE ntCorporation.ceoCharacterID = VALUES(ntCorporation.ceoCharacterID), ntCorporation.ceoCharacterID = VALUES(ntCorporation.ceoCharacterID)");
+
+        return $retCorps;
+    }
+
+    protected $allis = array();
+    public function getAlliance ($allianceID) {
+        if(isset($this->allis[$allianceID]))
+            return $this->allis[$allianceID];
+        $allianceRow = $this->db->queryRow("SELECT * FROM ntAlliance WHERE id = :allianceID", array(":allianceID" => $allianceID));
+        if($allianceRow) {
+            $alli = new CoreAlliance($this->app, $allianceRow);
+            $this->allis[$allianceID] = $alli;
+            return $alli;
+        }
+        return null;
+    }
+
     public function getNotification ($notificationID) {
         $notification = $this->db->queryRow("SELECT * FROM easNotifications WHERE id = :id", array(":id" => $notificationID));
         if($notification)
@@ -198,96 +438,6 @@ class CoreManager {
         return null;
     }
 
-    protected $chars = array();
-    public function getCharacter ($characterID) {
-        if(isset($this->chars[$characterID]))
-            return $this->chars[$characterID];
-        $charRow = $this->db->queryRow("SELECT * FROM easCharacters WHERE characterID = :characterID", array(":characterID" => $characterID));
-        if($charRow) {
-            $char = new CoreCharacter($this->app, $charRow);
-            $this->chars[$characterID] = $char;
-            return $char;
-        } else {
-            $ntCharRow = $this->db->queryRow("SELECT ntCharacter.id as characterID, ntCharacter.name as characterName, ntCharacter.corporation as corporationID, ntCorporation.name as corporationName, ntCorporation.alliance as allianceID, ntAlliance.name as allianceName, NULL as user FROM ntCharacter LEFT JOIN ntCorporation ON ntCharacter.corporation = ntCorporation.id LEFT JOIN ntAlliance ON ntCorporation.alliance = ntAlliance.id WHERE ntCharacter.id = :characterID AND UNIX_TIMESTAMP(ntCharacter.lastUpdateTimestampCA) > UNIX_TIMESTAMP(NOW()) - 86400", array(":characterID" => $characterID));
-            if($ntCharRow) {
-                $char = new CoreCharacter($this->app, $ntCharRow);
-                $this->chars[$characterID] = $char;
-                return $char;
-            } else {
-                $affDat = $this->app->EVEEVECharacterAffiliation->getData([$characterID]);//['result']['characters'][0]; cachedUntil
-                $this->db->execute(
-                    "INSERT INTO ntCharacter (id, name, corporation, lastUpdateTimestampCA) 
-                    VALUES (:characterID, :characterName, :corporationID, :lastUpdateTimestampCA) 
-                    ON DUPLICATE KEY 
-                    UPDATE ntCharacter.corporation = VALUES(ntCharacter.corporation), ntCharacter.lastUpdateTimestampCA = VALUES(ntCharacter.lastUpdateTimestampCA)",
-                    array(
-                        ":characterID"              => $aff['result']['characters'][0]['characterID'],
-                        ":characterName"            => $aff['result']['characters'][0]['characterName'],
-                        ":corporationID"            => $aff['result']['characters'][0]['corporationID'],
-                        ":lastUpdateTimestampCA"    => $aff['cachedUntil']
-                    )
-                );
-                $char = new CoreCharacter($this->app, $aff['result']['characters'][0]);
-                $this->chars[$characterID] = $char;
-                return $char;
-            }
-        }
-        return null;
-    }
-
-    public function getCharacters ($ids) {
-        $reqChars = array();
-        $retChars = array();
-        foreach ($ids as $id) {
-            if(isset($this->chars[$id])) {
-                $retChars[$id] = $this->chars[$id];
-            } else {
-                $reqChars[] = $id;
-            }
-        }
-        $dbChars = array();
-        $charRows = $this->db->query("SELECT ntCharacter.id as characterID, ntCharacter.name as characterName, ntCharacter.corporation as corporationID, ntCorporation.name as corporationName, ntCorporation.alliance as allianceID, ntAlliance.name as allianceName, NULL as user FROM ntCharacter LEFT JOIN ntCorporation ON ntCharacter.corporation = ntCorporation.id LEFT JOIN ntAlliance ON ntCorporation.alliance = ntAlliance.id WHERE ntCharacter.id IN (:ids) AND UNIX_TIMESTAMP(ntCharacter.lastUpdateTimestampCA) > UNIX_TIMESTAMP(NOW()) - 86400", array(":ids" => implode(",", $reqChars)));
-        foreach ($charRows as $charRow) {
-            $dbChars[] = $charRow['characterID'];
-            $char = new CoreCharacter($this->app, $charRow);
-            $this->chars[$charRow['characterID']] = $char;
-            $retChars[$charRow['characterID']] = $char;
-        }
-        $leftChars = array_diff($reqChars, $dbChars);
-
-        $chunkedChars = array_chunk($leftChars, 100);
-
-        $insertChars = [];
-
-        foreach ($chunkedChars as $chunkedCharList) {
-            $dat = $this->app->EVEEVECharacterAffiliation->getData($chunkedCharList);
-            $tmpChars = $dat['result']['characters'];
-            foreach ($tmpChars as $tmpChar) {
-                $char = new CoreCharacter($this->app, $tmpChar);
-                $this->chars[$char->getCharId()] = $char;
-                $retChars[$char->getCharId()] = $char;
-                $insertChars[] = array(
-                        ":characterID"              => $tmpChar['characterID'],
-                        ":characterName"            => $tmpChar['characterName'],
-                        ":corporationID"            => $tmpChar['corporationID'],
-                        ":lastUpdateTimestampCA"    => $dat['cachedUntil']
-                    );
-            }
-        }
-
-        if(count($insertChars) > 0)
-            $this->db->multiInsert("INSERT INTO ntCharacter (id, name, corporation, lastUpdateTimestampCA)", $insertChars, "ON DUPLICATE KEY UPDATE ntCharacter.corporation = VALUES(ntCharacter.corporation), ntCharacter.lastUpdateTimestampCA = VALUES(ntCharacter.lastUpdateTimestampCA)");
-
-        return $retChars;
-    }
-
-    public function getAllCharacters () {
-        $charRows = $this->db->query("SELECT * FROM easCharacters");
-        foreach ($charRows as $charRow)
-            $this->chars[$char->getCharId()] = new CoreCharacter($this->app, $charRow);
-        return $this->chars;
-    }
-
     public function getFleetParticipant ($fleetparticipant) {
         $character = $this->getCharacter($fleetparticipant['characterID']);
         if(is_null($character)) return null;
@@ -378,46 +528,6 @@ class CoreManager {
 			$this->db->execute("INSERT INTO easFleetParticipants (fleetID, characterID, confirmed) VALUE (:fleetID, :characterID, 1)", array(":fleetID" => $id, ":characterID" => $creator));
 		}
         return $this->getFleet($id);
-    }
-
-    protected $corps = array();
-    public function getCorporation ($corporationID) {
-        if(isset($this->corps[$corporationID]))
-            return $this->corps[$corporationID];
-        $corporationRow = $this->db->queryRow("SELECT * FROM ntCorporation WHERE id = :corporationID", array(":corporationID" => $corporationID));
-        if($corporationRow) {
-            $corp = new CoreCorporation($this->app, $corporationRow);
-            $this->corps[$corporationID] = $corp;
-            return $corp;
-        } else {
-            $corpApi = $this->app->EVECorporationCorporationSheet->getData(null, null, $corporationID)['result'];
-            $corp = new CoreCorporation($this->app,
-                array(
-                    "id" => $corpApi['corporationID'],
-                    "shortName" => $corpApi['ticker'],
-                    "name" => $corpApi['corporationName'],
-                    "ceoCharacterID" => $corpApi['ceoID'],
-                    "alliance" => $corpApi['allianceID'],
-                    "npc" => null
-                )
-            );
-            $this->corps[$corporationID] = $corp;
-            return $corp;
-        }
-        return null;
-    }
-
-    protected $allis = array();
-    public function getAlliance ($allianceID) {
-        if(isset($this->allis[$allianceID]))
-            return $this->allis[$allianceID];
-        $allianceRow = $this->db->queryRow("SELECT * FROM ntAlliance WHERE id = :allianceID", array(":allianceID" => $allianceID));
-        if($allianceRow) {
-            $alli = new CoreAlliance($this->app, $allianceRow);
-            $this->allis[$allianceID] = $alli;
-            return $alli;
-        }
-        return null;
     }
 
     protected $items = array();

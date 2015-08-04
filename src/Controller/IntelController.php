@@ -25,7 +25,7 @@ class IntelController
         $this->db = $this->app->Db;
         $this->config = $this->app->baseConfig;
 
-        //$this->maxIntelAge = time() - (60*60*24);
+        //$this->maxIntelAge = time() - (60 * 60);
     }
 
     public function getSystemIntel ($psystemID = null) {
@@ -204,6 +204,17 @@ class IntelController
                     ":ts" => $this->maxIntelAge
                 )
             );
+            /*$members = $this->db->query(
+                "SELECT easTracker.characterID as id,easTracker.characterName as name,easTracker.corporationID,easTracker.allianceID,easTracker.submitterID,easTracker.timestamp, 
+                    (SELECT info 
+                    FROM easTrackerInfo 
+                    WHERE easTrackerInfo.characterID = easTracker.characterID AND timestamp > :ts ORDER BY timestamp DESC LIMIT 0,1
+                    ) as info FROM easTracker INNER JOIN (SELECT max(timestamp) as maxts,characterID FROM easTracker GROUP BY characterID) t ON easTracker.characterID = t.characterID AND easTracker.timestamp = t.maxts WHERE easTracker.timestamp > :ts AND easTracker.locationID = :locationID",
+                array(
+                    ":locationID" => $systemID,
+                    ":ts" => $this->maxIntelAge
+                )
+            );*/
 
             if(count($members) <= 50) {
 
@@ -357,7 +368,7 @@ class IntelController
 
 
                 // get ids from api
-                $chunkedLocal = array_chunk($local, 100);
+                $chunkedLocal = array_chunk($local, 250);
                 $idsFromAPI = array();
                 for($i = 0; $i < count($chunkedLocal); $i++) {
                     $idsFromAPI = array_merge($idsFromAPI, $this->app->EVEEVECharacterID->getData($chunkedLocal[$i])['result']['characters']);
