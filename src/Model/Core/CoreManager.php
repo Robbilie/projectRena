@@ -53,7 +53,7 @@ class CoreManager {
             $char->setBaseOptions();
         } else {
             $changed = false;
-            $vars = array('characterID' => 'CharId', 'characterName' => 'CharName', 'corporationID' => 'CorpId', 'corporationName' => 'CorpName', 'allianceID' => 'AlliId', 'allianceName' => 'AlliName');
+            $vars = array('characterID' => 'Id', 'characterName' => 'Name', 'corporationID' => 'CorpId', 'corporationName' => 'CorpName', 'allianceID' => 'AlliId', 'allianceName' => 'AlliName');
             $char = new CoreCharacter($this->app, $charRow);
             $ch = $this->charChanged($char, $apiChar);
             if($ch || count($char->getGroups()) == 0) {
@@ -656,7 +656,7 @@ class CoreManager {
 
     public function charChanged ($char, $apiChar) {
         $changed = false;
-        $vars = array('characterID' => 'CharId', 'characterName' => 'CharName', 'corporationID' => 'CorpId', 'corporationName' => 'CorpName', 'allianceID' => 'AlliId', 'allianceName' => 'AlliName');
+        $vars = array('characterID' => 'Id', 'characterName' => 'Name', 'corporationID' => 'CorpId', 'corporationName' => 'CorpName', 'allianceID' => 'AlliId', 'allianceName' => 'AlliName');
         foreach ($vars as $var => $mName) {
             if($char->{'get'.$mName}() != $apiChar[$var]) {
                 $char->{'set'.$mName}($apiChar[$var]);

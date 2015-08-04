@@ -1233,6 +1233,10 @@
         z-index: 1;
     }
 
+    #checkLoggedin:not(:checked) ~ #container #scrollHere {
+        display: none;
+    }
+
     @media (min-height: 880px) {
         #scrollHere {
             display: none;
