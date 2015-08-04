@@ -154,16 +154,8 @@ class CoreCorporation extends CoreEntity {
 
 	// default
 
-	public function getId () {
-		return (int)$this->id;
-	}
-
 	public function getShortName () {
 		return $this->shortName;
-	}
-
-	public function getName () {
-		return $this->name;
 	}
 
 	public function getCeoCharacterId () {

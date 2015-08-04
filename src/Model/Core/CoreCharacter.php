@@ -417,16 +417,8 @@ class CoreCharacter extends CoreEntity {
 		return (int)$this->user;
 	}
 
-	public function getId () {
-		return (int)$this->characterID;
-	}
-
 	public function getCharId () {
 		return (int)$this->characterID;
-	}
-
-	public function getName () {
-		return $this->characterName;
 	}
 
 	public function getCharName () {
