@@ -464,11 +464,11 @@ class IntelController
                 $regionID = 10000029;
 
             if(isset($_GET['hash']) && $_GET['hash'] != "") {
-                $timeout = 15000000;
+                $timeout = 10000000;
                 $interval = 500000;
                 while($timeout > 0) {
 
-                    @session_start();
+                    session_start();
                     $charid = $_SESSION['characterID'];
                     session_write_close();
 
@@ -521,7 +521,7 @@ class IntelController
 
             $systemRows = $this->db->query("SELECT solarSystemID as id FROM mapSolarSystems WHERE regionID = :regionID", array(":regionID" => $regionID));
             foreach ($systemRows as $systemRow) {
-                $sys = array("systemID" => $systemRow['id'], "hostilecount" => 0);
+                $sys = array("systemID" => $systemRow['id'], "hostilecount" => 0, "lastreport" => 0);
                 // get members
                 $members = $this->db->query(
                     "SELECT characterID as id,characterName as name,corporationID,allianceID,submitterID,timestamp
@@ -541,8 +541,11 @@ class IntelController
 
                     $standing = $char->derivedStanding(new CoreCharacter($this->app, array("characterID" => $member['id'], "corporationID" => $member['corporationID'], "allianceID" => $member['allianceID'])));
 
-                    if($standing <= 0)
+                    if($standing <= 0) {
                         $sys['hostilecount']++;
+                        if($sys['lastreport'] < (int)$member['timestamp'])
+                            $sys['lastreport'] = (int)$member['timestamp'];
+                    }
                 }
                 array_push($intel, $sys);
             }

@@ -1,5 +1,6 @@
 intelJS();
 function intelJS () {
+    intelSystemID = null;
     systemStatus = {};
     regionStatus = {};
     if(location.hash.split("/")[2] === "") {
@@ -76,7 +77,7 @@ function intelregionJS (cb) {
         refreshDom();
         $("#intelRegion").className = "";
 
-        checkRegionStatus();
+        setTimeout(checkRegionStatus, 1000);
 
     });
 
@@ -101,7 +102,7 @@ function checkSystemStatus () {
 
             $("#regionNav").children[0].href = "#!/intel/region/" + systemStatus.regionID + "/";
 
-            if($("#intelSystemName").value === "") {
+            if($("#checkTracker").checked) {
                 $("#intelSystemName").value = systemStatus.systemName;
                 intelSystemID = systemStatus.systemID;
             }
@@ -149,7 +150,7 @@ function checkRegionStatus () {
             for(var i = 0; i < regionStatus.length; i++) {
                 var el = svg.getElementById("def" + regionStatus[i].systemID);
                 var s = el.getElementsByClassName("s")[0];
-                s.style.fill = regionStatus[i].hostilecount > 0 ? "orange" : "white";
+                s.style.fill = calcColor(regionStatus[i].hostilecount, regionStatus[i].lastreport);
             }
 
             svg.style.visibility = "hidden";
@@ -159,6 +160,15 @@ function checkRegionStatus () {
 
         setTimeout(checkRegionStatus, 100);
     }, "json");
+}
+
+function calcColor (hostilecount, timestamp) {
+    if(hostilecount == 0) return "white";
+    var maxage = 60 * 60 * 1;
+    var d = new Date();
+    var now = parseInt(d.getTime()/1000);
+    var off = Math.max(timestamp - (now - maxage), 0) / maxage;
+    return "rgb(255," + parseInt(255 - (255 * off)) + ",0)";
 }
 
 var submitting = false;

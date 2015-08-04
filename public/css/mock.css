@@ -1026,6 +1026,11 @@
 
     #intelWarnings .hover.row {
         border: 2px solid white;
+        margin-bottom: -2px;
+    }
+
+    #intelWarnings .hover.row:last-child {
+        margin-bottom: 10px;
     }
 
     .pos {

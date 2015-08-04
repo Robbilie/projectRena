@@ -192,22 +192,22 @@ class CoreManager {
             $data = $corpApi = $this->app->EVECorporationCorporationSheet->getData(null, null, $corporationID);
             $corpApi = $data['result'];
             try {
-            $this->db->execute(
-                    "INSERT INTO ntCorporation (id, shortName, name, ceoCharacterID, alliance) 
-                    VALUES (:corporationID, :shortName, :corporationName, :ceoCharacterID, :alliance) 
-                    ON DUPLICATE KEY 
-                    UPDATE ntCorporation.ceoCharacterID = VALUES(ntCorporation.ceoCharacterID), ntCorporation.ceoCharacterID = VALUES(ntCorporation.ceoCharacterID)",
-                    array(
-                        ":corporationID"    => $corpApi['corporationID'],
-                        ":shortName"        => $corpApi['ticker'],
-                        ":corporationName"  => $corpApi['corporationName'],
-                        ":ceoCharacterID"   => $corpApi['ceoID'],
-                        ":alliance"         => $corpApi['allianceID'] != 0 ? $corpApi['allianceID'] : null
-                    )
-                );
-        } catch(Exception $e) {
-            return json_encode($corpApi['allianceID']);
-        }
+                $this->db->execute(
+                        "INSERT INTO ntCorporation (id, shortName, name, ceoCharacterID, alliance) 
+                        VALUES (:corporationID, :shortName, :corporationName, :ceoCharacterID, :alliance) 
+                        ON DUPLICATE KEY 
+                        UPDATE ntCorporation.ceoCharacterID = VALUES(ntCorporation.ceoCharacterID), ntCorporation.ceoCharacterID = VALUES(ntCorporation.ceoCharacterID)",
+                        array(
+                            ":corporationID"    => $corpApi['corporationID'],
+                            ":shortName"        => $corpApi['ticker'],
+                            ":corporationName"  => $corpApi['corporationName'],
+                            ":ceoCharacterID"   => $corpApi['ceoID'],
+                            ":alliance"         => $corpApi['allianceID'] != 0 ? $corpApi['allianceID'] : null
+                        )
+                    );
+            } catch(Exception $e) {
+                return json_encode($corpApi['allianceID']);
+            }
             $corp = new CoreCorporation($this->app,
                 array(
                     "id"                => $corpApi['corporationID'],
