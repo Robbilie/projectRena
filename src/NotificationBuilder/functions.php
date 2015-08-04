@@ -41,7 +41,9 @@
             $notification['body']['creditorsName'] = $creditorEntity->getName();
         else
             $notification['body']['creditorsName'] = $app->CoreManager->getLocation($notification['body']['creditorID'], true)->getName();
-        $debtorEntity = $app->CoreManager->getCorporation($notification['body']['debtorID']);
+        $debtorEntity = $app->CoreManager->getAlliance($notification['body']['debtorID']);
+        if(is_null($debtorEntity))
+            $debtorEntity = $app->CoreManager->getCorporation($notification['body']['debtorID']);
         $notification['body']['debtorsName'] = $debtorEntity->getName();
         if($billTypeID == $billTypeMarketFine) {
             $messagePath = 'Notifications/bodyBillMarketFine';
@@ -337,7 +339,12 @@
 
     function BountyYourBountyClaimed (&$notification) {
         global $app;
-        $notification['body']['victim'] = $app->CoreManager->getCharacter($notification['body']['victimID'])->getCharName();
+        $victim = $app->CoreManager->getAlliance($notification['body']['victimID']);
+        if(is_null($victim))
+            $victim = $app->CoreManager->getCorporation($notification['body']['victimID']);
+        if(is_null($victim))
+            $victim = $app->CoreManager->getCharacter($notification['body']['victimID']);
+        $notification['body']['victim'] = $victim->getName();
         $notification['body']['bountyPaid'] = number_format($notification['body']['bounty'], 2, ",", ".")." ISK";
     }
 

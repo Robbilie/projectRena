@@ -81,22 +81,24 @@ class CoreManager {
                 return $char;
             } else {
                 $affDat = $this->app->EVEEVECharacterAffiliation->getData([$characterID]);
-                $corp = $this->getCorporation($aff['result']['characters'][0]['corporationID']);
-                $this->db->execute(
-                    "INSERT INTO ntCharacter (id, name, corporation, lastUpdateTimestampCA) 
-                    VALUES (:characterID, :characterName, :corporationID, :lastUpdateTimestampCA) 
-                    ON DUPLICATE KEY 
-                    UPDATE ntCharacter.corporation = VALUES(ntCharacter.corporation), ntCharacter.lastUpdateTimestampCA = VALUES(ntCharacter.lastUpdateTimestampCA)",
-                    array(
-                        ":characterID"              => $aff['result']['characters'][0]['characterID'],
-                        ":characterName"            => $aff['result']['characters'][0]['characterName'],
-                        ":corporationID"            => $aff['result']['characters'][0]['corporationID'],
-                        ":lastUpdateTimestampCA"    => $aff['currentTime']
-                    )
-                );
-                $char = new CoreCharacter($this->app, $aff['result']['characters'][0]);
-                $this->chars[$characterID] = $char;
-                return $char;
+                if($affDat) {
+                    $corp = $this->getCorporation($affDat['result']['characters'][0]['corporationID']);
+                    $this->db->execute(
+                        "INSERT INTO ntCharacter (id, name, corporation, lastUpdateTimestampCA) 
+                        VALUES (:characterID, :characterName, :corporationID, :lastUpdateTimestampCA) 
+                        ON DUPLICATE KEY 
+                        UPDATE ntCharacter.corporation = VALUES(ntCharacter.corporation), ntCharacter.lastUpdateTimestampCA = VALUES(ntCharacter.lastUpdateTimestampCA)",
+                        array(
+                            ":characterID"              => $affDat['result']['characters'][0]['characterID'],
+                            ":characterName"            => $affDat['result']['characters'][0]['characterName'],
+                            ":corporationID"            => $affDat['result']['characters'][0]['corporationID'],
+                            ":lastUpdateTimestampCA"    => $affDat['currentTime']
+                        )
+                    );
+                    $char = new CoreCharacter($this->app, $affDat['result']['characters'][0]);
+                    $this->chars[$characterID] = $char;
+                    return $char;
+                }
             }
         }
         return null;
@@ -190,36 +192,38 @@ class CoreManager {
             return $corp;
         } else {
             $data = $corpApi = $this->app->EVECorporationCorporationSheet->getData(null, null, $corporationID);
-            $corpApi = $data['result'];
-            try {
-                $this->db->execute(
-                        "INSERT INTO ntCorporation (id, shortName, name, ceoCharacterID, alliance) 
-                        VALUES (:corporationID, :shortName, :corporationName, :ceoCharacterID, :alliance) 
-                        ON DUPLICATE KEY 
-                        UPDATE ntCorporation.ceoCharacterID = VALUES(ntCorporation.ceoCharacterID), ntCorporation.ceoCharacterID = VALUES(ntCorporation.ceoCharacterID)",
-                        array(
-                            ":corporationID"    => $corpApi['corporationID'],
-                            ":shortName"        => $corpApi['ticker'],
-                            ":corporationName"  => $corpApi['corporationName'],
-                            ":ceoCharacterID"   => $corpApi['ceoID'],
-                            ":alliance"         => $corpApi['allianceID'] != 0 ? $corpApi['allianceID'] : null
-                        )
-                    );
-            } catch(Exception $e) {
-                return json_encode($corpApi['allianceID']);
+            if($data) {
+                $corpApi = $data['result'];
+                try {
+                    $this->db->execute(
+                            "INSERT INTO ntCorporation (id, shortName, name, ceoCharacterID, alliance) 
+                            VALUES (:corporationID, :shortName, :corporationName, :ceoCharacterID, :alliance) 
+                            ON DUPLICATE KEY 
+                            UPDATE ntCorporation.ceoCharacterID = VALUES(ntCorporation.ceoCharacterID), ntCorporation.ceoCharacterID = VALUES(ntCorporation.ceoCharacterID)",
+                            array(
+                                ":corporationID"    => $corpApi['corporationID'],
+                                ":shortName"        => $corpApi['ticker'],
+                                ":corporationName"  => $corpApi['corporationName'],
+                                ":ceoCharacterID"   => $corpApi['ceoID'],
+                                ":alliance"         => $corpApi['allianceID'] != 0 ? $corpApi['allianceID'] : null,
+                            )
+                        );
+                } catch(Exception $e) {
+                    return json_encode($corpApi['allianceID']);
+                }
+                $corp = new CoreCorporation($this->app,
+                    array(
+                        "id"                => $corpApi['corporationID'],
+                        "shortName"         => $corpApi['ticker'],
+                        "name"              => $corpApi['corporationName'],
+                        "ceoCharacterID"    => $corpApi['ceoID'],
+                        "alliance"          => $corpApi['allianceID'],
+                        "npc"               => null
+                    )
+                );
+                $this->corps[$corporationID] = $corp;
+                return $corp;
             }
-            $corp = new CoreCorporation($this->app,
-                array(
-                    "id"                => $corpApi['corporationID'],
-                    "shortName"         => $corpApi['ticker'],
-                    "name"              => $corpApi['corporationName'],
-                    "ceoCharacterID"    => $corpApi['ceoID'],
-                    "alliance"          => $corpApi['allianceID'],
-                    "npc"               => null
-                )
-            );
-            $this->corps[$corporationID] = $corp;
-            return $corp;
         }
         return null;
     }
