@@ -389,9 +389,9 @@ class CoreCharacter extends CoreEntity {
 
 	public function getStandings () {
 		if(is_null($this->standings)) {
-			$standingRows = $this->db->query("SELECT * FROM ntContactList WHERE ownerID IN (:characterID, :corporationID, :allianceID) AND standing <> 0.0", 
+			$standingRows = $this->db->query("SELECT * FROM ntContactList WHERE ownerID IN (:characterID, :corporationID, :allianceID) AND standing <> 0.0",
                 array(
-                    ":characterID"    => $this->getCharId(), 
+                    ":characterID"    => $this->getCharId(),
                     ":corporationID"    => $this->getCorpId(),
                     ":allianceID"       => $this->getAlliId()
                 )
@@ -415,14 +415,6 @@ class CoreCharacter extends CoreEntity {
 
 	public function getUser () {
 		return (int)$this->user;
-	}
-
-	public function getCharId () {
-		return (int)$this->characterID;
-	}
-
-	public function getCharName () {
-		return $this->characterName;
 	}
 
 	public function getCorpId () {

@@ -74,7 +74,7 @@ class NotificationsController
         $resp = array("state" => "error");
         if(isset($_SESSION["loggedIn"])) {
             $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
-            $charID = $char->getCharId();
+            $charID = $char->getId();
             $notifications = $char->getNotifications();
 
             $vals = array_map(function ($a) use ($charID) { return is_null($a['readState']) ? array(":notificationID" => $a['id'], ":readerID" => $charID) : null; } , $notifications);
@@ -93,7 +93,7 @@ class NotificationsController
             $notification = $char->getCNotification($notificationID);
             if(!is_null($notification)) {
                 if(!$notification->isRead())
-                    $this->db->execute("INSERT INTO easNotificationReaders (notificationID, readerID) VALUES (:notificationID, :readerID)", array(":notificationID" => $notificationID, ":readerID" => $char->getCharId()));
+                    $this->db->execute("INSERT INTO easNotificationReaders (notificationID, readerID) VALUES (:notificationID, :readerID)", array(":notificationID" => $notificationID, ":readerID" => $char->getId()));
                 $resp['state'] = "success";
             }
         }
@@ -108,7 +108,7 @@ class NotificationsController
             $notification = $char->getCNotification($notificationID);
             if(!is_null($notification)) {
                 if($notification->isRead())
-                    $this->db->execute("DELETE FROM easNotificationReaders WHERE notificationID = :notificationID AND readerID = :readerID", array(":notificationID" => $notificationID, ":readerID" => $char->getCharId()));
+                    $this->db->execute("DELETE FROM easNotificationReaders WHERE notificationID = :notificationID AND readerID = :readerID", array(":notificationID" => $notificationID, ":readerID" => $char->getId()));
                 $resp['state'] = "success";
             }
         }

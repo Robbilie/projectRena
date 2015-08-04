@@ -63,7 +63,7 @@ class CoreFleet extends CoreBase {
     public function confirmParticipant ($characterID) {
         $cfleetparticipants = $this->getCFleetParticipants();
         foreach ($cfleetparticipants as $fleetparticipant) {
-            if(!is_null($fleetparticipant) && $fleetparticipant->getCharId() == $characterID) {
+            if(!is_null($fleetparticipant) && $fleetparticipant->getId() == $characterID) {
                 $this->db->execute("UPDATE easFleetParticipants SET confirmed = 1 WHERE fleetID = :fleetID AND characterID = :characterID", array(":fleetID" => $this->id, ":characterID" => $characterID));
                 $fleetparticipant->setConfirmed(true);
             }
@@ -82,7 +82,7 @@ class CoreFleet extends CoreBase {
     		"name"         => $this->name,
     		"comment"      => $this->comment,
     		"creatorID"    => (int)$this->creator,
-    		"creatorName"  => $this->getCCreator()->getCharName(),
+    		"creatorName"  => $this->getCCreator()->getName(),
     		"participants" => $this->getCFleetParticipants(),
     		"expired"      => $this->isExpired()
     	);

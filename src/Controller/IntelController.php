@@ -59,7 +59,7 @@ class IntelController
                     session_start();
                     $charid = $_SESSION['characterID'];
                     session_write_close();
-                    
+
                     $begintime = time()+microtime();
 
                     $intel = $this->getSystemIntelArray($systemID, $charid);
@@ -167,7 +167,7 @@ class IntelController
                             ":locationID" => (int)$_SERVER['HTTP_EVE_SOLARSYSTEMID'],
                             ":submitterID" => $characterID,
                             ":characterID" => $characterID,
-                            ":characterName" => $char->getCharName(),
+                            ":characterName" => $char->getName(),
                             ":corporationID" => $char->getCorpId(),
                             ":allianceID" => $char->getAlliId(),
                             ":ts" => time()
@@ -177,7 +177,7 @@ class IntelController
             // initial values
             $solarSystem = $this->app->mapSolarSystems->getAllByID($systemID);
             $region = $this->app->mapRegions->getAllByID($solarSystem['regionID']);
-            
+
             $intel['state'] = 1;
             $intel['status'] = "Online";
             $intel['systemID'] = $solarSystem['solarSystemID'];
@@ -188,9 +188,9 @@ class IntelController
 
             // get members
             $members = $this->db->query(
-                "SELECT characterID as id,characterName as name,corporationID,allianceID,submitterID,timestamp, 
-                    (SELECT info 
-                    FROM easTrackerInfo 
+                "SELECT characterID as id,characterName as name,corporationID,allianceID,submitterID,timestamp,
+                    (SELECT info
+                    FROM easTrackerInfo
                     WHERE easTrackerInfo.characterID = easTracker.characterID AND timestamp > :ts ORDER BY timestamp DESC LIMIT 0,1
                     ) as info
                 FROM easTracker
@@ -205,9 +205,9 @@ class IntelController
                 )
             );
             /*$members = $this->db->query(
-                "SELECT easTracker.characterID as id,easTracker.characterName as name,easTracker.corporationID,easTracker.allianceID,easTracker.submitterID,easTracker.timestamp, 
-                    (SELECT info 
-                    FROM easTrackerInfo 
+                "SELECT easTracker.characterID as id,easTracker.characterName as name,easTracker.corporationID,easTracker.allianceID,easTracker.submitterID,easTracker.timestamp,
+                    (SELECT info
+                    FROM easTrackerInfo
                     WHERE easTrackerInfo.characterID = easTracker.characterID AND timestamp > :ts ORDER BY timestamp DESC LIMIT 0,1
                     ) as info FROM easTracker INNER JOIN (SELECT max(timestamp) as maxts,characterID FROM easTracker GROUP BY characterID) t ON easTracker.characterID = t.characterID AND easTracker.timestamp = t.maxts WHERE easTracker.timestamp > :ts AND easTracker.locationID = :locationID",
                 array(
@@ -223,7 +223,7 @@ class IntelController
                 $newmembers = array();
 
                 foreach ($members as $member) {
-                    
+
                     if($this->app->CoreManager->getCharacter($member['submitterID'])->derivedStanding($char) <= 0 && !$char->hasPermission("bjhjhlajkhlajksdhflkjasdhflFuckingOpsec")) continue;
 
                     $standing = $char->derivedStanding(new CoreCharacter($this->app, array("characterID" => $member['id'], "corporationID" => $member['corporationID'], "allianceID" => $member['allianceID'])));
@@ -254,7 +254,7 @@ class IntelController
                 $noncharacters = array();
 
                 foreach ($members as $member) {
-                    
+
                     if($this->app->CoreManager->getCharacter($member['submitterID'])->derivedStanding($char) <= 0 && !$char->hasPermission("bjhjhlajkhlajksdhflkjasdhflFuckingOpsec")) continue;
 
                     $standing = $char->derivedStanding(new CoreCharacter($this->app, array("characterID" => $member['id'], "corporationID" => $member['corporationID'], "allianceID" => $member['allianceID'])));
@@ -314,8 +314,8 @@ class IntelController
             if($user && $char) {
                 if($char->getUser() == $user->getId()) {
                     $_SESSION["loggedIn"] = true;
-                    $_SESSION['characterID'] = $char->getCharId();
-                    $_SESSION['characterName'] = $char->getCharName();
+                    $_SESSION['characterID'] = $char->getId();
+                    $_SESSION['characterName'] = $char->getName();
                 } else {
                     $response['msg'] = "char not on user";
                 }
@@ -330,7 +330,7 @@ class IntelController
         if(isset($_SESSION["loggedIn"])) {
 
             do {
-                
+
                 $begintime = time()+microtime();
 
                 $character = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
@@ -410,28 +410,28 @@ class IntelController
                 $dif = array_diff($systemcharids, $newcharids);
 
                 $dif = array_map(
-                    function ($d) use ($systemChars, $charid, $ts) { 
-                        return $systemChars[$d]->getCharId() != 0 ? array(
+                    function ($d) use ($systemChars, $charid, $ts) {
+                        return $systemChars[$d]->getId() != 0 ? array(
                                 ":locationID"       => "null",
                                 ":submitterID"      => $charid,
-                                ":characterID"      => $systemChars[$d]->getCharId(),
-                                ":characterName"    => $systemChars[$d]->getCharName(),
+                                ":characterID"      => $systemChars[$d]->getId(),
+                                ":characterName"    => $systemChars[$d]->getName(),
                                 ":corporationID"    => $systemChars[$d]->getCorpId(),
                                 ":allianceID"       => $systemChars[$d]->getAlliId(),
                                 ":ts"               => $ts
-                            ) : null; 
+                            ) : null;
                     }, $dif);
                 $this->db->multiInsert("INSERT INTO easTracker (locationID, submitterID, characterID, characterName, corporationID, allianceID, timestamp)", $dif);
 
                 echo (time() + microtime() - $begintime)." insert moved<br>"; // 5
 
                 $newids = array_map(
-                    function ($id) use ($systemID, $charid, $charactersFromAPI, $ts) { 
-                        return $charactersFromAPI[$id]->getCharId() != 0 ? array(
+                    function ($id) use ($systemID, $charid, $charactersFromAPI, $ts) {
+                        return $charactersFromAPI[$id]->getId() != 0 ? array(
                                 ":locationID"       => $systemID,
                                 ":submitterID"      => $charid,
-                                ":characterID"      => $charactersFromAPI[$id]->getCharId(),
-                                ":characterName"    => $charactersFromAPI[$id]->getCharName(),
+                                ":characterID"      => $charactersFromAPI[$id]->getId(),
+                                ":characterName"    => $charactersFromAPI[$id]->getName(),
                                 ":corporationID"    => $charactersFromAPI[$id]->getCorpId(),
                                 ":allianceID"       => $charactersFromAPI[$id]->getAlliId(),
                                 ":ts"               => $ts
@@ -558,22 +558,22 @@ class IntelController
     public function setCharacterInfo ($characterID, $info) {
         $resp = array("state" => "error");
         if(isset($_SESSION["loggedIn"])) {
-            
+
             do {
-                
+
                 $character = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
 
                 if(!$character->hasPermission("writeIntel")) break;
 
                 $this->db->execute("INSERT INTO easTrackerInfo (submitterID, characterID, info, timestamp) VALUES (:submitterID, :characterID, :info, :ts)",
                     array(
-                        ":submitterID"  => $character->getCharId(),
+                        ":submitterID"  => $character->getId(),
                         ":characterID"  => $characterID,
                         ":info"         => $info,
                         ":ts"           => time()
                     )
                 );
-            
+
                 $resp['state'] = "success";
 
             } while (0);
@@ -581,5 +581,5 @@ class IntelController
         $this->app->response->headers->set('Content-Type', 'application/json');
         $this->app->response->body(json_encode($resp));
     }
-    
+
 }
