@@ -243,7 +243,7 @@ class CoreCharacter extends CoreEntity {
 						)
 					) ORDER BY easNotifications.requested DESC",
 				array(
-					":characterID" => $this->getCharId(),
+					":characterID" => $this->getId(),
 					":corporationID" => $this->getCorpId(),
 					":allianceID" => $this->getAlliId()
 				)
@@ -253,7 +253,7 @@ class CoreCharacter extends CoreEntity {
 				FROM easNotifications
 				WHERE recipientID = :characterID
 				ORDER BY requested DESC",
-				array(":characterID" => $this->getCharId()));
+				array(":characterID" => $this->getId()));
 			$this->notifications = array_merge($corpNotifications, $charNotifications);
 			usort($this->notifications, function ($a, $b) { return $a['requested'] < $b['requested']; });
 		}
@@ -291,17 +291,17 @@ class CoreCharacter extends CoreEntity {
 
 	public function getOptions () {
 		if(is_null($this->options)) {
-			$this->options = $this->db->query("SELECT `key`, `value` FROM easCharacterOptions WHERE characterID = :characterID", array(":characterID" => $this->getCharId()));
+			$this->options = $this->db->query("SELECT `key`, `value` FROM easCharacterOptions WHERE characterID = :characterID", array(":characterID" => $this->getId()));
 		}
 		return $this->options;
 	}
 
 	public function getOption ($key) {
-		return $this->db->query("SELECT `key`, `value` FROM easCharacterOptions WHERE characterID = :characterID AND `key` = :key", array(":characterID" => $this->getCharId(), ":key" => $key));;
+		return $this->db->query("SELECT `key`, `value` FROM easCharacterOptions WHERE characterID = :characterID AND `key` = :key", array(":characterID" => $this->getId(), ":key" => $key));;
 	}
 
 	public function addOption ($key, $value) {
-		$this->db->execute("INSERT INTO easCharacterOptions (characterID, `key`, `value`) VALUES (:characterID, :key, :value)", array(":characterID" => $this->getCharId(), ":key" => $key, ":value" => $value));
+		$this->db->execute("INSERT INTO easCharacterOptions (characterID, `key`, `value`) VALUES (:characterID, :key, :value)", array(":characterID" => $this->getId(), ":key" => $key, ":value" => $value));
 		$this->options = null;
 	}
 
@@ -312,9 +312,9 @@ class CoreCharacter extends CoreEntity {
 
 	public function delOption ($key, $value = null) {
 		if(is_null($value)) {
-			$this->db->execute("DELETE FROM easCharacterOptions WHERE characterID = :characterID AND `key` = :key", array(":characterID" => $this->getCharId(), ":key" => $key));
+			$this->db->execute("DELETE FROM easCharacterOptions WHERE characterID = :characterID AND `key` = :key", array(":characterID" => $this->getId(), ":key" => $key));
 		} else {
-			$this->db->execute("DELETE FROM easCharacterOptions WHERE characterID = :characterID AND `key` = :key AND `value` = :value", array(":characterID" => $this->getCharId(), ":key" => $key, ":value" => $value));
+			$this->db->execute("DELETE FROM easCharacterOptions WHERE characterID = :characterID AND `key` = :key AND `value` = :value", array(":characterID" => $this->getId(), ":key" => $key, ":value" => $value));
 		}
 		$this->options = null;
 	}
@@ -324,7 +324,7 @@ class CoreCharacter extends CoreEntity {
         // remove old groups
         $oldgroups = $this->getCGroups();
         for($i = 0; $i < count($oldgroups); $i++)
-            $oldgroups[$i]->removeCharacter($this->getCharId());
+            $oldgroups[$i]->removeCharacter($this->getId());
 
         $this->resetGroups();
 
@@ -332,20 +332,20 @@ class CoreCharacter extends CoreEntity {
         $corporationGroup = $this->app->CoreManager->getGroup($this->getCorpName());
         if(is_null($corporationGroup))
             $corporationGroup = $this->app->CoreManager->createGroup($corporation->getName(), "corporation", $this->getCorpId(), 0);
-        $corporationGroup->addCharacter($this->getCharId());
+        $corporationGroup->addCharacter($this->getId());
 
-        if($corporation->getCeoCharacterId() == $this->getCharId())
-            $this->app->CoreManager->getGroup("CEO")->addCharacter($this->getCharId());
+        if($corporation->getCeoCharacterId() == $this->getId())
+            $this->app->CoreManager->getGroup("CEO")->addCharacter($this->getId());
 
         $alliance = $this->getCAlliance();
         if($alliance) {
 			$allianceGroup = $this->app->CoreManager->getGroup($this->getAlliName());
 	        if(is_null($allianceGroup))
 	            $allianceGroup = $this->app->CoreManager->createGroup($alliance->getName(), "alliance", $this->getAlliId(), 0);
-	        $allianceGroup->addCharacter($this->getCharId());
+	        $allianceGroup->addCharacter($this->getId());
 
-	        if($alliance->getExecCorp()->getCeoCharacterId() == $this->getCharId())
-	            $this->app->CoreManager->getGroup("Alliance CEO")->addCharacter($this->getCharId());
+	        if($alliance->getExecCorp()->getCeoCharacterId() == $this->getId())
+	            $this->app->CoreManager->getGroup("Alliance CEO")->addCharacter($this->getId());
 		}
     }
 
@@ -359,7 +359,7 @@ class CoreCharacter extends CoreEntity {
 	}
 
 	public function getStripCharName () {
-		return preg_replace(array("/ /", "/'/"), array("_", "."), strtolower($this->getCharName()));
+		return preg_replace(array("/ /", "/'/"), array("_", "."), strtolower($this->getName()));
 	}
 
 	public function setVerified ($verified) {
@@ -374,8 +374,8 @@ class CoreCharacter extends CoreEntity {
 		$ret = array(
 			"id"				=> $this->getDBId(),
 			//"user"			=> $this->getUser(),
-			"characterID"		=> $this->getCharId(),
-			"characterName"		=> $this->getCharName(),
+			"characterID"		=> $this->getId(),
+			"characterName"		=> $this->getName(),
 			"corporationID"		=> $this->getCorpId(),
 			"corporationName"	=> $this->getCorpName(),
 			"allianceID"		=> $this->getAlliId(),
@@ -391,7 +391,7 @@ class CoreCharacter extends CoreEntity {
 		if(is_null($this->standings)) {
 			$standingRows = $this->db->query("SELECT * FROM ntContactList WHERE ownerID IN (:characterID, :corporationID, :allianceID) AND standing <> 0.0",
                 array(
-                    ":characterID"    => $this->getCharId(),
+                    ":characterID"    	=> $this->getId(),
                     ":corporationID"    => $this->getCorpId(),
                     ":allianceID"       => $this->getAlliId()
                 )
