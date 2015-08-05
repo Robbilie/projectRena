@@ -28,12 +28,12 @@ class JSONController
         $status = array();
 
         if(isset($_GET['hash']) && $_GET['hash'] != "") {
-            $timeout = 35000000;
-            $interval = 500000;
+            $timeout    = 15000000;
+            $interval   =   500000;
             
             $sessID = session_id();
 
-            $ft = filemtime(session_save_path()."/sess_".$sessID);
+            $ft = md5_file(session_save_path()."/sess_".$sessID);
 
             $status = $this->getStatusArray();
 
@@ -43,7 +43,7 @@ class JSONController
 
                 while($timeout > 0) {
                     clearstatcache();
-                    if(filemtime(session_save_path()."/sess_".$sessID) > $ft) {
+                    if(md5_file(session_save_path()."/sess_".$sessID) != $ft) {
                         session_start();
                         session_decode(file_get_contents(session_save_path()."/sess_".$sessID));
                         $status = $this->getStatusArray();

@@ -51,17 +51,17 @@ class IntelController
                 $systemID = 30002489;
 
             if(isset($_GET['hash']) && $_GET['hash'] != "") {
-                $timeout = 15000000;
-                $interval = 1000000;
+                $timeout    = 15000000;
+                $interval   =  1000000;
             
                 $sessID = session_id();
                 $charid = $_SESSION['characterID'];
                 session_write_close();
-                $ft = filemtime(session_save_path()."/sess_".$sessID);
+                $ft = md5_file(session_save_path()."/sess_".$sessID);
                 while($timeout > 0) {
 
                     clearstatcache();
-                    if(filemtime(session_save_path()."/sess_".$sessID) > $ft) break;
+                    if(md5_file(session_save_path()."/sess_".$sessID) != $ft) break;
 
                     $begintime = time()+microtime();
 
@@ -467,17 +467,17 @@ class IntelController
                 $regionID = 10000029;
 
             if(isset($_GET['hash']) && $_GET['hash'] != "") {
-                $timeout = 10000000;
-                $interval = 500000;
+                $timeout    = 10000000;
+                $interval   =   500000;
 
                 $sessID = session_id();
                 $charid = $_SESSION['characterID'];
                 session_write_close();
-                $ft = filemtime(session_save_path()."/sess_".$sessID);
+                $ft = md5_file(session_save_path()."/sess_".$sessID);
                 while($timeout > 0) {
 
                     clearstatcache();
-                    if(filemtime(session_save_path()."/sess_".$sessID) > $ft) break;
+                    if(md5_file(session_save_path()."/sess_".$sessID) != $ft) break;
 
                     $begintime = time()+microtime();
 
