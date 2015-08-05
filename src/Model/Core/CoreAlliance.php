@@ -31,10 +31,11 @@ class CoreAlliance extends CoreEntity {
 
 	public function getCorpList () {
 		if(is_null($this->corpList)) {
-			$this->corpList = array();
+			$corpIDs = array();
 			$corporationRows = $this->db->query("SELECT id FROM ntCorporation WHERE alliance = :alliance", array(":alliance" => $this->id));
 			foreach ($corporationRows as $corporationRow)
-				array_push($this->corpList, $this->app->CoreManager->getCorporation($corporationRow['id']));
+				$corpIDs[] = $corporationRow['id'];
+			$this->corpList = $this->app->CoreManager->getCorporations($corpIDs);
 		}
 		return $this->corpList;
 	}

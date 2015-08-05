@@ -330,7 +330,6 @@ $app->get('/fetcher/postapifetch/', function () use ($app) {
 });
 
 
-
 /*
  * Content
  */
@@ -447,6 +446,10 @@ $app->get('/structures/controltower/:towerID/', function($towerID) use ($app){
 $app->get('/map/region/:regionID/', function($regionID) use ($app){
     $app->response->headers->set('Content-Type', 'image/svg+xml');
     $svg = file_get_contents("http://evemaps.dotlan.net/svg/".str_replace(" ", "_", $app->mapRegions->getRegionNameByID($regionID)).".svg");
+    $pieces = explode("<svg ", $svg);
+    $pieces[1] = 'preserveAspectRatio="xMinYMin meet" '.$pieces[1];
+    $svg = implode("<svg ", $pieces);
+    $svg = str_replace('width="1024" height="768"', "", $svg);
     $svg = explode('<g id="controls"', $svg)[0];
     $svg .= '<script>function init (e) {} window.onload = function() { if(parent.mapLoaded) parent.mapLoaded(); }</script></svg>';
     echo $svg;
@@ -473,6 +476,20 @@ $app->get('/', function() use ($app){
 });
 
 
+/*
+ * Testing
+ */
+
+
+$app->get('/login/test/:characterID/:hash/', function($characterID, $hash) use ($app){
+    $resp = array("state" => "error");
+    if($app->baseConfig->getConfig("loginhash", "secrets") == $hash) {
+        $app->CoreManager->login($characterID);
+        $resp['state'] = "success";
+    }
+    $app->response->headers->set('Content-Type', 'application/json');
+    $app->response->body(json_encode($resp));
+});
 
 
 /*

@@ -25,7 +25,7 @@ class IntelController
         $this->db = $this->app->Db;
         $this->config = $this->app->baseConfig;
 
-        //$this->maxIntelAge = time() - (60 * 60);
+        $this->maxIntelAge = time() - (60 * 60 * 2);
     }
 
     public function getSystemIntel ($psystemID = null) {

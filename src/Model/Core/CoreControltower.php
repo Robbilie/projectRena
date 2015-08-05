@@ -95,7 +95,12 @@ class CoreControltower extends CoreStructure {
 			$x = $this->getX();
 			$y = $this->getY();
 			$z = $this->getZ();
-			$this->modules = $this->getOwner()->getContainers(function($i) use ($id, $loc, $x, $y, $z) { return $i->getId() != $id && $i->getLocationId() == $loc && !is_null($i->getX()) && $i->getX() != 0 && !is_null($i->getY()) && $i->getY() != 0 && !is_null($i->getZ()) && $i->getZ() != 0 && sqrt(pow($i->getX() - $x, 2) + pow($i->getY() - $y, 2) + pow($i->getZ() - $z, 2)) <= 250000; });
+			//$this->modules = $this->getOwner()->getContainers(function($i) use ($id, $loc, $x, $y, $z) { return $i->getId() != $id && $i->getLocationId() == $loc && !is_null($i->getX()) && $i->getX() != 0 && !is_null($i->getY()) && $i->getY() != 0 && !is_null($i->getZ()) && $i->getZ() != 0 && sqrt(pow($i->getX() - $x, 2) + pow($i->getY() - $y, 2) + pow($i->getZ() - $z, 2)) <= 250000; });
+			$tmpMods = $this->app->CoreManager->getContainersByLocation($this->getLocationId());
+			foreach ($tmpMods as $i)
+				if($i->getOwnerId() == $this->getOwnerId() && $i->getId() != $id && $i->getLocationId() == $loc && !is_null($i->getX()) && $i->getX() != 0 && !is_null($i->getY()) && $i->getY() != 0 && !is_null($i->getZ()) && $i->getZ() != 0 && sqrt(pow($i->getX() - $x, 2) + pow($i->getY() - $y, 2) + pow($i->getZ() - $z, 2)) <= 250000)
+					$this->modules[] = $i;
+
 			$this->setReactions();
 		}
 		return $this->modules;
@@ -120,7 +125,12 @@ class CoreControltower extends CoreStructure {
 	public function getContent () {
 		if(is_null($this->ccontent)) {
 			$id = $this->getId();
-			$this->ccontent = $this->getOwner()->getItems(function($i) use ($id) { return $i->getLocationId() == $id; });
+			$this->ccontent = array();
+			//$this->ccontent = $this->getOwner()->getItems(function($i) use ($id) { return $i->getLocationId() == $id; });
+			$tmpCont = $this->app->CoreManager->getItemsByLocation($this->getItemId());
+			foreach ($tmpCont as $i)
+				if($i->getOwnerId() == $this->getOwnerId())
+					$this->ccontent[] = $i;
 		}
 		return $this->ccontent;
 	}

@@ -41,6 +41,9 @@ function intelsystemJS (cb) {
         }
     };
 
+    if(window.CCPEVE)
+        CCPEVE.requestTrust('https://*.eneticum.rep.pm/*');
+
     checkSystemStatus();
     cb();
 }
@@ -48,39 +51,58 @@ function intelsystemJS (cb) {
 function intelregionJS (cb) {
     if(systemAjax)
         systemAjax.abort();
+    
+    $("#intelRegion").className = "";
 
-    ajax("/map/region/" + (location.hash.split("/")[3] !== "" ? location.hash.split("/")[3] : 10000029) + "/", function (r) {
-        $("#regionFrame").outerHTML = r;
-        var svg = $("#intelRegion").children[0];
-        svg.style.background = "transparent";
+    var obj = document.createElement("object");
+    obj.data = "/map/region/" + (location.hash.split("/")[3] !== "" ? location.hash.split("/")[3] : 10000029) + "/";
+    obj.type = "image/svg+xml";
 
-        var systems = svg.getElementsByClassName("sys");
-        for(var s in systems) {
-            if(typeof(systems[s]) == "object") {
-                // set white bg
-                var nod = systems[s].getElementsByClassName("s")[0];
-                if(nod && nod.style) nod.style.fill = "white";
+    $("#intelRegion").appendChild(obj);//.children[0].data = "/map/region/" + (location.hash.split("/")[3] !== "" ? location.hash.split("/")[3] : 10000029) + "/";
 
-                // set links
-                var nam = systems[s].getAttribute("xlink:href").replace("http://evemaps.dotlan.net/system/","").replace("http://evemaps.dotlan.net/map/","");
-                nam = nam.split("/");
-                nam = nam[nam.length - 1];
-                nam = nam.replace("_", " ");
+    waitForMap(cb);
 
-                systems[s].setAttribute("xlink:href", "/#!/intel/system/" + systems[s].parentNode.id.replace("def", "") + "/");
-            }
+}
+
+function waitForMap (cb) {
+    var obj = $("#intelRegion").children[0];
+    if(!obj || !obj.contentDocument || !obj.contentDocument.documentElement || obj.contentDocument.documentElement.nodeName != "svg") {
+        setTimeout(function () {
+            waitForMap(cb);
+        }, 200);
+    } else {
+        setTimeout(function () { setupMap(cb); }, 500);
+    }
+}
+
+function setupMap (cb) {
+    var obj = $("#intelRegion").children[0];
+    var svg = obj.contentDocument.documentElement;
+    svg.style.background = "transparent";
+
+    var systems = svg.getElementsByClassName("sys");
+    for(var s in systems) {
+        if(typeof(systems[s]) == "object") {
+            // set white bg
+            var nod = svg.getElementById("rect" + systems[s].parentNode.id.replace("def", ""));
+            if(nod && nod.style) nod.style.fill = "white";
+
+            // set links
+            var nam = systems[s].getAttribute("xlink:href").replace("http://evemaps.dotlan.net/system/","").replace("http://evemaps.dotlan.net/map/","");
+            nam = nam.split("/");
+            nam = nam[nam.length - 1];
+            nam = nam.replace("_", " ");
+
+            systems[s].setAttribute("xlink:href", "/#!/intel/system/" + systems[s].parentNode.id.replace("def", "") + "/");
         }
+    }
+    svg.style.visibility = "hidden";
+    setTimeout(function () { svg.style.visibility = "visible"; }, 0);
 
-        svg.style.visibility = "hidden";
-        setTimeout(function () { svg.style.visibility = "visible"; }, 0);
+    refreshDom();
+    $("#intelRegion").className = "";
 
-        refreshDom();
-        $("#intelRegion").className = "";
-
-        setTimeout(checkRegionStatus, 1000);
-
-    });
-
+    setTimeout(checkRegionStatus, 1000);
     cb();
 }
 
@@ -146,11 +168,14 @@ function checkRegionStatus () {
         if(JSON.stringify(regionStatus) != JSON.stringify(r)) {
             regionStatus = r;
 
-            var svg = $("#svgdoc");
+            var obj = $("#intelRegion").children[0];
+            var svg = obj.contentDocument.documentElement;
+            svg.style.background = "transparent";
             for(var i = 0; i < regionStatus.length; i++) {
                 var el = svg.getElementById("def" + regionStatus[i].systemID);
-                var s = el.getElementsByClassName("s")[0];
-                s.style.fill = calcColor(regionStatus[i].hostilecount, regionStatus[i].lastreport);
+                var s = svg.getElementById("rect" + regionStatus[i].systemID);
+                if(s)
+                    s.style.fill = calcColor(regionStatus[i].hostilecount, regionStatus[i].lastreport);
             }
 
             svg.style.visibility = "hidden";

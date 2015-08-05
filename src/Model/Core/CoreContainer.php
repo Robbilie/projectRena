@@ -47,7 +47,8 @@ class CoreContainer extends CoreItem {
 				$volume += $content->getType()->getVolume() * $content->getQuantity();
 			}
 
-			$this->fill = $volume / ($this->getType()->getCapacity() * $this->cargomod) * 100;
+			if($this->getType()->getCapacity() * $this->cargomod != 0)
+				$this->fill = $volume / ($this->getType()->getCapacity() * $this->cargomod) * 100;
 		}
 		return $this->fill;
 	}

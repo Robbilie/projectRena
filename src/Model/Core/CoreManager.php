@@ -18,7 +18,8 @@ class CoreManager {
     public function login ($characterID) {
         $char = $this->createCharacter($characterID);
 
-        $this->createLog("login", array("characterID" => $characterID, "ip" => $_SERVER["HTTP_X_REAL_IP"]));
+        if(isset($_SERVER["HTTP_X_REAL_IP"]))
+            $this->createLog("login", array("characterID" => $characterID, "ip" => $_SERVER["HTTP_X_REAL_IP"]));
 
         if(isset($_SESSION['characterID'])) {
             $char->setUser($this->createCharacter($_SESSION['characterID'])->getUser());
@@ -28,6 +29,11 @@ class CoreManager {
                 $char->setUser($user->getId());
             }
         }
+
+        // Set the session
+        $_SESSION["characterName"] = $char->getName();
+        $_SESSION["characterID"] = $char->getId();
+        $_SESSION["loggedIn"] = true;
     }
 
     public function createUser () {
@@ -244,16 +250,7 @@ class CoreManager {
             $corpRows = $this->db->query("SELECT * FROM ntCorporation WHERE ntCorporation.id IN ($impIDs)");
             foreach ($corpRows as $corpRow) {
                 $dbCorps[] = $corpRow['id'];
-                $corp = new CoreCorporation($this->app,
-                    array(
-                        "id"                => $corpApi['corporationID'],
-                        "shortName"         => $corpApi['ticker'],
-                        "name"              => $corpApi['corporationName'],
-                        "ceoCharacterID"    => $corpApi['ceoID'],
-                        "alliance"          => $corpApi['allianceID'],
-                        "npc"               => null
-                    )
-                );
+                $corp = new CoreCorporation($this->app, $corpRow);
                 $this->corps[$corpRow['id']] = $corp;
                 $retCorps[$corpRow['id']] = $corp;
             }
@@ -604,6 +601,17 @@ class CoreManager {
         return null;
     }
 
+    public function getContainersByLocation ($locationID) {
+        $containers = array();
+        $containerRows = $this->db->query("SELECT ntItem.ownerID,ntItem.itemID,ntItem.typeID,ntItem.locationID,ntItem.quantity,ntItem.flag,ntLocation.name,ntLocation.x,ntLocation.y,ntLocation.z,ntItem.lastUpdateTimestamp FROM ntItem,ntLocation WHERE ntItem.locationID = :locationID AND ntLocation.itemID = ntItem.itemID", array(":locationID" => $locationID));
+        foreach ($containerRows as $containerRow) {
+            $container = new CoreContainer($this->app, $containerRow);
+            $this->containers[$container->getId()] = $container;
+            array_push($containers, $container);
+        }
+        return $containers;
+    }
+
     protected $controltowers = array();
     public function getControltower ($towerID) {
         if(isset($this->controltowers[$towerID]))
@@ -711,6 +719,10 @@ class CoreManager {
                 ":ts" => is_null($time) ? time() : $time
             )
         );
+    }
+
+    public function readSession ($id) {
+        session_decode(file_get_contents(session_save_path()."/sess_".$id));
     }
 
 }

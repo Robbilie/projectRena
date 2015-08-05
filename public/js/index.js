@@ -62,7 +62,7 @@ function hashChange (elem) {
                         scriptelem.text = $("#content script")[$("#content script").length - 1].text;
 
                         $("#content").appendChild(scriptelem);
-                        setTimeout(function () { $("#content").removeChild(scriptelem); }, 1000);
+                        //setTimeout(function () { $("#content").removeChild(scriptelem); }, 1000);
                     } else {
                         console.log("no script");
                         if($(".contentConti")[0])
@@ -152,12 +152,16 @@ function ajax (url, callback, format, options) {
                 case "json":
                     callback(JSON.parse(xmlhttp.responseText));
                     break;
+                case "xml":
+                    callback(xmlhttp.responseXML);
                 default:
                     callback(xmlhttp.responseText);
                     break;
             }
         }
     };
+    if(format == "xml")
+        xmlhttp.overrideMimeType("image/svg+xml");
     xmlhttp.open("GET", url, true);
     xmlhttp.send();
     timeout = setTimeout(function () {

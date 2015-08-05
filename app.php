@@ -2,7 +2,7 @@
 // Include bootstrap
 use Slim\Views\Twig;
 use Zeuxisoo\Whoops\Provider\Slim\WhoopsMiddleware;
-
+ini_set('memory_limit','500M');
 // Error display
 ini_set("display_errors", 1);
 error_reporting(isset($_REQUEST['debug']) ? E_ALL : E_WARNING);
