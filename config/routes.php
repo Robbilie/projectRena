@@ -52,7 +52,7 @@ $app->get('/json/corporation/:corporationID/location/:locationID/', function($co
 });
 
 $app->get('/json/finances/taxes/', function() use ($app){
-    (new \ProjectRena\Controller\JSONController($app))->getCorporationRattingTax(null, null);
+    (new \ProjectRena\Controller\JSONController($app))->getAllianceRattingTax(null, null);
 });
 
 $app->get('/json/finances/taxes/:from/', function($from) use ($app){

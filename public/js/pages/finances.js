@@ -19,15 +19,19 @@ function financestaxesJS (cb) {
 	ajax("/json/finances/taxes/" + ($("#taxesFrom").value !== "" ? ($("#taxesFrom").value + ($("#taxesTill").value !== "" ? "/" + $("#taxesTill").value : "")) + '/' : ''), function (r) {
 		console.log(r);
 
-		var tmpl = $("#journalTemplate").innerHTML;
+		var jourTmpl = $("#journalTemplate").innerHTML;
+		var corpTmpl = $("#taxesTemplate").innerHTML;
 		var el = $("#taxesList");
 		el.innerHTML = "";
 
-		for(var i = 0; i < r.entries.length; i++)
-			el.appendChild(createElement(tmpl.format([r.entries[i].ownerName, r.entries[i].valuestr])));
-
-    	el.appendChild(createElement(tmpl.format(["<b>Global</b>", "<b>" + r.globalstr + "</b>"])));
-
+		for(var i = 0; i < r.length; i++) {
+			el.appendChild(createElement(corpTmpl.format([r[i].name, r[i].id])));
+			var l = $("#taxesList" + r[i].id);
+			for(var j = 0; j < r[i].entries.length; j++)
+				l.appendChild(createElement(jourTmpl.format([r[i].entries[j].ownerName, r[i].entries[j].valuestr])));
+    		l.appendChild(createElement(jourTmpl.format(["<b>Global</b>", "<b>" + r[i].globalstr + "</b>"])));
+		}
+		
 		cb();
 	}, "json");
 }

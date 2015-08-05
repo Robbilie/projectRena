@@ -11,7 +11,7 @@ function notificationsJS () {
 				[
 					r[i].id, 
 					r[i].typeID, 
-					r[i].requested == r[i].created ? '<span class="fr">' + (new Date(r[i].created * 1000).toLocaleString()) + '</span>' : "", 
+					r[i].requested == r[i].created ? '<span class="fr">' + new Date(r[i].created * 1000).toJSON().split(".")[0] + '</span>' : "", 
 					r[i].readState ? '' : 'unread', 
 					r[i].subject == "!!Unable to read notification" ? 'ID: ' + r[i].id + ' , TYPE: ' + r[i].typeID : r[i].subject, 
 					r[i].subject == "!!Unable to read notification" ? JSON.stringify(r[i]) : r[i].message

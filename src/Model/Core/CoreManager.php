@@ -42,7 +42,8 @@ class CoreManager {
 
     public function createCharacter ($characterID) {
         $char = null;
-        $apiChar = $this->app->EVEEVECharacterAffiliation->getData([$characterID])["result"]["characters"][0];
+        //$apiChar = $this->app->EVEEVECharacterAffiliation->getData([$characterID])["result"]["characters"][0];
+        $apiChar = $this->getCharacter($characterID, true)->jsonSerialize();
         $charRow = $this->db->queryRow("SELECT * FROM easCharacters WHERE characterID = :characterID", array(":characterID" => $characterID));
         if(!$charRow) {
             $this->db->execute("INSERT INTO easCharacters (characterID, characterName, corporationID, corporationName, allianceID, allianceName) VALUE (:characterID, :characterName, :corporationID, :corporationName, :allianceID, :allianceName)",
@@ -71,11 +72,11 @@ class CoreManager {
     }
 
     protected $chars = array();
-    public function getCharacter ($characterID) {
+    public function getCharacter ($characterID, $bypassdb = false) {
         if(isset($this->chars[$characterID]))
             return $this->chars[$characterID];
         $charRow = $this->db->queryRow("SELECT * FROM easCharacters WHERE characterID = :characterID", array(":characterID" => $characterID));
-        if($charRow) {
+        if($charRow && !$bypassdb) {
             $char = new CoreCharacter($this->app, $charRow);
             $this->chars[$characterID] = $char;
             return $char;

@@ -167,7 +167,7 @@ class FetcherController
                 }
             }
 
-            $createTask = (is_null($lastNotif) || $isOutdated) ? true : false;
+            $createTask = (is_null($lastNotif) || ($isOutdated && $pos->getState() > 1)) ? true : false;
 
             echo "<div> - ".$createTask." | ".$pos->getId()." | ".floor(($fuelTS + ($hours * 3600)) / 3600)." | ".(!is_null($lastNotif) ? floor($lastNotif->getRequested() / 3600) : "new")." - </div>";
 

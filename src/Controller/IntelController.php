@@ -53,12 +53,15 @@ class IntelController
             if(isset($_GET['hash']) && $_GET['hash'] != "") {
                 $timeout = 15000000;
                 $interval = 1000000;
+            
+                $sessID = session_id();
+                $charid = $_SESSION['characterID'];
+                session_write_close();
+                $ft = filemtime(session_save_path()."/sess_".$sessID);
                 while($timeout > 0) {
 
-
-                    session_start();
-                    $charid = $_SESSION['characterID'];
-                    session_write_close();
+                    clearstatcache();
+                    if(filemtime(session_save_path()."/sess_".$sessID) > $ft) break;
 
                     $begintime = time()+microtime();
 
@@ -466,11 +469,15 @@ class IntelController
             if(isset($_GET['hash']) && $_GET['hash'] != "") {
                 $timeout = 10000000;
                 $interval = 500000;
+
+                $sessID = session_id();
+                $charid = $_SESSION['characterID'];
+                session_write_close();
+                $ft = filemtime(session_save_path()."/sess_".$sessID);
                 while($timeout > 0) {
 
-                    session_start();
-                    $charid = $_SESSION['characterID'];
-                    session_write_close();
+                    clearstatcache();
+                    if(filemtime(session_save_path()."/sess_".$sessID) > $ft) break;
 
                     $begintime = time()+microtime();
 

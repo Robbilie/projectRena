@@ -28,22 +28,33 @@ class JSONController
         $status = array();
 
         if(isset($_GET['hash']) && $_GET['hash'] != "") {
-            $timeout = 15000000;
+            $timeout = 35000000;
             $interval = 500000;
-            while($timeout > 0) {
+            
+            $sessID = session_id();
 
-                session_start();
-                $status = $this->getStatusArray();
+            $ft = filemtime(session_save_path()."/sess_".$sessID);
+
+            $status = $this->getStatusArray();
+
+            if(md5(json_encode($status)) == $_GET['hash']) {
+
                 session_write_close();
 
-                if(md5(json_encode($status)) == $_GET['hash']) {
-                    usleep($interval);
-                } else {
-                    break;
+                while($timeout > 0) {
+                    clearstatcache();
+                    if(filemtime(session_save_path()."/sess_".$sessID) > $ft) {
+                        session_start();
+                        session_decode(file_get_contents(session_save_path()."/sess_".$sessID));
+                        $status = $this->getStatusArray();
+                        break;
+                    } else {
+                        usleep($interval);
+                    }
+
+                    $timeout -= $interval;
+
                 }
-
-                $timeout -= $interval;
-
             }
         } else {
             $status = $this->getStatusArray();
@@ -215,6 +226,50 @@ class JSONController
         }
         $this->app->response->headers->set('Content-Type', 'application/json');
         $this->app->response->body(json_encode($taxes));
+    }
+
+    public function getAllianceRattingTax ($from = null, $till = null) {
+        $totaltaxes = array();
+        if(isset($_SESSION["loggedIn"])) {
+            $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
+
+            $corpIDs = [];
+            if($char->hasPermission("readJournal", "alliance")) {
+                $corporations = $char->getCCorporation()->getCAlliance()->getCorpList();
+                foreach ($corporations as $corp)
+                    $corpIDs[] = $corp->getId();
+            } else if($char->hasPermission("readJournal", "corporation")) {
+                $corpIDs[] = $char->getCorpId();
+            }
+            $corps = $this->app->CoreManager->getCorporations($corpIDs);
+            foreach ($corps as $corp) {
+                $taxes = array("name" => $corp->getName(), "id" => $corp->getId(), "entries" => array(), "global" => 0, "globalstr" => "");
+                $journalRows = $this->db->query("SELECT * FROM ntJournal WHERE ownerID = :ownerID AND accountKey = 1000 AND date > :from AND date < :till AND refTypeID IN (17,33,34,85,99) ORDER BY date DESC",
+                    array(
+                        ":ownerID"=> $corp->getId(),
+                        ":from"=> !is_null($from) ? strtotime($from) : mktime(0, 0, 0, date("m"), 1, date("Y")),
+                        ":till"=> !is_null($till) ? strtotime($till) : time()
+                        )
+                    );
+                $tmpdata = array();
+                $tmpuser = array();
+                foreach ($journalRows as $journalRow) {
+                    if(!isset($tmpdata[$journalRow['ownerID2']])) $tmpdata[$journalRow['ownerID2']] = 0;
+                    $tmpdata[$journalRow['ownerID2']] += $journalRow['amount'];
+                    $taxes['global'] += $journalRow['amount'];
+                    $tmpuser[$journalRow['ownerID2']] = $journalRow['ownerName2'];
+                }
+                arsort($tmpdata);
+                foreach($tmpdata as $key => $value) {
+                    array_push($taxes['entries'], array("ownerID" => $key, "ownerName" => $tmpuser[$key], "valuestr" => number_format($tmpdata[$key], 2, ',', '.'), "value" => $tmpdata[$key]));
+                }
+                $taxes['globalstr'] = number_format($taxes["global"], 2, ',', '.');
+                $totaltaxes[] = $taxes;
+            }
+
+        }
+        $this->app->response->headers->set('Content-Type', 'application/json');
+        $this->app->response->body(json_encode($totaltaxes));
     }
 
     // return all permission with a special scope

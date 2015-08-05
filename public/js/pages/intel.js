@@ -60,25 +60,14 @@ function intelregionJS (cb) {
 
     $("#intelRegion").appendChild(obj);//.children[0].data = "/map/region/" + (location.hash.split("/")[3] !== "" ? location.hash.split("/")[3] : 10000029) + "/";
 
-    waitForMap(cb);
+    cb();
 
 }
 
-function waitForMap (cb) {
+function mapLoaded () {
     var obj = $("#intelRegion").children[0];
-    if(!obj || !obj.contentDocument || !obj.contentDocument.documentElement || obj.contentDocument.documentElement.nodeName != "svg") {
-        setTimeout(function () {
-            waitForMap(cb);
-        }, 200);
-    } else {
-        setTimeout(function () { setupMap(cb); }, 500);
-    }
-}
-
-function setupMap (cb) {
-    var obj = $("#intelRegion").children[0];
-    var svg = obj.contentDocument.documentElement;
-    svg.style.background = "transparent";
+    var svg = obj.contentDocument;
+    svg.documentElement.style.background = "transparent";
 
     var systems = svg.getElementsByClassName("sys");
     for(var s in systems) {
@@ -96,14 +85,13 @@ function setupMap (cb) {
             systems[s].setAttribute("xlink:href", "/#!/intel/system/" + systems[s].parentNode.id.replace("def", "") + "/");
         }
     }
-    svg.style.visibility = "hidden";
-    setTimeout(function () { svg.style.visibility = "visible"; }, 0);
+    svg.documentElement.style.visibility = "hidden";
+    setTimeout(function () { svg.documentElement.style.visibility = "visible"; }, 0);
 
     refreshDom();
     $("#intelRegion").className = "";
 
     setTimeout(checkRegionStatus, 1000);
-    cb();
 }
 
 var switchedIntel = false;
@@ -169,8 +157,8 @@ function checkRegionStatus () {
             regionStatus = r;
 
             var obj = $("#intelRegion").children[0];
-            var svg = obj.contentDocument.documentElement;
-            svg.style.background = "transparent";
+            var svg = obj.contentDocument;
+            svg.documentElement.style.background = "transparent";
             for(var i = 0; i < regionStatus.length; i++) {
                 var el = svg.getElementById("def" + regionStatus[i].systemID);
                 var s = svg.getElementById("rect" + regionStatus[i].systemID);
@@ -178,8 +166,8 @@ function checkRegionStatus () {
                     s.style.fill = calcColor(regionStatus[i].hostilecount, regionStatus[i].lastreport);
             }
 
-            svg.style.visibility = "hidden";
-            setTimeout(function () { svg.style.visibility = "visible"; }, 0);
+            svg.documentElement.style.visibility = "hidden";
+            setTimeout(function () { svg.documentElement.style.visibility = "visible"; }, 0);
 
         }
 
