@@ -1285,12 +1285,16 @@
     	display: none;
     }
 
-    #notificationsList div:nth-child(odd), #tasksList div:nth-child(odd) {
+    #notificationsList > div:nth-child(odd), #tasksList > div:nth-child(odd) {
         background-color: rgba(0,0,0,.1);
     }
 
-    #notificationsList div:nth-child(odd):hover, #tasksList div:nth-child(odd):hover {
+    #notificationsList > div:nth-child(odd):hover, #tasksList > div:nth-child(odd):hover {
         background-color: rgba(0,0,0,.2);
+    }
+
+    .btnarea {
+        overflow: hidden;
     }
 
     .unread {
@@ -1360,4 +1364,21 @@
 
     .fsl {
         font-size: large;
+    }
+
+    #checkCookieAndEula:checked ~ #container #cookieAndEula { display: block; }
+    #cookieAndEula {
+        display: none;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        margin-top: -300px;
+        margin-left: -200px;
+        width: 400px;
+        z-index: 500;
+    }
+
+    #cookieAndEula > .chead {
+        margin-top: 0;
+        text-align: center;
     }

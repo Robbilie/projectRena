@@ -12748,7 +12748,7 @@
         "label": "bodyTowerFuelMsg",
         "messageID": 1337003,
         "message": [
-            "<a href=\"#!/structures/controltower/{towerID}/\">{towerName}</a> in {solarSystemName} has Fuel left for {leftHours} hours",
+            "<a href=\"#!/structures/controltower/{towerID}/\">{towerName}</a> in {solarSystemName} has Fuel left for {leftHours} hours <div class='btnarea'><span class='fl'>State: [{stateName}]</span><span class='fr btn' onclick='setState({notificationID}, {nextState});'>Set to [{nextStateName}]</span></div>",
             null,
             {
                 "{towerName}": {
@@ -12798,6 +12798,54 @@
 
                     ],
                     "variableName": "leftHours"
+                },
+                "{stateName}": {
+                    "conditionalValues": [
+
+                    ],
+                    "variableType": 10,
+                    "propertyName": null,
+                    "args": 0,
+                    "kwargs": [
+
+                    ],
+                    "variableName": "stateName"
+                },
+                "{nextState}": {
+                    "conditionalValues": [
+
+                    ],
+                    "variableType": 10,
+                    "propertyName": null,
+                    "args": 0,
+                    "kwargs": [
+
+                    ],
+                    "variableName": "nextState"
+                },
+                "{nextStateName}": {
+                    "conditionalValues": [
+
+                    ],
+                    "variableType": 10,
+                    "propertyName": null,
+                    "args": 0,
+                    "kwargs": [
+
+                    ],
+                    "variableName": "nextStateName"
+                },
+                "{notificationID}": {
+                    "conditionalValues": [
+
+                    ],
+                    "variableType": 10,
+                    "propertyName": null,
+                    "args": 0,
+                    "kwargs": [
+
+                    ],
+                    "variableName": "notificationID"
                 }
             }
         ]

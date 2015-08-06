@@ -55,9 +55,10 @@
     </head>
     <body>
         <!-- #Toggles -->
-        <input type="checkbox" class="check" id="checkLoggedin" onchange="refreshDom();" />
-        <input type="checkbox" class="check" id="checkSidebar"  onchange="refreshDom();" />
-        <input type="checkbox" class="check" id="checkMaxed"    onchange="refreshDom();" />
+        <input type="checkbox" class="check" id="checkCookieAndEula"    onchange="refreshDom();" />
+        <input type="checkbox" class="check" id="checkLoggedin"         onchange="refreshDom();" />
+        <input type="checkbox" class="check" id="checkSidebar"          onchange="refreshDom();" />
+        <input type="checkbox" class="check" id="checkMaxed"            onchange="refreshDom();" />
         <!-- #Content -->
         <div id="container">
             <div id="header">
@@ -172,6 +173,22 @@
                             i
                         </span>
                     </div>
+                </div>
+            </div>
+            <div id="cookieAndEula" class="card">
+                <div class="chead">
+                    <h1 class="blue">Agreement</h1>
+                </div>
+                <div class="cbody">
+                    <p class="paddedp">
+                        By using this site, you agree to its use of cookies.
+                        <br>
+                        <br>
+                        By logging into this tool, you agree to our <a href="/eula.txt">EULA</a>.
+                        <br>
+                        <br>
+                        <label for="checkCookieAndEula" class="btn" onclick="saveCookie();">Confirm</label>
+                    </p>
                 </div>
             </div>
         </div>

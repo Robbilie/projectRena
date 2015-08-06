@@ -25,7 +25,7 @@ class IntelController
         $this->db = $this->app->Db;
         $this->config = $this->app->baseConfig;
 
-        $this->maxIntelAge = time() - (60 * 60 * 2);
+        //$this->maxIntelAge = time() - (60 * 60 * 2);
     }
 
     public function getSystemIntel ($psystemID = null) {
@@ -156,7 +156,7 @@ class IntelController
 
         do {
 
-            if(!$char->hasPermission("readIntel")) break;
+            if(!$char->hasPermission("readIntel", "alliance") && !$char->hasPermission("readIntel", "corporation")) break;
 
             // move character if not in system yet
             if(isset($_SERVER['HTTP_EVE_TRUSTED']) && $_SERVER['HTTP_EVE_TRUSTED'] == "Yes") {
@@ -219,15 +219,23 @@ class IntelController
                 )
             );*/
 
-            if(count($members) <= 50) {
+            if(count($members) <= 100) {
 
                 $intel['membertype'] = "characters";
 
                 $newmembers = array();
 
+
                 foreach ($members as $member) {
 
-                    if($this->app->CoreManager->getCharacter($member['submitterID'])->derivedStanding($char) <= 0 && !$char->hasPermission("bjhjhlajkhlajksdhflkjasdhflFuckingOpsec")) continue;
+                    $submitter = $this->app->CoreManager->getCharacter($member['submitterID']);
+                    if(
+                        $char->getId() != $submitter->getId() && 
+                        $char->getCorpId() != $submitter->getCorpId() && 
+                        ($char->getAlliId() == 0 || $char->getAlliId() != $submitter->getAlliId()) && 
+                        $submitter->derivedStanding($char) <= 0 && 
+                        !$char->hasPermission("bjhjhlajkhlajksdhflkjasdhflFuckingOpsec")
+                    ) continue;
 
                     $standing = $char->derivedStanding(new CoreCharacter($this->app, array("characterID" => $member['id'], "corporationID" => $member['corporationID'], "allianceID" => $member['allianceID'])));
 
@@ -240,7 +248,8 @@ class IntelController
                             "id"        => $member['id'],
                             "name"      => $this->app->CoreManager->getCharacter($member['id'])->getName(),
                             "standing"  => $standing,
-                            "timestamp" => $member['timestamp']
+                            "timestamp" => $member['timestamp'],
+                            "info"      => $member['info']
                         );
                         if($standing <= 0)
                             $intel['hostilecount']++;
@@ -258,8 +267,15 @@ class IntelController
 
                 foreach ($members as $member) {
 
-                    if($this->app->CoreManager->getCharacter($member['submitterID'])->derivedStanding($char) <= 0 && !$char->hasPermission("bjhjhlajkhlajksdhflkjasdhflFuckingOpsec")) continue;
-
+                    $submitter = $this->app->CoreManager->getCharacter($member['submitterID']);
+                    if(
+                        $char->getId() != $submitter->getId() && 
+                        $char->getCorpId() != $submitter->getCorpId() && 
+                        ($char->getAlliId() == 0 || $char->getAlliId() != $submitter->getAlliId()) && 
+                        $submitter->derivedStanding($char) <= 0 && 
+                        !$char->hasPermission("bjhjhlajkhlajksdhflkjasdhflFuckingOpsec")
+                    ) continue;
+                    
                     $standing = $char->derivedStanding(new CoreCharacter($this->app, array("characterID" => $member['id'], "corporationID" => $member['corporationID'], "allianceID" => $member['allianceID'])));
 
                     if(($char->getAlliId() != 0 && $char->getAlliId() == $member['allianceID']) || !$char->getCCorporation()->isNPC() && $char->getCorpId() == $member['corporationID'])
@@ -338,7 +354,7 @@ class IntelController
 
                 $character = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
 
-                if(!$character->hasPermission("writeIntel")) break;
+                if(!$character->hasPermission("writeIntel", "alliance") && !$character->hasPermission("writeIntel", "corporation")) break;
 
                 // set system id
                 if(is_null($systemID) && isset($_SERVER['HTTP_EVE_TRUSTED']) && $_SERVER['HTTP_EVE_TRUSTED'] == "Yes")
@@ -524,7 +540,7 @@ class IntelController
 
         do {
 
-            if(!$char->hasPermission("readIntel")) break;
+            if(!$char->hasPermission("readIntel", "alliance") && !$char->hasPermission("readIntel", "corporation")) break;
 
             $systemRows = $this->db->query("SELECT solarSystemID as id FROM mapSolarSystems WHERE regionID = :regionID", array(":regionID" => $regionID));
             foreach ($systemRows as $systemRow) {
@@ -544,7 +560,14 @@ class IntelController
                 );
                 foreach ($members as &$member) {
 
-                    if($this->app->CoreManager->getCharacter($member['submitterID'])->derivedStanding($char) <= 0 && !$char->hasPermission("bjhjhlajkhlajksdhflkjasdhflFuckingOpsec")) continue;
+                    $submitter = $this->app->CoreManager->getCharacter($member['submitterID']);
+                    if(
+                        $char->getId() != $submitter->getId() && 
+                        $char->getCorpId() != $submitter->getCorpId() && 
+                        ($char->getAlliId() == 0 || $char->getAlliId() != $submitter->getAlliId()) && 
+                        $submitter->derivedStanding($char) <= 0 && 
+                        !$char->hasPermission("bjhjhlajkhlajksdhflkjasdhflFuckingOpsec")
+                    ) continue;
 
                     $standing = $char->derivedStanding(new CoreCharacter($this->app, array("characterID" => $member['id'], "corporationID" => $member['corporationID'], "allianceID" => $member['allianceID'])));
 
@@ -570,7 +593,7 @@ class IntelController
 
                 $character = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
 
-                if(!$character->hasPermission("writeIntel")) break;
+                if(!$character->hasPermission("writeIntel", "alliance") && !$character->hasPermission("writeIntel", "corporation")) break;
 
                 $this->db->execute("INSERT INTO easTrackerInfo (submitterID, characterID, info, timestamp) VALUES (:submitterID, :characterID, :info, :ts)",
                     array(

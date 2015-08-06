@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title></title>
+	</head>
+	<body>
+		<script type="text/javascript">
+			function $ (id, el) {
+			    var c = el ? el : document;
+			    if(document.querySelector && document.querySelectorAll) {
+			        if(id.substr(0,1) == "#" && id.split(" ").length == 1) {
+			            return document.querySelector(id);
+			        } else {
+			            return document.querySelectorAll(id);
+			        }
+			    } else {
+			        switch(id.substr(0,1)) {
+			            case "#":
+			                return c.getElementById(id.slice(1));
+			            case ".":
+			                return c.getElementsByClassName(id.slice(1));
+			            default:
+			                return c.getElementsByTagName(id);
+			        }
+			    }
+			}
+			function createElement (elStr) {
+			    var tmpEl = document.createElement("div");
+			    tmpEl.innerHTML = elStr;
+			    for(var i = 0; i < tmpEl.children.length; i++)
+			      if(tmpEl.children[0].nodeType == 1)
+			        return tmpEl.children[i];
+			}
+			function ajax (url, callback, format, options) {
+			    var timeout;
+			    var xmlhttp = new XMLHttpRequest();
+			    xmlhttp.onreadystatechange = function() {
+			        if(xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+			            clearTimeout(timeout);
+			            switch(format) {
+			                case "json":
+			                    callback(JSON.parse(xmlhttp.responseText));
+			                    break;
+			                case "xml":
+			                    callback(xmlhttp.responseXML);
+			                default:
+			                    callback(xmlhttp.responseText);
+			                    break;
+			            }
+			        }
+			    };
+			    if(format == "xml")
+			        xmlhttp.overrideMimeType("image/svg+xml");
+			    xmlhttp.open("GET", url, true);
+			    xmlhttp.send();
+			    timeout = setTimeout(function () {
+			        xmlhttp.abort();
+			        console.log("Request Timed out");
+			        if(options && options.retry === true)
+			            ajax(url, callback, format, options);
+			    }, options && options.timeout ? options.timeout : 30000);
+			    return xmlhttp;
+			}
+
+			setInterval(loadChat, 5000);
+			var logOffset = 0;
+			loadChat();
+			function loadChat () {
+				ajax("/json/logs/" + logOffset + "/", function (r) {
+					for(var i = 0; i < r.length; i++) {
+						document.body.insertBefore(createElement('<div>' + r[i].data + '</div>'), document.body.firstChild);
+						logOffset = r[i].id;
+					}
+				}, "json");
+			}
+		</script>
+	</body>
+</html>

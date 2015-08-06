@@ -122,4 +122,18 @@ class NotificationsController
         $this->app->response->body(json_encode($types));
     }
 
+    public function setState ($notificationID, $state) {
+        $resp = array("state" => "error");
+        if(isset($_SESSION["loggedIn"])) {
+            $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
+            $notification = $char->getCNotification($notificationID);
+            if(!is_null($notification)) {
+                $this->db->execute("UPDATE easNotifications SET state = :state WHERE id = :notificationID", array(":state" => (int)$state, ":notificationID" => $notificationID));
+                $resp['state'] = "success";
+            }
+        }
+        $this->app->response->headers->set('Content-Type', 'application/json');
+        $this->app->response->body(json_encode($resp));
+    }
+
 }

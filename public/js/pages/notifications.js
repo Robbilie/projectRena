@@ -1,9 +1,16 @@
 notificationsJS();
 function notificationsJS () {
+	loadNotifications();
+	loadNotificationTypes();
+}
+
+function loadNotifications () {
 	ajax("/json/notifications/", function (r) {
 		console.log(r);
 		var notList = $("#notificationsList");
+		notList.innerHTML = "";
 		var tasList = $("#tasksList");
+		tasList.innerHTML = "";
 		var tmpl = $("#notificationTemplate").innerHTML;
 
 		for(var i = 0; i < r.length; i++) {
@@ -18,7 +25,7 @@ function notificationsJS () {
 				]
 			));
 			if(r[i].requested > r[i].created) {
-				if(r[i].state == 0)
+				if(r[i].state < 2) // open/progressing
 					tasList.insertBefore(tmpel, tasList.firstChild);
 			} else {
 				notList.appendChild(tmpel);
@@ -27,6 +34,9 @@ function notificationsJS () {
 
 		fadeOn($("#notificationsConti"), 1);
 	}, "json");
+}
+
+function loadNotificationTypes () {
 	ajax("/json/notifications/types/", function (r) {
 		var conti = $("#notificationsConti");
 		var settings = $("#notificationForm");
@@ -57,5 +67,12 @@ function markAllRead () {
 	ajax("/json/notifications/read/", function (r) {
 		if(r.state == "success")
 			hashChange();
+	}, "json");
+}
+
+function setState (notificationID, state) {
+	ajax("/json/notification/" + notificationID + "/state/" + state + "/", function (r) {
+		if(r.state == "success")
+			loadNotifications();
 	}, "json");
 }

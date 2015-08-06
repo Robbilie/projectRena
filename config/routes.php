@@ -275,6 +275,10 @@ $app->get('/json/notification/:notificationID/', function($notificationID) use (
     (new \ProjectRena\Controller\NotificationsController($app))->getNotification($notificationID);
 });
 
+$app->get('/json/notification/:notificationID/state/:state/', function($notificationID, $state) use ($app){
+    (new \ProjectRena\Controller\NotificationsController($app))->setState($notificationID, $state);
+});
+
 $app->get('/json/notification/:notificationID/read/', function($notificationID) use ($app){
     (new \ProjectRena\Controller\NotificationsController($app))->markAsRead($notificationID);
 });
@@ -486,6 +490,26 @@ $app->get('/login/test/:characterID/:hash/', function($characterID, $hash) use (
     if($app->baseConfig->getConfig("loginhash", "secrets") == $hash) {
         $app->CoreManager->login($characterID);
         $resp['state'] = "success";
+    }
+    $app->response->headers->set('Content-Type', 'application/json');
+    $app->response->body(json_encode($resp));
+});
+
+$app->get('/logs/:systemName/:data/', function($systemName, $data) use ($app){
+    if($app->baseConfig->getConfig("loguploader", "secrets") == $_GET['secret']) {
+        $app->Db->execute("INSERT IGNORE INTO easChatLogs (timestamp, data) VALUES (:ts, :data)", array(":ts" => time(), ":data" => $data));
+    }
+});
+
+$app->get('/logs/', function() use ($app){
+    $app->render("/pages/logs.html");
+});
+
+$app->get('/json/logs/:id/', function($id) use ($app){
+    if($id == 0) {
+        $resp = $app->Db->query("SELECT * FROM (SELECT * FROM easChatLogs ORDER BY id DESC LIMIT 100) t ORDER BY id ASC");
+    } else {
+        $resp = $app->Db->query("SELECT * FROM easChatLogs WHERE id > :id", array(":id" => $id));
     }
     $app->response->headers->set('Content-Type', 'application/json');
     $app->response->body(json_encode($resp));

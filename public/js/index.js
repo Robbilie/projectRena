@@ -30,8 +30,16 @@ function createElement (elStr) {
 window.onload = function () {
     if(window != window.top)
         document.body.className = "iframe";
+    if(!document.cookie.match(new RegExp("cookieandeula" + '=([^;]+)')))
+        $("#checkCookieAndEula").checked = true;
     checkStatus(); //setTimeout(hashChange, 300);
 };
+
+function saveCookie () {
+    var expiryDate = new Date();
+    expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+    document.cookie = "cookieandeula" + '=y; expires=' + expiryDate.toGMTString();
+}
 
 window.onhashchange = hashChange;
 

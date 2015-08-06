@@ -82,6 +82,8 @@
         $ds = (int)($hs / 24);
         $lhs = $hs % 24;
         $notification['body']['leftHours'] = ($ds > 0 ? $ds." Days and " : "").$lhs;
+
+        setStateParams($notification);
     }
 
     function WarSurrenderOffer (&$notification) {
@@ -377,4 +379,14 @@
         if($notification['body']['payout'])
             $notification['body']['defaultPayoutText'] = GetByLabel('Notifications/bodyInsurancePayoutDefault');
         $notification['body']['amount'] = number_format($notification['body']['amount'], 2, ",", ".")." ISK";
+    }
+
+    function setStateParams (&$notification) {
+    	$states = array('open', 'in progress', 'completed', 'aborted');
+
+    	$notification['body']['notificationID'] = (int)$notification['id'];
+    	$notification['body']['state'] = (int)$notification['state'] % count($states);
+    	$notification['body']['stateName'] = $states[$notification['body']['state']];
+    	$notification['body']['nextState'] = ((int)$notification['state'] + 1) % count($states);
+    	$notification['body']['nextStateName'] = $states[$notification['body']['nextState']];
     }
