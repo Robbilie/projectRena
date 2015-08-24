@@ -76,8 +76,10 @@
     function TowerFuelMsg (&$notification) {
         global $app;
         $pos = $app->CoreManager->getControltower($notification['body']['towerID']);
-        $notification['body']['towerName'] = $pos->getName();
-        $notification['body']['solarSystemName'] = $pos->getLocation()->getName();
+        if(!is_null($pos)) {
+	        $notification['body']['towerName'] = $pos->getName();
+    	    $notification['body']['solarSystemName'] = $pos->getLocation()->getName();
+    	}
         $hs = (int)(($notification['requested'] - time()) / 3600);
         $ds = (int)($hs / 24);
         $lhs = $hs % 24;
@@ -133,13 +135,18 @@
     function ReactionProgressMsg (&$notification) {
         global $app;
         $pos = $app->CoreManager->getControltower($notification['body']['towerID']);
-        $notification['body']['towerName'] = $pos->getName();
+        if(!is_null($pos))
+            $notification['body']['towerName'] = $pos->getName();
         $reaction = $app->CoreManager->getContainer($notification['body']['reactionID']);
-        $notification['body']['reactionName'] = $reaction->getName();
+        if(!is_null($reaction))
+            $notification['body']['reactionName'] = $reaction->getName();
         $hs = (int)(($notification['requested'] - time()) / 3600);
         $ds = (int)($hs / 24);
         $lhs = $hs % 24;
         $notification['body']['progressMsg'] = $notification['body']["state"] == "running" ? (($notification['body']["value"] >= 0 ? "full" : "empty")." in ".($ds != 0 ? $ds." Days and " : "").$lhs." hours") : "";
+        $notification['body']["notificationState"] = $notification['body']["state"];
+        
+        setStateParams($notification);
     }
 
     function ReactionInactiveMsg (&$notification) {
@@ -370,7 +377,8 @@
         global $app;
         $notification['body']['oldCeoID'] = $app->CoreManager->getCharacter($notification['body']['oldCeoID'])->getName();
         $notification['body']['newCeoID'] = $app->CoreManager->getCharacter($notification['body']['newCeoID'])->getName();
-        $notification['body']['charID'] = $app->CoreManager->getCharacter($notification['body']['charID'])->getName();
+        if(isset($notification['body']['charID']))
+            $notification['body']['charID'] = $app->CoreManager->getCharacter($notification['body']['charID'])->getName();
         $notification['body']['corporationName'] = $app->CoreManager->getCorporation($notification['body']['corpID'])->getName();
     }
 

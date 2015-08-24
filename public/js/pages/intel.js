@@ -95,6 +95,7 @@ function mapLoaded () {
 }
 
 var switchedIntel = false;
+var flashInterval;
 
 var systemStatus = {};
 function checkSystemStatus () {
@@ -105,7 +106,10 @@ function checkSystemStatus () {
         if(JSON.stringify(systemStatus) != JSON.stringify(r)) {
             systemStatus = r;
 
-            $("#intelConti").className = "contentConti intelStatus" + systemStatus.state;
+            clearInterval(flashInterval);
+            $("#intelConti").className = "contentConti";
+            if(systemStatus.state > 1)
+                startFlashing(systemStatus.state);
 
             $("#intelStatus").innerHTML = "[" + systemStatus.status + "]";
             $("#intelLocation").innerHTML = systemStatus.regionName + " - " + systemStatus.systemName;
@@ -224,4 +228,19 @@ function setInfo (characterID) {
         if(r.state == "success")
             console.log("successfully updated info");
     }, "json");
+}
+
+function startFlashing (state) {
+    var colors = ["white", "white", "rgba(255,255,0,.2)", "rgba(255,140,0,.2)", "rgba(255,0,0,.2)"];
+    var color = colors[state];
+
+    var on = false;
+    flashInterval = setInterval(function () {
+        if(on) {
+            $("#intelConti").className = "contentConti";
+        } else {
+            $("#intelConti").className = "contentConti intelStatus" + state;
+        }
+        on = !on;
+    }, 500);
 }

@@ -127,7 +127,23 @@ class FetcherController
         echo " + - ".count($notificationRows)." Notifications converted<br>";
     }
 
-    function generatePOSNotfications () {
+    function generatePOSNotfications () {        
+
+        // delete old pos notifs
+        $this->db->execute("DELETE easNotifications FROM easNotifications LEFT JOIN ntItemStarbase ON ntItemStarbase.itemID = easNotifications.locationID WHERE easNotifications.typeID = 1337001 AND ntItemStarbase.itemID IS NULL");
+        
+        // delete old reaction notifs
+        $this->db->execute("DELETE easNotifications FROM easNotifications LEFT JOIN ntItem ON ntItem.itemID = easNotifications.locationID WHERE (easNotifications.typeID = 1337002 OR easNotifications.typeID = 1337003) AND ntItem.itemID IS NULL");
+
+        // delete old reactions (missing pos)
+        $this->db->execute("DELETE easControltowerReactions FROM easControltowerReactions LEFT JOIN ntItemStarbase ON ntItemStarbase.itemID = easControltowerReactions.towerID WHERE ntItemStarbase.itemID IS NULL");
+
+        // delete old reactions (missing desto)
+        $this->db->execute("DELETE easControltowerReactions FROM easControltowerReactions LEFT JOIN ntItem ON ntItem.itemID = easControltowerReactions.destination WHERE ntItem.itemID IS NULL");
+
+        // delete old reactions (missing source)
+        $this->db->execute("DELETE easControltowerReactions FROM easControltowerReactions LEFT JOIN ntItem ON ntItem.itemID = easControltowerReactions.source WHERE ntItem.itemID IS NULL");
+
         $posRows = $this->db->query("SELECT ntItem.itemID FROM ntItem, ntItemStarbase WHERE ntItem.itemID = ntItemStarbase.itemID");
         foreach ($posRows as $posRow) {
             $pos = $this->app->CoreManager->getControltower($posRow['itemID']);
@@ -144,6 +160,7 @@ class FetcherController
                     $fuelResourceCnt = (int)$posResource['quantity'];
 
             $content = $pos->getContent();
+            $hours = 0;
             foreach ($content as $item) {
     			if($item->getType()->getGroupId() == 1136) {
                     $hasSov = $pos->getLocation()->getOwner() && $pos->getOwner()->getCAlliance() && $pos->getLocation()->getOwner()->getId() == $pos->getOwner()->getCAlliance()->getId();

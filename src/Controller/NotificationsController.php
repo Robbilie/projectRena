@@ -33,7 +33,7 @@ class NotificationsController
         if(isset($_SESSION["loggedIn"])) {
             $character = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
             $notifs = $character->getNotifications();
-            $notifs = array_map(function ($a) use (&$unreadcount) { if($a['readState'] != 1) $unreadcount++; }, $notifs);
+            $notifs = array_map(function ($a) use (&$unreadcount) { if($a['readState'] != 1 && $a['state'] != 2) $unreadcount++; }, $notifs);
         }
         $this->app->response->headers->set('Content-Type', 'application/json');
         $this->app->response->body(json_encode(array("unread" => $unreadcount)));

@@ -12855,7 +12855,7 @@
         "label": "subjReactionProgressMsg",
         "messageID": 1337004,
         "message": [
-            "{reactionName} at {towerName} is {state} {progressMsg}",
+            "{reactionName} at {towerName} is {notificationState} {progressMsg}",
             null,
             {
                 "{reactionName}": {
@@ -12882,7 +12882,7 @@
                     ],
                     "variableName": "towerName"
                 },
-                "{state}": {
+                "{notificationState}": {
                     "conditionalValues": [
 
                     ],
@@ -12892,7 +12892,7 @@
                     "kwargs": [
 
                     ],
-                    "variableName": "state"
+                    "variableName": "notificationState"
                 },
                 "{progressMsg}": {
                     "conditionalValues": [
@@ -12914,7 +12914,7 @@
         "label": "bodyReactionProgressMsg",
         "messageID": 1337005,
         "message": [
-            "{reactionName} at <a href=\"#!/structures/controltower/{towerID}/\">{towerName}</a> is {state} {progressMsg}",
+            "{reactionName} at <a href=\"#!/structures/controltower/{towerID}/\">{towerName}</a> is {notificationState} {progressMsg}<div class='btnarea'><span class='fl'>State: [{stateName}]</span><span class='fr btn' onclick='setState({notificationID}, {nextState});'>Set to [{nextStateName}]</span></div>",
             null,
             {
                 "{reactionName}": {
@@ -12953,6 +12953,18 @@
                     ],
                     "variableName": "towerID"
                 },
+                "{notificationState}": {
+                    "conditionalValues": [
+
+                    ],
+                    "variableType": 10,
+                    "propertyName": null,
+                    "args": 0,
+                    "kwargs": [
+
+                    ],
+                    "variableName": "notificationState"
+                },
                 "{state}": {
                     "conditionalValues": [
 
@@ -12976,6 +12988,54 @@
 
                     ],
                     "variableName": "progressMsg"
+                },
+                "{stateName}": {
+                    "conditionalValues": [
+
+                    ],
+                    "variableType": 10,
+                    "propertyName": null,
+                    "args": 0,
+                    "kwargs": [
+
+                    ],
+                    "variableName": "stateName"
+                },
+                "{nextState}": {
+                    "conditionalValues": [
+
+                    ],
+                    "variableType": 10,
+                    "propertyName": null,
+                    "args": 0,
+                    "kwargs": [
+
+                    ],
+                    "variableName": "nextState"
+                },
+                "{nextStateName}": {
+                    "conditionalValues": [
+
+                    ],
+                    "variableType": 10,
+                    "propertyName": null,
+                    "args": 0,
+                    "kwargs": [
+
+                    ],
+                    "variableName": "nextStateName"
+                },
+                "{notificationID}": {
+                    "conditionalValues": [
+
+                    ],
+                    "variableType": 10,
+                    "propertyName": null,
+                    "args": 0,
+                    "kwargs": [
+
+                    ],
+                    "variableName": "notificationID"
                 }
             }
         ]

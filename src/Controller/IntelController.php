@@ -25,7 +25,7 @@ class IntelController
         $this->db = $this->app->Db;
         $this->config = $this->app->baseConfig;
 
-        //$this->maxIntelAge = time() - (60 * 60 * 2);
+        $this->maxIntelAge = time() - (60 * 60 * 2);
     }
 
     public function getSystemIntel ($psystemID = null) {
@@ -363,6 +363,9 @@ class IntelController
                     $systemID = $this->app->CoreManager->getCharacterLocation($_SESSION['characterID']);
                 if(is_null($systemID) || $systemID == 0)
                     $systemID = 30002489;
+
+                $this->app->CoreManager->createLog("intel", array("characterID" => $character->getId(), "systemID" => $systemID));
+
                 // local members
                 $local = str_replace("%20", " ", $this->app->request->post('local'));
                 while(strpos($local, ",,") !== FALSE)
