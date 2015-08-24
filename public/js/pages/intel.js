@@ -231,8 +231,9 @@ function setInfo (characterID) {
 }
 
 function startFlashing (state) {
-    var colors = ["white", "white", "rgba(255,255,0,.2)", "rgba(255,140,0,.2)", "rgba(255,0,0,.2)"];
-    var color = colors[state];
+    var states = ["offline", "online", "wakeup", "attention", "warning"];
+    var audio = new Audio("/audio/" + states[state] + ".ogg");
+    audio.play();
 
     var on = false;
     flashInterval = setInterval(function () {
