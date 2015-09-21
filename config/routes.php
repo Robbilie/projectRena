@@ -481,6 +481,20 @@ $app->get('/', function() use ($app){
 
 
 /*
+ * EAS SSO
+ */
+
+
+$app->get('/sso/', function() use ($app){
+    $app->render("/eassso.html");
+});
+
+$app->post('/sso/authorize/', function() use ($app){
+    (new \ProjectRena\Controller\JSONController($app))->getSSOData();
+});
+
+
+/*
  * Testing
  */
 

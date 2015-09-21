@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="mobile-web-app-capable" content="yes">
+        <title>Alliance - Services</title>
+        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/css/mock.css">
+        <link rel="stylesheet" type="text/css" href="/css/iframe.css">
+        <link rel="stylesheet" type="text/css" href="/css/mobile.css">
+        <link rel="stylesheet" type="text/css" href="/css/large.css">
+        <link rel="stylesheet" type="text/css" href="/css/eassso.css">
+        <style type="text/css">
+            .pace {
+                -webkit-pointer-events: none;
+                pointer-events: none;
+
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                user-select: none;
+            }
+
+            .pace-inactive {
+                display: none;
+            }
+
+            .pace .pace-progress {
+                background: #478eb5;
+                position: fixed;
+                z-index: 2000;
+                top: 0;
+                right: 100%;
+                width: 100%;
+                height: 2px;
+            }
+        </style>
+        <script>
+            paceOptions = {
+                restartOnPushState: true,
+                restartOnRequestAfter: true,
+                ajax: {
+                    trackMethods: ['GET'],
+                    ignoreURLs: ['/json/']
+                }
+            }
+        </script>
+        <script type="text/javascript" src="/js/pace.min.js"></script>
+        <script type="text/javascript" src="/js/tether.min.js"></script>
+        <script type="text/javascript" src="/js/shepherd.min.js"></script>
+        <script type="text/javascript" src="/js/humane.min.js"></script>
+        <script type="text/javascript" src="/js/md5.min.js"></script>
+        <script type="text/javascript" src="/js/base.js"></script>
+        <script type="text/javascript" src="/js/eassso.js"></script>
+    </head>
+    <body>
+        <!-- #Toggles -->
+        <input type="checkbox" class="check" id="checkCookieAndEula"    onchange="refreshDom();" />
+        <input type="checkbox" class="check" id="checkLoggedin"         onchange="refreshDom();" />
+        <input type="checkbox" class="check" id="checkSidebar"          onchange="refreshDom();" />
+        <input type="checkbox" class="check" id="checkMaxed"            onchange="refreshDom();" />
+        <!-- #Content -->
+        <div id="container">
+
+            <div id="mobilebg"></div>
+            <div id="ssoform">
+                <form id="ssoauth" method="POST" action="/sso/authorize/">
+                    <div id="hiddenParams"></div>
+                    <select id="charSelect" name="characterID"></select>
+                    <div class="divider"></div>
+                    <button type="submit" class="btn" onclick="">LOG IN</button>
+                </form>
+            </div>
+            <div id="logincard">
+                    <div id="loggedincard">
+                        <div id="logoconti"><img src="/img/web.png"></div>
+                        <h1>LOG IN</h1>
+                    </div>
+                    <div id="loggedoutcard">
+                        <div id="logoconti"><img src="/img/web.png"></div>
+                        <a id="loginurl" href="{{ EVESSOURL }}" onclick="/*if(typeof(CCPEVE) == 'undefined') { authwin = window.open(this.href, 'mywin','left=200,top=200,width=500,height=600,toolbar=1,resizable=0'); return false;}*/"><img src="/img/EVE_SSO_Login_Buttons_Small_White.png" alt="EVE SSO Login Button"></a>
+                        <div id="disclaimer" class="abs">
+                            <span class="info hover">
+                                <div class="notif abs">
+                                    <p style="font-size:80%" class="paddedp">
+                                        Learn more about the security of <i>EVE Online SSO</i> in this <a href="http://community.eveonline.com/news/dev-blogs/eve-online-sso-and-what-you-need-to-know/" target="_blank">dev-blog</a> article by <a href="https://twitter.com/CCP_FoxFour" target="_blank">CCP FoxFour</a>.<br>
+                                        Summary: Verify that after clicking the login button, you are redirected to https://login.eveonline.com/ and it <a href="img/ccp_hf_cert.png" target="_blank">shows up</a> as certified by <i>CCP Hf [IS]</i>.
+                                    </p>
+                                </div>
+                                i
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div id="cookieAndEula" class="card">
+                    <div class="chead">
+                        <h1 class="blue">Agreement</h1>
+                    </div>
+                    <div class="cbody">
+                        <p class="paddedp">
+                            By using this site, you agree to its use of cookies.
+                            <br>
+                            <br>
+                            By logging into this tool, you agree to our <a href="/eula.txt">EULA</a>.
+                            <br>
+                            <br>
+                            <label for="checkCookieAndEula" class="btn" onclick="saveCookie();">Confirm</label>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+            ga('create', 'UA-64437654-1', 'auto');
+            ga('send', 'pageview');
+
+        </script>
+    </body>
+</html>

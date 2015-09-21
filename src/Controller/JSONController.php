@@ -177,9 +177,12 @@ class JSONController
                             $isChild = true;
                         $st = $row['destination'];
                     }
-                    if(($source != $destination) && !$isChild) {
+                    if($destination != 0 && ($source != $destination) && !$isChild) {
                         $this->db->execute("DELETE FROM easControltowerReactions WHERE towerID = :towerID AND source = :destination AND destination = :source", array(":towerID" => $towerID, ":source" => $source, ":destination" => $destination));
                         $this->db->execute("INSERT INTO easControltowerReactions (towerID, source, destination) VALUES (:towerID, :source, :destination) ON DUPLICATE KEY UPDATE towerID = :towerID , source = :source , destination = :destination", array(":towerID" => $towerID, ":source" => $source, ":destination" => $destination));
+                        $resp['state'] = "success";
+                    } else if($destination == 0) {
+                        $this->db->execute("DELETE FROM easControltowerReactions WHERE towerID = :towerID AND source = :source", array(":towerID" => $towerID, ":source" => $source));
                         $resp['state'] = "success";
                     }
                 } else {
@@ -339,6 +342,43 @@ class JSONController
         }
         $this->app->response->headers->set('Content-Type', 'application/json');
         $this->app->response->body(json_encode($corporations));
+    }
+
+    public function getSSOData () {
+        if(isset($_SESSION["loggedIn"])) {
+
+            // check if all params set
+            if(!isset($_POST['cliid']) || !isset($_POST['characterID']) || !isset($_POST['redir'])) {
+                echo "Missing Parameters";
+                die();
+            }
+
+            // get secret
+            $secret = $this->app->baseConfig->getConfig($_POST['cliid'], "3rdparties", null);
+
+            // check if secret is found
+            if(!$secret) {
+                echo "No Secret found for this client_id";
+                die();
+            }
+
+            $char = $this->app->CoreManager->getCharacter($_SESSION['characterID']);
+            $newchar = $this->app->CoreManager->getCharacter($_POST['characterID']);
+            if($newchar && $char->getUser() == $newchar->getUser()) {
+                $data = array("characterName" => $newchar->getName(), "characterID" => $newchar->getId());
+                $data = json_encode($data);
+                $hash = sha1($data.$secret);
+                $this->app->redirect($_POST['redir']."?data=".$data."&hash=".$hash);
+            } else {
+                echo "No such character on this User";
+                die();
+            }
+
+        } else {
+            echo "Not logged in";
+            die();
+        }
+
     }
 
 }

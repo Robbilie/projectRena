@@ -26,6 +26,12 @@
         font-style: normal;
         font-weight: 400;
     }
+    @font-face {
+        font-family: 'EVE Alpha';
+        src: url(./webfonts/eve.ttf) format('truetype');
+        font-style: bold;
+        font-weight: normal;
+    }
 
     * {
         -moz-box-sizing: border-box;
@@ -143,6 +149,7 @@
 
     #checkLoggedin:checked ~ #container #logincard {
         height: 86px;
+        width: 290px;
         top: 15px;
         right: 55px;
         margin-right: 0%;
@@ -151,10 +158,10 @@
     #logincard {
         position: absolute;
         top: 200px;
-        right: -150px;
+        right: -195px;
         margin-right: 50%;
-        width: 290px;
-        height: 250px;
+        width: 390px;
+        height: 260px;
         background-color: rgba(0,0,0,.26);
         -webkit-box-shadow: 0px 0px 20px 1px #0F0F0F;
         box-shadow: 0px 0px 20px 1px #0F0F0F;
@@ -234,7 +241,7 @@
         top: 0px;
         text-align: center;
         font-family: 'EngschriftDIND', Arial, sans-serif;
-        height: 250px;
+        height: 260px;
         color: white;
         overflow: hidden;
         opacity: 1;
@@ -1130,6 +1137,10 @@
       text-align: center;
     }
 
+    #checkLoggedin:not(:checked) ~ #container #splitPane {
+        display: none;
+    }
+
     .react {
         position: relative;
         overflow: hidden;
@@ -1371,14 +1382,28 @@
         display: none;
         position: absolute;
         left: 50%;
-        top: 50%;
+        bottom: 50%;
         margin-top: -300px;
-        margin-left: -200px;
-        width: 400px;
+        margin-left: -195px;
+        width: 390px;
         z-index: 500;
     }
 
     #cookieAndEula > .chead {
         margin-top: 0;
         text-align: center;
+    }
+
+    .delNot {
+        position: absolute;
+        right: -10px;
+        bottom: -15px;
+    }
+
+    #logoconti {
+        margin: 50px 30px 25px 30px;
+    }
+
+    #logoconti img {
+        width: 100%;
     }

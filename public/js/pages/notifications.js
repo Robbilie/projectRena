@@ -14,6 +14,7 @@ function loadNotifications () {
 		var tmpl = $("#notificationTemplate").innerHTML;
 
 		for(var i = 0; i < r.length; i++) {
+			if(!r[i].created) continue;
 			var tmpel = createElement(tmpl.format(
 				[
 					r[i].id, 
@@ -24,12 +25,12 @@ function loadNotifications () {
 					r[i].subject == "!!Unable to read notification" ? JSON.stringify(r[i]) : r[i].message
 				]
 			));
-			if(r[i].requested > r[i].created) {
-				if(r[i].state < 2) // open/progressing
-					tasList.insertBefore(tmpel, tasList.firstChild);
-			} else {
-				notList.appendChild(tmpel);
-			}
+			if(r[i].state < 2) // open/progressing
+				if(r[i].requested > r[i].created) {
+						tasList.insertBefore(tmpel, tasList.firstChild);
+				} else {
+					notList.appendChild(tmpel);
+				}
 		}
 
 		fadeOn($("#notificationsConti"), 1);

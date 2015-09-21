@@ -152,6 +152,10 @@
     function ReactionInactiveMsg (&$notification) {
         global $app;
         $pos = $app->CoreManager->getControltower($notification['body']['towerID']);
+        if(is_null($pos)) {
+        	$notification = null;
+        	return;
+        }
         $notification['body']['towerName'] = $pos->getName();
         $reaction = $app->CoreManager->getContainer($notification['body']['reactionID']);
         $notification['body']['reactionName'] = $reaction->getName();

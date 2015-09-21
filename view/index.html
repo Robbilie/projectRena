@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta charset="UTF-8"/>
+        <meta charset="UTF-8">
         <meta name="mobile-web-app-capable" content="yes">
         <title>Alliance - Services</title>
         <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
@@ -51,6 +51,7 @@
         <script type="text/javascript" src="/js/shepherd.min.js"></script>
         <script type="text/javascript" src="/js/humane.min.js"></script>
         <script type="text/javascript" src="/js/md5.min.js"></script>
+        <script type="text/javascript" src="/js/base.js"></script>
         <script type="text/javascript" src="/js/index.js"></script>
     </head>
     <body>
@@ -70,79 +71,79 @@
             <div id="sidebar">
                 <a class="sidebarrow" onclick="click(this);" href="#!/home/">
                     <h2>Home</h2>
-                    <img src="./img/icons/agent.png"/>
+                    <img src="/img/icons/agent.png"/>
                 </a>
                 <a class="sidebarrow" onclick="click(this);" href="#!/profile/">
                     <h2>Profile</h2>
-                    <img src="./img/icons/charactersheet.png"/>
+                    <img src="/img/icons/charactersheet.png"/>
                 </a>
                 <a class="sidebarrow" onclick="click(this);" href="#!/notifications/">
                     <h2>Notifications</h2>
-                    <img src="./img/icons/attention.png"/>
+                    <img src="/img/icons/attention.png"/>
                 </a>
                 <a class="sidebarrow" onclick="click(this);" href="#!/mails/">
                     <h2>Mails</h2>
-                    <img src="./img/icons/evemail.png"/>
+                    <img src="/img/icons/evemail.png"/>
                 </a>
                 <a class="sidebarrow" onclick="click(this);" href="#!/intel/system/">
                     <h2>Intel</h2>
-                    <img src="./img/icons/chatchannel.png"/>
+                    <img src="/img/icons/chatchannel.png"/>
                 </a>
                 <a class="sidebarrow" onclick="click(this);" href="#!/timerboard/">
                     <h2>Timerboard</h2>
-                    <img src="./img/icons/trainingqueue.png"/>
+                    <img src="/img/icons/trainingqueue.png"/>
                 </a>
                 <a class="sidebarrow" onclick="click(this);" href="#!/fleets/">
                     <h2>Fleets</h2>
-                    <img src="./img/icons/fleet.png"/>
+                    <img src="/img/icons/fleet.png"/>
                 </a>
                 <!--<a class="sidebarrow" onclick="click(this);" href="#!/logistic/">
                     <h2>Logistic</h2>
-                    <img src="./img/icons/contracts.png"/>
+                    <img src="/img/icons/contracts.png"/>
                 </a>-->
                 <!--<a class="sidebarrow" onclick="click(this);" href="#!/corporation/">
                     <h2>Corporation</h2>
-                    <img src="./img/icons/corporation.png"/>
+                    <img src="/img/icons/corporation.png"/>
                 </a>-->
                 <!--<a class="sidebarrow" onclick="click(this);" href="#!/alliance/">
                     <h2>Alliance</h2>
-                    <img src="./img/icons/alliances.png"/>
+                    <img src="/img/icons/alliances.png"/>
                 </a>-->
                 <a class="sidebarrow" onclick="click(this);" href="#!/finances/taxes/">
                     <h2>Finances & Trade</h2>
-                    <img src="./img/icons/wallet.png"/>
+                    <img src="/img/icons/wallet.png"/>
                 </a>
                 <a class="sidebarrow" onclick="click(this);" href="#!/structures/controltower/">
                     <h2>Structures</h2>
-                    <img src="./img/icons/station.png"/>
+                    <img src="/img/icons/station.png"/>
                 </a>
                 <!--<a class="sidebarrow" onclick="click(this);" href="#!/assets/personal/">
                     <h2>Assets</h2>
-                    <img src="./img/icons/items.png"/>
+                    <img src="/img/icons/items.png"/>
                 </a>-->
                 <a class="sidebarrow" onclick="click(this);" href="#!/fittings/">
                     <h2>Fittings & SRP</h2>
-                    <img src="./img/icons/fitting.png"/>
+                    <img src="/img/icons/fitting.png"/>
                 </a>
                 <a class="sidebarrow" onclick="click(this);" href="#!/members/corporation/">
                     <h2>Members</h2>
-                    <img src="./img/icons/member.png"/>
+                    <img src="/img/icons/member.png"/>
                 </a>
                 <a class="sidebarrow" onclick="click(this);" href="#!/groups/">
                     <h2>Groups</h2>
-                    <img src="./img/icons/grouplist.png"/>
+                    <img src="/img/icons/grouplist.png"/>
                 </a>
                 <a class="sidebarrow" onclick="click(this);" href="#!/settings/">
                     <h2>Settings</h2>
-                    <img src="./img/icons/Settings.png"/>
+                    <img src="/img/icons/Settings.png"/>
                 </a>
                 <a class="sidebarrow" onclick="click(this);" href="#!/help/">
                     <h2>Help</h2>
-                    <img src="./img/icons/help.png"/>
+                    <img src="/img/icons/help.png"/>
                 </a>
                 <a class="sidebarrow" onclick="click(this);" href="#!/about/">
                     <h2>About</h2>
-                    <img src="./img/icons/info.png"/>
+                    <img src="/img/icons/info.png"/>
                 </a>
             </div>
             <div id="content"></div>
@@ -159,13 +160,12 @@
                     <div id="charlist"></div>
                 </div>
                 <div id="loggedoutcard">
-                    <img src="./img/4_128_1.png"/>
-                    <h1>Alliance Services</h1>
+                    <div id="logoconti"><img src="/img/web.png"></div>
                     <a id="loginurl" href="{{ EVESSOURL }}" onclick="/*if(typeof(CCPEVE) == 'undefined') { authwin = window.open(this.href, 'mywin','left=200,top=200,width=500,height=600,toolbar=1,resizable=0'); return false;}*/"><img src="/img/EVE_SSO_Login_Buttons_Small_White.png" alt="EVE SSO Login Button"></a>
                     <div id="disclaimer" class="abs">
                         <span class="info hover">
                             <div class="notif abs">
-                                <p style="font-size:80%" class="paddedp">
+                                <p class="paddedp">
                                     Learn more about the security of <i>EVE Online SSO</i> in this <a href="http://community.eveonline.com/news/dev-blogs/eve-online-sso-and-what-you-need-to-know/" target="_blank">dev-blog</a> article by <a href="https://twitter.com/CCP_FoxFour" target="_blank">CCP FoxFour</a>.<br>
                                     Summary: Verify that after clicking the login button, you are redirected to https://login.eveonline.com/ and it <a href="img/ccp_hf_cert.png" target="_blank">shows up</a> as certified by <i>CCP Hf [IS]</i>.
                                 </p>

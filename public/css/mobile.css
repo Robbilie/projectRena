@@ -79,3 +79,35 @@
           display: none;
       }
   }
+
+  @media (max-width: 400px) {
+    #cookieAndEula {
+        display: none;
+        position: relative;
+        left: auto;
+        bottom: auto;
+        margin-top: auto;
+        margin-left: auto;
+        width: auto;
+        z-index: 500;
+        margin: 10px;
+    }
+
+    #checkLoggedin:not(:checked) ~ #container #logincard {
+      top: 15px !important;
+      width: auto !important;
+      left: 15px !important;
+      right: 15px !important;
+      margin: 0 !important;
+    }
+
+    #checkLoggedin:checked ~ #container #ssoform {
+      top: 275px !important;
+    }
+    #ssoform {
+      width: auto !important;
+      left: 15px !important;
+      right: 15px !important;
+      margin: 0 !important;
+    }
+  }

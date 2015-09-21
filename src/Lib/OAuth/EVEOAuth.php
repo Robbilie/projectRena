@@ -141,6 +141,6 @@ class EVEOAuth
         //\Resque::enqueue("now", "\\ProjectRena\\Task\\Resque\\ipUpdater", array("userID" => $this->app->Users->getUserByName($characterName)["id"], "ip" => $this->app->request->getIp()));
 
         // Redirect back to where the person came from
-        $this->app->redirect($state);
+        $this->app->redirect(htmlspecialchars_decode($state));
     }
 }
